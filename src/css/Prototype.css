@@ -1,0 +1,297 @@
+.prototype-container {
+    margin: auto;
+    width: 70%; /* Adjust as needed */
+    margin-top: 40px;
+    padding: 40px;
+    background-color: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Light shadow effect */
+    border-radius: 8px;
+  }
+
+
+  
+  /* Header styles */
+  h2 {
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  /* Field list */
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  /* Field item */
+  ul li {
+    background-color: #f7f7f7;;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+   /* Field item */
+   ul li p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+  
+
+  /* Field labels */
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+  
+  span {
+    font-weight: bold;
+  }
+  
+  /* Field values */
+  .field-value {
+    color: #555;
+  }
+  
+  /* Inherited prototypes list */
+  .inherited-list {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #777;
+  }
+  
+
+/* Inheritance section */
+.inheritance-section {
+    margin-top: 20px;
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Inherited prototypes and all inherited prototypes */
+  .inherited-prototypes,
+  .all-inherited-prototypes {
+    margin: 0;
+    font-size: 16px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+  
+  .inherited-prototypes span,
+  .all-inherited-prototypes span {
+    font-weight: bold;
+    color: #000000;
+  }
+
+   /* Inherited prototypes list */
+    .info-list {
+        margin-top: 15px;
+        font-size: 14px;
+        color: #777;
+      }
+      
+    
+ /* Inheritance section */
+    .info-section {
+        margin-top: 30px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }   
+      
+/* Inherited prototypes and all inherited prototypes */
+      .info-prototypes {
+        margin: 0;
+        font-size: 16px;
+        margin-top: 10px;
+
+      }    
+      
+      .info-prototypes p {
+        margin-top: 5px;
+        margin-bottom: 5px;
+      }
+      
+      .info-prototypes span {
+        font-weight: bold;
+        color: #000000;
+        
+      }
+ 
+      
+  
+  .header {
+    font-size: 27px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 40px;
+
+  }
+  
+  .subheader {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  
+  .subsubheader {
+    font-size: 20px;
+    margin-top: 10px;
+    color: gray;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  /* Add Inheritance Prototype Button */
+.add-inheritance-button {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #ffffff; /* Gray button color */
+  color: gray;
+  border: 2px solid gray;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.add-inheritance-button:hover {
+  background-color: #a1a1a1;
+  color: white;
+}
+
+.add-inheritance-input {
+  display: flex;
+  width: 40%;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.add-inheritance-input input {
+  flex-grow: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.add-inheritance-input button {
+  margin-left: 10px;
+  padding: 6px 12px;
+  background-color: #555; /* Gray button color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.add-inheritance-input button:hover {
+  background-color: #444;
+}
+
+
+.add-field-button {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #ffffff; /* Gray button color */
+  color: gray;
+  border: 2px solid gray;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.add-field-button:hover {
+  background-color: #a1a1a1;
+  color: white;
+}
+
+.add-field-form {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.add-field-form h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.add-field-form label {
+  font-size: 14px;
+  display: block;
+  margin-bottom: 5px;
+  margin-top: 15px;
+  color: #333;
+}
+
+.add-field-form input {
+  width: 50%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.add-field-form button {
+  padding: 8px 12px;
+  background-color: #555; /* Gray button color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.add-field-form button.cancel-field-button {
+  background-color: #ccc; /* Light gray button color */
+  margin-top: 20px;
+  color: #333;
+  margin-left: 10px;
+}
+
+/* Prototype.css */
+
+/* Style for the "Back" button */
+.back-button {
+  background-color: #c9c9c9; /* Button background color */
+  color: #fff; /* Text color */
+  border: none; /* Remove border */
+  border-radius: 4px; /* Rounded corners */
+  padding: 10px 20px; /* Padding around the text */
+  cursor: pointer; /* Show pointer cursor on hover */
+  font-size: 16px; /* Font size */
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
+  align-self: flex-start;
+}
+
+  /* Add hover effect */
+  .back-button:hover {
+    background-color: #a1a1a1;
+    color: white;
+    border: none;
+    text-decoration: none;
+  }
+
+
+

@@ -1,0 +1,19 @@
+.custom-alert {
+    background-color: #ff6b6b;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    width:100%;
+    animation: slide-up 0.3s ease-in-out;
+  }
+  
+  @keyframes slide-up {
+    0% {
+      transform: translateY(100%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  

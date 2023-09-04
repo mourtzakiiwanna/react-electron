@@ -1,0 +1,243 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* styles.css */
+body {
+  padding: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f0f0f0; /* Light gray background */
+}
+
+.pageHeader {
+  color: gray;
+  text-align: center;
+  font-weight: 600;
+  margin: 60px;
+  margin-top: 100px;
+}
+
+.card {
+  margin: auto;
+  width: 80%;
+  margin-bottom: 40px;
+  background-color: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Light shadow effect */
+  border-radius: 8px;
+}
+
+.card-header {
+  color: #333;
+  font-weight: bold;
+}
+
+.posts {
+  margin: 40px;
+}
+
+.posts h2 {
+  margin-top: 100px;
+  font-size: 30px;
+}
+
+.posts p {
+  margin-top: 30px;
+  font-size: 20px;
+}
+
+/* styles.css */
+.card {
+  background-color: #f4f4f4;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.card-header {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.card-content {
+  font-size: 15px;
+  margin: 8px;
+  color: black;
+  font-weight: bold;
+}
+
+/* styles.css */
+.group {
+  align-self: center;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  padding: 16px;
+  margin: auto;
+  width: 50%;
+  margin-bottom: 16px;  }
+
+    /* styles.css */
+
+
+
+
+
+.group-name {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  justify-content: space-between;
+  padding: 12px;
+  font-size: 17px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;   
+  background-color: #ffffff;
+}
+  
+.group-name:hover {
+  color: #c0c0c0; /* Background color on hover */
+}
+    
+
+
+    
+.group-name-text {
+  font-weight: bold;
+}
+
+.group-content {
+  margin-top: 8px;
+  padding: 16px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+}
+
+
+.prototype-container {
+  margin: auto;
+  width: 70%; /* Adjust as needed */
+  margin-top: 40px;
+  padding: 40px;
+  background-color: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Light shadow effect */
+  border-radius: 8px;
+}
+
+.subheader {
+  font-size: 30px;
+  font-weight: bolder;
+  margin-top: 20px;
+  margin-bottom: 50px;
+  color: #333;
+}
+
+.subsubheader {
+  font-size: 20px;
+  margin-top: 30px;
+  color: gray;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.label-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align items to the left */
+  margin-top: 20px;
+}
+
+.field-item {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-top: 20px;
+  background-color: #f7f7f7; /* Light gray background */
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column; /* Stack label and value vertically */
+  align-items: flex-start; /* Align items to the left */
+}
+
+.field-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.field-label {
+  margin-right: 6px;
+  color: #555;
+}
+
+.field-type {
+  font-style: italic;
+  color: #777;
+}
+
+.create-button {
+  margin:auto;
+  display:block;  
+  padding: 12px 16px;
+  width: fit-content;
+  margin-bottom: 60px;
+  background-color: #b6b6b6; /* Gray button color */
+  color: white;
+  border: 2px solid gray;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  /* margin-top: 10px;
+  margin-bottom: 10px; */
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.create-button:hover {
+  background-color: #a1a1a1;
+  color: white;
+  text-decoration: none;
+}
+
+.main-content {
+  margin-left: 10%; 
+  padding: 20px; 
+}

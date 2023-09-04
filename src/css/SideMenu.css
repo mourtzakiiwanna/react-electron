@@ -1,0 +1,79 @@
+/* SideMenu.css */
+
+.side-menu {
+    width: 300px; /* Adjust the width as needed */
+    height: 100%;
+    position: fixed;
+    margin-left: 30px;
+    margin-top: 60px;
+    left: 0;
+    padding-left: 20px;
+    color: gray; /* Text color */
+    overflow-y: auto; /* Enable vertical scrolling if needed */
+    transition: width 0.3s; /* Add a smooth transition effect for width changes */
+  }
+  
+  .category-name {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    justify-content: space-between;
+    padding: 12px;
+    font-size: 17px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;   
+    background-color: #ffffff;
+}
+    
+
+  
+  .category-name:hover {
+    color: #c0c0c0; /* Background color for the expanded category */
+  }
+  
+  .category-name.expanded {
+    color: #c0c0c0; /* Background color for the expanded category */
+  }
+
+  .category {
+    align-self: center;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    margin-bottom: 16px;  }
+
+  .category-content {
+    margin-top: 8px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;    
+    }
+    
+  .content-scroll {
+    max-height: 400px; /* Set a maximum height for the content area */
+    overflow-y: auto; /* Enable scrolling within the content area */
+    padding: 10px 20px 20px 20px;
+  }
+  
+  .menu-link {
+    text-decoration: none;
+    color: #585858;
+    display: block;
+    padding: 8px;
+    transition: background-color 0.3s; /* Add a smooth transition effect for background color */
+  }
+  
+  .menu-link:hover {
+    font-weight: bold;
+    color: #585858;     
+    text-decoration: none; /* Background color on hover */
+  }
+  
+  .menu-link.selected {
+    font-weight: bold; /* Make the selected item bold */
+    background-color: #c5c5c5;
+    color: #fff; /* Text color for the selected item */
+  }

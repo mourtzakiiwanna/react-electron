@@ -1,0 +1,32 @@
+/* Styling for the Create Prototype page */
+.create-page {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 6px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .create-page h2 {
+    margin-top: 0;
+  }
+  
+  .create-label {
+    margin-bottom: 10px;
+  }
+  
+  .create-input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .center-button {
+    display: flex;
+    justify-content: center;
+  }
+  
+  
