@@ -295,3 +295,84 @@
 
 
 
+/* YourComponent.css */
+
+
+
+
+.add-inheritance-input {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.select-dropdown {
+  width: 300px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f7f7f7;
+  font-size: 0.95rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  -webkit-appearance: none; /* Remove default arrow on WebKit (Safari, Chrome) */
+  -moz-appearance: none; /* Remove default arrow on Mozilla Firefox */
+  appearance: none; /* Remove default arrow on most modern browsers */
+  background-image: none;
+}
+
+.select-dropdown:hover,
+.select-dropdown:focus {
+  border-color: #949494;
+  background-color: #fff;
+}
+
+.option {
+  background-color: #ff0000; /* Set the background color for options */
+  color: #440909; /* Set the text color for options */
+  padding: 10px; /* Add some padding for better readability */
+  transition: background-color 0.3s ease, color 0.3s ease; 
+}
+
+.select-dropdown option {
+  background-color: #f7f7f7; /* Set the background color for options */
+  color: #333; /* Set the text color for options */
+  padding: 10px; /* Add some padding for better readability */
+  transition: background-color 0.3s ease, color 0.3s ease; 
+}
+
+.save-button,
+.add-button {
+  background-color: #868686;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.save-button:hover,
+.add-button:hover {
+  background-color: #8b8b8b;
+}
+
+.cancel-button {
+  background-color: #f44336; /* Red color for cancel button */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.cancel-button:hover {
+  background-color: #d32f2f; /* Darker red color on hover */
+}
+
+
+
