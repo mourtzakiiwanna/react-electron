@@ -1,17 +1,16 @@
 /* SideMenu.css */
-
 .side-menu {
-    width: 300px; /* Adjust the width as needed */
-    height: 100%;
-    position: fixed;
-    margin-left: 30px;
-    margin-top: 60px;
-    left: 0;
-    padding-left: 20px;
-    color: gray; /* Text color */
-    overflow-y: auto; /* Enable vertical scrolling if needed */
-    transition: width 0.3s; /* Add a smooth transition effect for width changes */
-  }
+  width: 20%;
+  height: 100%;
+  position: fixed;
+  margin-left: 30px;
+  margin-top: 60px;
+  left: 0;
+  padding-left: 20px;
+  color: gray;
+  overflow-y: auto;
+  transition: width 0.3s;
+}
   
   .category-name {
     display: flex;
@@ -77,3 +76,7 @@
     background-color: #c5c5c5;
     color: #fff; /* Text color for the selected item */
   }
+
+  /* Default styles for larger screens */
+
+

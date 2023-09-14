@@ -6,6 +6,32 @@ import SideMenu from './SideMenu';
 import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import TextField, { textFieldClasses } from '@mui/material/TextField';
+import Autocomplete, { autocompleteClasses }  from '@mui/material/Autocomplete'
+import { makeStyles } from "@material-ui/core/styles";
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
+import CloseIcon from '@mui/icons-material/Close';
+import CheckIcon from '@mui/icons-material/Check';
+
+import MailIcon from '@mui/icons-material/Mail';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Label from '@mui/icons-material/Label';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import InfoIcon from '@mui/icons-material/Info';
+import ForumIcon from '@mui/icons-material/Forum';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import { styled, useTheme } from '@mui/material/styles';
+
+import { TreeView } from '@mui/x-tree-view/TreeView';
+import { TreeItem, treeItemClasses } from '@mui/x-tree-view/TreeItem';
+
 
 function Prototype() {
 
@@ -23,6 +49,10 @@ function Prototype() {
     constraint: '',
     defaultValue: '',
   });
+
+
+  
+
 
   const [dropdownOptions, setDropdownOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState("");
@@ -56,34 +86,27 @@ function Prototype() {
     setShowDropdown(false);
   };
 
-  // const [addInheritance, setAddInheritance] = useState(false);
-  // const [newInheritance, setNewInheritance] = useState('');
-  // const [dropdownOptions, setDropdownOptions] = useState([]);
-  // const [showDropdown, setShowDropdown] = useState(false);
+  const useStyles = makeStyles({
+  
+    option: {
+      backgroundColor: "transparent",
+      margin: "3px",
+      border: "none",
+      borderRadius: "0px"
+    }, 
+    popupIndicator: {
+      margin: "10px"
+    },
+    clearIndicator: {
+      margin: "10px"
+    },
+    textfield: {
+      width: "400px"
+    }
+  });
 
-  // const [selectedOption, setSelectedOption] = useState("");
+  const classes = useStyles();
 
-  // useEffect(() => {
-  //   // Fetch dropdown options from the URL when the component mounts
-  //   fetch("http://localhost:8080/getLocal")
-  //     .then((response) => response.json())
-  //     .then((data) => setDropdownOptions(data))
-  //     .catch((error) => console.error("Error fetching data:", error));
-  // }, []);
-
-  // const handleDropdownChange = (e) => {
-  //   const selectedValue = e.target.value;
-  //   setSelectedOption(selectedValue);
-  // };
-
-
-    // const handleInputChange = (e) => {
-    //   const value = e.target.value;
-    //   setNewInheritance(value);
-
-    //   // Show the dropdown when the input field is not empty
-    //   setShowDropdown(value !== "");
-    // };
 
 
   const fetchData = async () => {
@@ -137,52 +160,6 @@ function Prototype() {
 
 
 
-  // const handleAddInheritanceClick = () => {
-  //   setAddInheritance(true); // Set addInheritance to true when the button is clicked
-  // };
-
-  // const handleSaveInheritance = async () => {
-  //   try {
-  //     var fullPath = "";
-  //     if (groupName == "core") {
-  //       fullPath = "butterfly" + "/" + groupName + "/" + prototypeName;
-  //     } else {
-  //       fullPath = groupName + "/" + prototypeName;
-  //     }      
-      
-  //     const response = await fetch(`http://localhost:8080/updateInheritance?prototypePath=/${fullPath}&inheritedPrototypes=${newInheritance}`);
-
-  //     if (!response.ok) {
-  //       console.error('Error updating inheritance');
-  //       return;
-  //     }
-  
-  //     let responseData;
-
-  //     const cloneResponse = response.clone(); // Clone the response object
-
-  //     try {
-  //       responseData = await cloneResponse.json(); // Attempt to parse JSON data
-  //     } catch (error) {
-  //       responseData = await response.text(); // Get the plain text response
-  //     }
-
-  //     if (responseData == "Updated") {
-  //       alert("Prototype updated successfully!")
-  //     } else {
-  //       alert("This prototype does not exist or they are already inherited.")
-  //     }
-
-     
-
-  //     setAddInheritance(false);
-  //     setNewInheritance('');
-  //     fetchData();
-      
-  //   } catch (error) {
-  //     console.error('API call error:', error);
-  //   }
-  // };
 
   useEffect(() => {
     fetchData();
@@ -192,12 +169,17 @@ function Prototype() {
     return <Link to={"/"}></Link>;
   }
 
+  console.log(dropdownOptions);
+
+ 
 
 
   return (
     <div>
-      <SideMenu />
       <div className="main-content">
+
+      <SideMenu></SideMenu>
+
         <div className="prototype-container">
           <button onClick={() => navigation("/")} className="back-button">Back</button> 
           <h2 className="header">{prototypeInfo.id.replace(/([A-Z])/g, ' $1')}</h2>
@@ -205,8 +187,16 @@ function Prototype() {
             <h3 className="subsubheader">Prototype information</h3>
             <p className="info-prototypes">
               <p><span>ID:</span> {prototypeInfo.id}</p>
-              <p><span>Abstract:</span> {prototypeInfo.isAbstract.toString()}</p>
+                        
               <p><span>Number of Fields:</span> {prototypeInfo.numOfFields}</p>
+              <p>
+                <span >Abstract:</span> 
+                {prototypeInfo.isAbstract ? (
+                  < CheckIcon style={{ color: 'gray', marginLeft : "7px", size : "small", fontSize: "20" }} />
+                  ) : (
+                  < CloseIcon style={{ color: 'gray', marginLeft : "7px", size : "small", fontSize: "20" }} />
+                )}
+              </p> 
             </p>
           </div>
   
@@ -214,14 +204,17 @@ function Prototype() {
           <div className="inheritance-section">
             <h3 className="subsubheader">Inheritance</h3>
             <p className="inherited-prototypes">
-              <span>Inherited Prototypes:</span> {prototypeInfo.inheritedPrototypes.join(', ')}
+                {prototypeInfo.inheritedPrototypes.length > 0 ? (
+                    <div><span>Inherited Prototypes:</span> {prototypeInfo.inheritedPrototypes.join(', ')}</div> 
+              ) : ( <p className='alt-text'>This prototype has no inherited prototypes.</p>)}
+              
             </p>
-            <p className="all-inherited-prototypes">
+            {/* <p className="all-inherited-prototypes">
               <span>All Inherited Prototypes:</span> {prototypeInfo.allInheritedPrototypes.join(', ')}
-            </p>
+            </p> */}
             {showDropdown ? (
               <div className="add-inheritance-input">
-                <select
+                {/* <select
                   id="inheritedPrototype"
                   className="select-dropdown"
                   value={selectedOption}
@@ -233,92 +226,175 @@ function Prototype() {
                       {option}
                     </option>
                   ))}
-                </select>
+                </select> */}
+
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  size="medium"
+                  options={dropdownOptions}
+                  classes={{ option: classes.option}}
+                  sx={{
+                    borderRadius: '8px',
+                    margin: '5px',
+                    marginLeft: '0px',
+                    width: '300px',                                     
+                  }}
+                renderInput={(params) => <TextField {...params} label="Select prototype"  id="standard-basic" variant="standard" 
+
+        
+
+                />}
+                />
+
+       
+
                 <button className="save-button" onClick={handleSaveInheritance}>Save</button>
                 <button className="cancel-button" onClick={handleCancel}>Cancel</button>
 
               </div>
             ) : (
-              <button className="add-button" onClick={handleAddInheritanceClick}>
+              <button className="add-inheritance-button" onClick={handleAddInheritanceClick}>
                 Add Inherited Prototype
               </button>
             )}
         </div>
+
+        
         
           <div className="subheader">Fields</div>
-          <ul className="fields-list">
-            {prototypeInfo.fields.map((field, index) => (
-              <li key={index} className="field-item">
-                <p><span>Field ID:</span> {field.id}</p>
-                <p><span>Field Type:</span> {field.attributeType}</p>
-                {field.constraints && (
-                  <p><span>Constraints:</span> {field.constraints}</p>
-                )}
-                {field.alias && (
-                  <p><span>Alias:</span> {field.alias}</p>
-                )}
-              </li>
-            ))}
-          </ul>
+          {prototypeInfo.inheritedPrototypes.length > 0 ? (
+           <ul className="fields-list">
+           {prototypeInfo.fields.map((field, index) => (
+             <li key={index} className="field-item">
+               <p><span>Field ID:</span> {field.id}</p>
+               <p><span>Field Type:</span> {field.attributeType}</p>
+               {field.constraints && (
+                 <p><span>Constraints:</span> {field.constraints}</p>
+               )}
+               {field.alias && (
+                 <p><span>Alias:</span> {field.alias}</p>
+               )}
+             </li>
+           ))}
+         </ul>
+          ) : ( <p className='alt-text'>This prototype has no fields.</p>)}
+
+         
           {!isFormVisible && (
             <button className="add-field-button" onClick={handleToggleForm}>
               Add Field
             </button>
           )}
           {isFormVisible && (
-            <div className="add-field-form">
-              <h3>Add New Field</h3>
-              <div className="field-input">
-                <label>ID</label>
-                <input
-                  type="text"
-                  value={newFieldInfo.id}
-                  onChange={(e) =>
-                    setNewFieldInfo({ ...newFieldInfo, id: e.target.value })
-                  }
-                />
-              </div>
-              <div className="field-input">
-                <label>Field Group ID</label>
-                <input
-                  type="text"
-                  value={newFieldInfo.fgId}
-                  onChange={(e) =>
-                    setNewFieldInfo({ ...newFieldInfo, fgId: e.target.value })
-                  }
-                />
-              </div>
-              <div className="field-input">
-                <label>Constraint</label>
-                <input
-                  type="text"
-                  value={newFieldInfo.constraint}
-                  onChange={(e) =>
-                    setNewFieldInfo({ ...newFieldInfo, constraint: e.target.value })
-                  }
-                />
-              </div>
-              <div className="field-input">
-                <label>Default Value</label>
-                <input
-                  type="text"
-                  value={newFieldInfo.defaultValue}
-                  onChange={(e) =>
-                    setNewFieldInfo({ ...newFieldInfo, defaultValue: e.target.value })
-                  }
-                />
-              </div>
-              <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }}/>} label="Value Type" />
-              <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }}/>} label="Trans" />
-              <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }}/>} label="Array" />
-              <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }}/>} label="Map" />
-              <button className="save-field-button" onClick={handleAddField}>
-                Save
-              </button>
-              <button className="cancel-field-button" onClick={handleToggleForm}>
-                Cancel
-              </button>
+            <div>
+              <Card sx={{ width: '50%', marginTop:"20px" }}>
+                <CardContent>
+                  <h3 className='subsubheader'>Add New Field</h3>
+              
+                  <Stack spacing={1.5}>
+
+                    <TextField
+                      required
+                      id="standard-required"
+                      label="ID"
+                      defaultValue=""
+                      variant="standard"
+                      type="text"
+                      sx = {{ width : "70%"}}
+                      value={newFieldInfo.id}
+                      onChange={(e) =>
+                        setNewFieldInfo({ ...newFieldInfo, id: e.target.value })
+                      }
+                    />
+                  
+
+                    <TextField
+                      required
+                      id="standard-required"
+                      label="Field Group ID"
+                      defaultValue=""
+                      variant="standard"
+                      type="text"
+                      sx = {{ width : "70%"}}
+                      value={newFieldInfo.fgId}
+                      onChange={(e) =>
+                        setNewFieldInfo({ ...newFieldInfo, fgId: e.target.value })
+                      }
+                    />
+
+                    <TextField
+                      required
+                      id="standard-required"
+                      label="Constraint"
+                      defaultValue=""
+                      sx = {{ width : "70%"}}
+                      variant="standard"
+                      type="text"
+                      value={newFieldInfo.constraint}
+                      onChange={(e) =>
+                        setNewFieldInfo({ ...newFieldInfo, constraint: e.target.value })
+                      }
+                    />
+
+                    <TextField
+                      required
+                      id="standard-required"
+                      label="Default Value"
+                      defaultValue=""
+                      sx = {{ width : "70%"}}
+                      variant="standard"
+                      type="text"
+                      value={newFieldInfo.defaultValue}
+                      onChange={(e) =>
+                        setNewFieldInfo({ ...newFieldInfo, defaultValue: e.target.value })
+                      }
+                    />
+
+
+                <FormControl sx={{ m: 4}} component="fieldset" variant="standard">
+                      <FormGroup sx={{marginTop: "10px"}}>
+                        <FormControlLabel
+                          control={
+                            <Checkbox name="valueType" color="default" size="small" />
+                          }
+                          label="Value Type"
+                        />
+                        <FormControlLabel
+                          control={
+                            <Checkbox  name="trans" color="default" size="small" />
+                          }
+                          label="Trans"
+                        />
+                        <FormControlLabel
+                          control={
+                            <Checkbox name="array" color="default" size="small" />
+                          }
+                          label="Array"
+                        />
+
+                        <FormControlLabel
+                          control={
+                            <Checkbox name="map" color="default" size="small" />
+                          }
+                          label="Map"
+                        />
+                      </FormGroup>
+                  </FormControl>
+              
+                  <span>
+                    <button className="save-field-button" onClick={handleAddField} >
+                      Save
+                    </button>
+                    <button className="cancel-field-button" onClick={handleToggleForm}>
+                      Cancel
+                    </button>
+                  </span>
+                  </Stack>
+                </CardContent>
+              </Card>
             </div>
+
           )}
         </div>
       </div>

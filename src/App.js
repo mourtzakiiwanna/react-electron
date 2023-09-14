@@ -5,11 +5,13 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './Home'; // Import the Home component
 import './css/App.css';
 import Prototype from "./Prototype";
+import Local from "./LocalPrototypes";
 import { ValueContextProvider } from './ValueContext'; // Import your ValueContextProvider
 import AddNamePage from './AddNamePage';
 import AddInheritancePage from './AddInheritancePage';
 import AddFieldsPage from './AddFieldsPage';
 import AddSchemePage from './AddSchemePage';
+import Typography from '@mui/material/Typography';
 
 // Check if the code is running in Electron
 const isElectron = window.require && window.require('@electron/remote');
@@ -68,13 +70,19 @@ function App() {
     <Router>
       <div>
         <div>
-        <Link to="/">
-          <h1 className="pageHeader">Prototypes</h1>
-          </Link>
+        <Link to="/" className='link'>
+        <Typography variant="h3" gutterBottom className='pageHeader' 
+          sx ={{margin: '120px', marginBottom:'50px', textDecoration:'none', fontWeight: 'bold' ,letterSpacing: '2px', fontFamily:'Arial',
+          '&:hover': { color: '#9b9b9b', textDecoration:'none'}
+
+          }}>Digital Library</Typography>      
+              
+        </Link>
         </div>
         <ValueContextProvider>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/local" element ={<Local />} />
           <Route path="/prototype/:groupName/:prototypeName" element ={<Prototype />} />
           <Route path="/create" element={<AddNamePage />} />
           <Route path="/add-inheritance" element={<AddInheritancePage />} />

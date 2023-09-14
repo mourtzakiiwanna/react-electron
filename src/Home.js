@@ -61,6 +61,8 @@ function Home() {
             <div className="group-content">
               {groupData[index] && (
                 <div>
+                  <Link to="/local">All local prototypes</Link>
+
                   {groupData[index].map((prototype, valueIndex) => {
                     const formattedGroupName = group.name
                       .toLowerCase()

@@ -3,8 +3,9 @@
     justify-content: center;
     align-items: center;
     min-height: 50vh;
-    margin-right:150px;
-    margin-left:150px;
+    margin-right:180px;
+    margin-left:180px;
+    border-radius: 1%;
     background-color: #f3f3f3; /* Light gray background */
   }
   
@@ -49,7 +50,7 @@
   .next-button {
     padding: 7px 16px;
     background-color: #ffffff; /* Gray button color */
-    color: #535353;
+    color: #858585;
     border: 2px solid #535353;
     border-radius: 4px;
     cursor: pointer;
@@ -60,7 +61,15 @@
   }
   
   .next-button:hover {
-    background-color: #444;
+    background-color: #9b9b9b;
     color: white;
   }
   
+  
+.add-prototype-title {
+  font-size: 25px;
+  margin-top: 10px;
+  color: #868686;
+  font-weight: bold;
+  margin-bottom: 25px;
+}

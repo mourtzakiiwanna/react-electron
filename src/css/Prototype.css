@@ -1,13 +1,12 @@
 .prototype-container {
-    margin: auto;
-    width: 70%; /* Adjust as needed */
-    margin-top: 40px;
-    padding: 40px;
-    background-color: white;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Light shadow effect */
-    border-radius: 8px;
-  }
-
+  margin: auto;
+  width: 70%;
+  margin-top: 40px;
+  padding: 40px;
+  background-color: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
 
   
   /* Header styles */
@@ -171,7 +170,7 @@
 
 .add-inheritance-input {
   display: flex;
-  width: 40%;
+  width: 100%;
   align-items: center;
   margin-top: 10px;
 }
@@ -179,46 +178,30 @@
 .add-inheritance-input input {
   flex-grow: 1;
   padding: 8px;
-  border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
 }
 
-.add-inheritance-input button {
-  margin-left: 10px;
-  padding: 6px 12px;
-  background-color: #555; /* Gray button color */
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
-}
 
-.add-inheritance-input button:hover {
-  background-color: #444;
-}
 
 
 .add-field-button {
   display: inline-block;
-  padding: 8px 16px;
-  background-color: #ffffff; /* Gray button color */
-  color: gray;
-  border: 2px solid gray;
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  color: black;
+  border: 2px solid rgb(219, 219, 219);
   font-weight: bold;
   border-radius: 4px;
   cursor: pointer;
-  margin-top: 10px;
+  margin-top: 20px;
   margin-bottom: 10px;
-  font-size: 14px;
+  font-size: 13px;
   transition: background-color 0.3s;
 }
 
 .add-field-button:hover {
-  background-color: #a1a1a1;
-  color: white;
+  background-color: #c2c2c2;
 }
 
 .add-field-form {
@@ -252,23 +235,7 @@
   font-size: 14px;
 }
 
-.add-field-form button {
-  padding: 8px 12px;
-  background-color: #555; /* Gray button color */
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  margin-top: 10px;
-}
 
-.add-field-form button.cancel-field-button {
-  background-color: #ccc; /* Light gray button color */
-  margin-top: 20px;
-  color: #333;
-  margin-left: 10px;
-}
 
 /* Prototype.css */
 
@@ -304,75 +271,104 @@
   display: flex;
   align-items: center;
   margin-top: 10px;
+  padding: 0%;
 }
 
-.select-dropdown {
-  width: 300px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #f7f7f7;
-  font-size: 0.95rem;
-  outline: none;
+
+
+
+.add-inheritance-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  color: black;
+  border: 2px solid rgb(219, 219, 219);
+  border-radius: 4px;
   cursor: pointer;
-  transition: border-color 0.3s ease, background-color 0.3s ease;
-  -webkit-appearance: none; /* Remove default arrow on WebKit (Safari, Chrome) */
-  -moz-appearance: none; /* Remove default arrow on Mozilla Firefox */
-  appearance: none; /* Remove default arrow on most modern browsers */
-  background-image: none;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  transition: background-color 0.3s;
 }
 
-.select-dropdown:hover,
-.select-dropdown:focus {
-  border-color: #949494;
-  background-color: #fff;
+.add-inheritance-button:hover {
+  background-color: #c2c2c2;
+  color: black;
 }
 
-.option {
-  background-color: #ff0000; /* Set the background color for options */
-  color: #440909; /* Set the text color for options */
-  padding: 10px; /* Add some padding for better readability */
-  transition: background-color 0.3s ease, color 0.3s ease; 
-}
-
-.select-dropdown option {
-  background-color: #f7f7f7; /* Set the background color for options */
-  color: #333; /* Set the text color for options */
-  padding: 10px; /* Add some padding for better readability */
-  transition: background-color 0.3s ease, color 0.3s ease; 
-}
-
-.save-button,
-.add-button {
-  background-color: #868686;
+.save-button {
+  background-color: #b3b3b3;
   color: #fff;
   border: none;
   border-radius: 5px;
-  padding: 10px 20px;
+  padding: 8px 15px;
   cursor: pointer;
   font-size: 1rem;
+  margin-left: 10px;
   transition: background-color 0.3s ease;
 }
 
-.save-button:hover,
-.add-button:hover {
+.save-button:hover {
   background-color: #8b8b8b;
 }
 
 .cancel-button {
-  background-color: #f44336; /* Red color for cancel button */
-  color: #fff;
+  color: #777777;
   border: none;
-  border-radius: 5px;
   padding: 10px 20px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.9rem;
+  text-decoration: underline;
   transition: background-color 0.3s ease;
+  background: none;
 }
 
 .cancel-button:hover {
-  background-color: #d32f2f; /* Darker red color on hover */
+  color: #484848;
+}
+
+.cancel-field-button {
+  color: #777777;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-decoration: underline;
+  transition: background-color 0.3s ease;
+  background: none;
+  width: 80px;
+
+}
+
+.cancel-field-button:hover {
+  color: #484848;
+}
+
+.save-field-button {
+  background-color: #b3b3b3;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 18px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  width: 80px;
+  margin-top: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.save-field-button:hover {
+  background-color: #8b8b8b;
+}
+
+.dropdown {
+  font-size: large;
 }
 
 
+.alt-text {
+  font-style: italic;
+  font-size: 15px;
+  color: rgba(128, 128, 128, 0.747);
+}
 
