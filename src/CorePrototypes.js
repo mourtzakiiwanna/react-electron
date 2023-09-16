@@ -4,8 +4,9 @@ import { Link } from 'react-router-dom'; // Import the Link component
 import SideMenu from './SideMenu';
 import { useParams, useNavigate } from 'react-router-dom';
 
-function LocalPrototypes() {
-  const [localData, setLocalData] = useState([]);
+
+function CorePrototypes() {
+  const [coreData, setcoreData] = useState([]);
   const navigation = useNavigate();
 
   useEffect(() => {
@@ -13,13 +14,13 @@ function LocalPrototypes() {
   }, []);
 
   const fetchData = () => {
-    fetch('http://localhost:8080/getLocal')
+    fetch('http://localhost:8080/getCore')
       .then((response) => response.json())
       .then((data) => {
-        setLocalData(data);
+        setcoreData(data);
       })
       .catch((error) => {
-        console.error('Error fetching local data:', error);
+        console.error('Error fetching core data:', error);
       });
   };
 
@@ -28,20 +29,19 @@ function LocalPrototypes() {
       
       <SideMenu/>
       <div className='main-container'>
-      <button onClick={() => navigation("/")} className="back-button">Back</button> 
+        <button onClick={() => navigation("/")} className="back-button">Back</button> 
 
-        <h1 className='header'>Local Prototypes</h1>
-
-        {localData.map((item) => (
-          <Link to={`/prototype/local/${item}`} key={item} className="local-card">
-            
-              {item}
-        
-          </Link>
-        ))}
+        <h1 className='header'>Core Prototypes</h1>
+          {coreData.map((item) => (
+            <Link to={`/prototype/core/${item}`} key={item} className="local-card">
+              
+                {item}
+          
+            </Link>
+          ))}
       </div>
     </div>
   );
 }
 
-export default LocalPrototypes;
+export default CorePrototypes;

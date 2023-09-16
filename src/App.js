@@ -6,6 +6,9 @@ import Home from './Home'; // Import the Home component
 import './css/App.css';
 import Prototype from "./Prototype";
 import Local from "./LocalPrototypes";
+import Core from "./CorePrototypes";
+import SideMenu from "./SideMenu";
+
 import { ValueContextProvider } from './ValueContext'; // Import your ValueContextProvider
 import AddNamePage from './AddNamePage';
 import AddInheritancePage from './AddInheritancePage';
@@ -73,7 +76,7 @@ function App() {
         <Link to="/" className='link'>
         <Typography variant="h3" gutterBottom className='pageHeader' 
           sx ={{margin: '120px', marginBottom:'50px', textDecoration:'none', fontWeight: 'bold' ,letterSpacing: '2px', fontFamily:'Arial',
-          '&:hover': { color: '#9b9b9b', textDecoration:'none'}
+          '&:hover': { color: 'gray', textDecoration:'none'}
 
           }}>Digital Library</Typography>      
               
@@ -81,8 +84,9 @@ function App() {
         </div>
         <ValueContextProvider>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<SideMenu />} />
           <Route path="/local" element ={<Local />} />
+          <Route path="/core" element ={<Core />} />
           <Route path="/prototype/:groupName/:prototypeName" element ={<Prototype />} />
           <Route path="/create" element={<AddNamePage />} />
           <Route path="/add-inheritance" element={<AddInheritancePage />} />

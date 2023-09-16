@@ -2,13 +2,25 @@
 
 /* Style for the main container */
 .local-page {
-    margin: 20px; /* Adjust margin as needed */
+    margin: 20px; 
     padding: 20px;
     background-color: #f0f0f0; /* Background color for the page */
   }
+
+  .main-container {
+    margin: auto;
+    width: 40%;
+    margin-top: 40px;
+    padding: 40px;
+    background-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
   
   /* Style for the heading */
   .local-page h1 {
+    margin-top: 20px;
     font-size: 25px;
     color: rgb(105, 105, 105);
     font-weight: bold;
@@ -23,7 +35,7 @@
 .local-card {
     display: block;
     margin: 20px auto; /* Add margin to create space between items */
-    width: 30%;
+    width: 100%;
     padding: 10px;
     background-color: white;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Light shadow effect */
@@ -50,3 +62,32 @@
 
   }
   
+  .back-button {
+    background-color: #c9c9c9; /* Button background color */
+    color: #fff; /* Text color */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 10px 16px; /* Padding around the text */
+    cursor: pointer; /* Show pointer cursor on hover */
+    font-size: 14px;
+     /* Font size */
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
+    align-self: flex-start;
+  }
+  
+    /* Add hover effect */
+    .back-button:hover {
+      background-color: #a1a1a1;
+      color: white;
+      border: none;
+      text-decoration: none;
+    }
+  
+    .header {
+        font-size: 27px;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 40px;
+        margin-bottom: 40px;
+    
+      }

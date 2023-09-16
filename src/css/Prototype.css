@@ -22,12 +22,13 @@
   }
   
   /* Field item */
-  ul li {
-    background-color: #f7f7f7;;
-    border-radius: 5px;
+  .field-section {
+    margin-top: 20px;
+    margin-bottom: 40px;
     padding: 20px;
-    margin-bottom: 30px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1);
   }
   
    /* Field item */
@@ -40,7 +41,7 @@
   /* Field labels */
   p {
     margin: 0;
-    font-size: 16px;
+    font-size: 15px;
   }
   
   span {
@@ -67,17 +68,78 @@
     padding: 20px;
     background-color: #fff;
     border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1);
   }
   
   /* Inherited prototypes and all inherited prototypes */
   .inherited-prototypes,
-  .all-inherited-prototypes {
+  .all-inherited-prototypes, .fields-data {
     margin: 0;
-    font-size: 16px;
+    font-size: 15px;
     margin-top: 5px;
     margin-bottom: 5px;
   }
+
+  .add-inheritance-input {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .select-dropdown {
+    width: 300px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f7f7f7;
+    font-size: 0.95rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    -webkit-appearance: none; /* Remove default arrow on WebKit (Safari, Chrome) */
+    -moz-appearance: none; /* Remove default arrow on Mozilla Firefox */
+    appearance: none; /* Remove default arrow on most modern browsers */
+    background-image: none;
+  }
+  
+  .select-dropdown:hover,
+  .select-dropdown:focus {
+    border-color: #949494;
+    background-color: #fff;
+  }
+  
+  .option {
+    background-color: #ff0000; /* Set the background color for options */
+    color: #440909; /* Set the text color for options */
+    padding: 10px; /* Add some padding for better readability */
+    transition: background-color 0.3s ease, color 0.3s ease; 
+  }
+  
+  .select-dropdown option {
+    background-color: #f7f7f7; /* Set the background color for options */
+    color: #333; /* Set the text color for options */
+    padding: 10px; /* Add some padding for better readability */
+    transition: background-color 0.3s ease, color 0.3s ease; 
+  }
+  
+  .save-button,
+  .add-button {
+    background-color: #868686;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .save-button:hover,
+  .add-button:hover {
+    background-color: #8b8b8b;
+  }
+  
+  
   
   .inherited-prototypes span,
   .all-inherited-prototypes span {
@@ -99,13 +161,13 @@
         padding: 20px;
         background-color: #fff;
         border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1);
       }   
       
 /* Inherited prototypes and all inherited prototypes */
       .info-prototypes {
         margin: 0;
-        font-size: 16px;
+        font-size: 15px;
         margin-top: 10px;
 
       }    
@@ -129,6 +191,8 @@
     text-align: center;
     margin-top: 40px;
     margin-bottom: 40px;
+    color: darkgray;
+
 
   }
   
@@ -185,7 +249,7 @@
 
 
 
-.add-field-button {
+.add-field-button, .add-inheritance-button{
   display: inline-block;
   padding: 10px 20px;
   background-color: #f0f0f0;
@@ -200,13 +264,15 @@
   transition: background-color 0.3s;
 }
 
-.add-field-button:hover {
+.add-field-button:hover, .add-inheritance-button:hover{
   background-color: #c2c2c2;
 }
 
 .add-field-form {
   border: 1px solid #ccc;
   padding: 20px;
+  width: 50%;
+
   border-radius: 8px;
   margin-top: 20px;
 }
@@ -219,21 +285,11 @@
   margin-bottom: 20px;
 }
 
-.add-field-form label {
-  font-size: 14px;
-  display: block;
-  margin-bottom: 5px;
-  margin-top: 15px;
-  color: #333;
+.add-new-field {
+  margin: 10px;
 }
 
-.add-field-form input {
-  width: 50%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-}
+
 
 
 
@@ -245,9 +301,10 @@
   color: #fff; /* Text color */
   border: none; /* Remove border */
   border-radius: 4px; /* Rounded corners */
-  padding: 10px 20px; /* Padding around the text */
+  padding: 10px 16px; /* Padding around the text */
   cursor: pointer; /* Show pointer cursor on hover */
-  font-size: 16px; /* Font size */
+  font-size: 14px;
+   /* Font size */
   transition: background-color 0.3s ease; /* Smooth transition for background color */
   align-self: flex-start;
 }
@@ -301,9 +358,9 @@
   color: #fff;
   border: none;
   border-radius: 5px;
-  padding: 8px 15px;
+  padding: 8px 12px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: .9rem;
   margin-left: 10px;
   transition: background-color 0.3s ease;
 }
@@ -317,7 +374,7 @@
   border: none;
   padding: 10px 20px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   text-decoration: underline;
   transition: background-color 0.3s ease;
   background: none;
@@ -353,7 +410,9 @@
   cursor: pointer;
   font-size: 0.9rem;
   width: 80px;
-  margin-top: 15px;
+  margin: 10px;
+  margin-top: 20px;
+
   transition: background-color 0.3s ease;
 }
 

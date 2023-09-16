@@ -96,11 +96,19 @@ body {
   margin-bottom: 8px;
 }
 
-.card-content {
-  font-size: 15px;
+.card-details {
+  background-color: #f4f4f4;
   margin: 8px;
+  font-size: 15px;
   color: black;
   font-weight: bold;
+}
+
+
+.link-card:hover .card-details {
+
+  color: gray;
+  text-decoration: none !important;
 }
 
 
@@ -247,3 +255,4 @@ body {
 .link:hover {
   text-decoration: none;
 }
+  

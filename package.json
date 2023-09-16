@@ -11,6 +11,8 @@
     "@mui/icons-material": "^5.14.7",
     "@mui/lab": "^5.0.0-alpha.142",
     "@mui/material": "^5.14.8",
+    "@mui/x-data-grid": "^6.13.0",
+    "@mui/x-data-grid-generator": "^6.13.0",
     "@mui/x-tree-view": "^6.0.0-alpha.2",
     "@reusejs/react-text-input": "^0.0.8",
     "@testing-library/jest-dom": "^5.11.4",

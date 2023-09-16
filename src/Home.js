@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './css/App.css';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import Box from '@mui/material/Stack';
 
 function Home() {
   const groups = [
@@ -57,27 +59,42 @@ function Home() {
           >
             {group.name}
           </div>
+        
           {expandedGroup === index && (
             <div className="group-content">
               {groupData[index] && (
-                <div>
-                  <Link to="/local">All local prototypes</Link>
 
+                <div>
+                    
+                  <Box sx={{ alignItems: 'flex-end', margin: '30px' }}>
+                    <span className="all-local">
+                    <Link to={`/${group.name.toLowerCase().replace(/\s+/g, '').replace("prototypes","")}` } className='all-local'>
+                        All {group.name.toLowerCase().replace(/\s+/g, '').replace("prototypes","")} prototypes
+                      </Link>
+                      <NavigateNextIcon />
+                    </span>
+                  </Box>
+  
                   {groupData[index].map((prototype, valueIndex) => {
                     const formattedGroupName = group.name
-                      .toLowerCase()
-                      .replace(/\s+/g, '')
-                      .replace('prototypes', '');
+                    .toLowerCase()
+                    .replace(/\s+/g, '')
+                    .replace('prototypes', '');
                     const fullPath = `/prototype/${formattedGroupName}/${prototype.unformattedName}`;
+  
                     return (
-                      <Link
-                        to={fullPath}
-                        key={`${index}-${valueIndex}`}
-                        className="card"
-                      >
-                        <div className="card-content">{prototype.formattedName}</div>
-                      </Link>
+                      <div className='card'>
+                        <Link
+                          to={fullPath}
+                          key={`${index}-${valueIndex}`}
+                          style={{ textDecoration: 'none', background: 'none' }}
+                          className='link-card' // Add a class to the Link component for targeting in CSS
+                        >
+                          <div className='card-details'>{prototype.formattedName}</div>
+                        </Link>
+                      </div>
                     );
+                    
                   })}
                 </div>
               )}
@@ -87,6 +104,7 @@ function Home() {
       ))}
     </div>
   );
+  
 }
 
 export default Home;

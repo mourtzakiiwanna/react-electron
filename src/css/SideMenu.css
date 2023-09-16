@@ -80,3 +80,11 @@
   /* Default styles for larger screens */
 
 
+  .all-local{
+    color:black;
+  }
+
+  .all-local:hover{
+    text-decoration: none;
+    color: #777;
+  }
