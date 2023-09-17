@@ -22,7 +22,19 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-
+import Select from '@mui/material/Select';
+import { useTheme } from '@mui/material/styles';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import { makeStyles } from '@mui/styles';
+import { SxProps } from '@mui/material/styles';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 import {
   GridRowModes,
@@ -39,11 +51,35 @@ import {
 } from '@mui/x-data-grid-generator';
 
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-function Prototype() {
+
+
+function Prototype(props) {
+  let fID = 0;
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = (id) => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
 
   const navigation = useNavigate();
   const { groupName, prototypeName } = useParams();
   const [prototypeInfo, setPrototypeInfo] = useState();
+  const [selectedFIeldID, setSelectedFIeldID] = useState();
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [newFieldInfo, setNewFieldInfo] = useState({
     id: '',
@@ -75,7 +111,7 @@ function Prototype() {
 
       // Map prototypeInfo fields to initialRows
       const mappedFields = data.fields.map((field) => ({
-        id: randomId(),
+        id: fID++,
         fieldId: field.id,
         attributeType: field.attributeType,
         constraints: field.constraints || '',
@@ -95,6 +131,7 @@ function Prototype() {
   };
 
 
+  const theme = useTheme();
 
 
 
@@ -125,17 +162,116 @@ function Prototype() {
 
 
   const columns = [
-    { field: 'fieldId', headerName: 'Field ID', width: 250, editable: true ,headerClassName: 'super-app-theme--header'  },
-    { field: 'attributeType', headerName: 'Attribute Type', width: 250, editable: true,  headerClassName: 'super-app-theme--header'},
-    { field: 'constraints', headerName: 'Constraints', width: 250, editable: true, headerClassName: 'super-app-theme--header'},
-    { field: 'alias', headerName: 'Alias', width: 250, editable: true, headerClassName: 'super-app-theme--header'},
+    { field: 'fieldId', headerName: 'Field ID', width: 200, editable: true ,headerClassName: 'super-app-theme--header'  },
+    { field: 'attributeType', headerName: 'Attribute Type', width: 200, editable: true,  headerClassName: 'super-app-theme--header'},
+    { field: 'constraints', headerName: 'Constraints', width: 200, editable: true, headerClassName: 'super-app-theme--header'},
+    { field: 'alias', headerName: 'Alias', width: 200, editable: true, headerClassName: 'super-app-theme--header'},
+    {
+      field: 'actions',
+      type: 'actions',
+      headerName: '',
+      width: 200,
+      cellClassName: 'actions',
+      getActions: ({ id }) => {
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+        setSelectedFIeldID(id);
 
+        if (isInEditMode) {
+          return [
+            <GridActionsCellItem
+              icon={<SaveIcon />}
+              label="Save"
+              sx={{
+                color: 'primary.main',
+              }}
+              onClick={handleSaveClick(id)}
+            />,
+            <GridActionsCellItem
+              icon={<CancelIcon />}
+              label="Cancel"
+              className="textPrimary"
+              onClick={handleCancelClick(id)}
+              color="inherit"
+            />,
+          ];
+        }
+
+        return [
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label=""
+            size = 'small'
+            className="textPrimary"
+            onClick={handleEditClick(id)}
+            color="inherit"
+          />,
+      
+        ];
+      },
+    },
   ];
+
 
   const [dropdownOptions, setDropdownOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
 
+  const [rows, setRows] = React.useState(initialRows);
+  console.log(initialRows);
+  const [rowModesModel, setRowModesModel] = React.useState({});
+
+  const handleRowEditStop = (params, event) => {
+    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+      event.defaultMuiPrevented = true;
+    }
+  };
+
+  const handleEditClick = (id) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  };
+
+  const handleSaveClick = (id) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+  };
+
+  const handleDelete = (id) => () => {
+    console.log("clicked");
+    // setOpen(false);
+    console.log(id);
+    setRows(rows.filter((row) => row.id !== id));
+  };
+
+  const handleCancelClick = (id) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+
+    const editedRow = rows.find((row) => row.id === id);
+    if (editedRow.isNew) {
+      setRows(rows.filter((row) => row.id !== id));
+    }
+  };
+
+  const processRowUpdate = (newRow) => {
+    const updatedRow = { ...newRow, isNew: false };
+    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+    return updatedRow;
+  };
+
+  const handleRowModesModelChange = (newRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
+ 
+
+  useEffect(() => {
+    setShowDropdown(false);
+    setIsFormVisible(false); // Reset form visibility
+    setAddInheritance(false); // Reset add inheritance flag
+    setNewInheritance(''); // Reset new inheritance value
+    fetchData(); // Fetch data for the new prototype
+  }, [prototypeName, groupName]);
+  
   useEffect(() => {
     let groupUrl = "";
     if (groupName === "local") {
@@ -149,7 +285,7 @@ function Prototype() {
       .then((response) => response.json())
       .then((data) => setDropdownOptions(data))
       .catch((error) => console.error("Error fetching data:", error));
-  }, []);
+  }, [prototypeName, groupName]);
 
   const handleDropdownChange = (e) => {
     const selectedValue = e.target.value;
@@ -157,18 +293,17 @@ function Prototype() {
   };
 
   const handleAddInheritanceClick = () => {
+    setSelectedOption(null);
     setShowDropdown(true);
   };
 
   const handleSaveInheritance = () => {
-    // Handle saving the selected inheritance here
-    // You can use the value in 'selectedOption'
-    // For example, send it to your server or update state
-    setShowDropdown(false); // Hide the dropdown after saving
+    setShowDropdown(false);
   };
 
   const handleCancel = () => {
     setShowDropdown(false);
+
   };
 
  
@@ -181,11 +316,10 @@ function Prototype() {
     return <Link to={"/"}></Link>;
   }
 
-  
   return (
     
     <div>
-      <SideMenu />
+      <SideMenu currentGroup={groupName} currentPrototype={prototypeName} />
       <div className="main-content">
 
       <div className="prototype-container">
@@ -211,20 +345,35 @@ function Prototype() {
               <span>All Inherited Prototypes:</span> {prototypeInfo.allInheritedPrototypes.join(', ')}
             </p>
             {showDropdown ? (
-              <div className="add-inheritance-input">
-                <select
-                  id="inheritedPrototype"
-                  className="select-dropdown"
+              <div className = "dropdown-section">
+                <FormControl
+                  sx={{width: 400}}>
+                <InputLabel id="inherited-label"  sx = {{fontSize: 14}}>Inherited Prototype</InputLabel>
+
+                <Select
                   value={selectedOption}
                   onChange={handleDropdownChange}
+                  MenuProps={MenuProps}
+                  labelId="inherited-label"
+                  id="inherited"
+                  sx={{ boxShadow: 'none', fontSize:15 }}
+                  input={<OutlinedInput label="Inherited Prototype" 
+                  />}
+
                 >
-              <option value="" disabled >Select an inherited prototype</option>                  
+          
               {dropdownOptions.map((option) => (
-                    <option key={option} value={option} className="option">
-                      {option}
-                    </option>
-                  ))}
-                </select>
+                  <MenuItem
+                  key={option}
+                  value={option}
+                  sx = {{fontSize: 14}}
+                >
+                   {option}
+                </MenuItem>
+                ))}
+                   
+                </Select>
+                </FormControl>
                 <button className="save-button" onClick={handleSaveInheritance}>Save</button>
                 <button className="cancel-button" onClick={handleCancel}>Cancel</button>
 
@@ -273,10 +422,40 @@ function Prototype() {
               <DataGrid
                 rows={initialRows}
                 columns={columns}
+                className = "fields-data"   
                 editMode="row"
-                className = "fields-data"            
+                rowModesModel={rowModesModel}
+                onRowModesModelChange={handleRowModesModelChange}
+                onRowEditStop={handleRowEditStop}
+                processRowUpdate={processRowUpdate}
+                slotProps={{
+                  toolbar: { setRows, setRowModesModel },
+                }}       
               />
+
             </Box>
+
+            <Dialog
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">
+                {"Delete Confirmation"}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  You are going to delete this prototype. Are you sure?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose}>CANCEL</Button>
+                <Button onClick={handleDelete} autoFocus>
+                DELETE
+                </Button>
+              </DialogActions>
+            </Dialog>
 
 
         {!isFormVisible && (

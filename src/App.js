@@ -84,7 +84,7 @@ function App() {
         </div>
         <ValueContextProvider>
         <Routes>
-          <Route path="/" element={<SideMenu />} />
+          <Route path="/" element={<Home />} />
           <Route path="/local" element ={<Local />} />
           <Route path="/core" element ={<Core />} />
           <Route path="/prototype/:groupName/:prototypeName" element ={<Prototype />} />

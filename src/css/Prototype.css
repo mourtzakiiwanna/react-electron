@@ -56,7 +56,7 @@
   /* Inherited prototypes list */
   .inherited-list {
     margin-top: 15px;
-    font-size: 14px;
+    font-size: 15px;
     color: #777;
   }
   
@@ -108,18 +108,16 @@
     background-color: #fff;
   }
   
-  .option {
-    background-color: #ff0000; /* Set the background color for options */
-    color: #440909; /* Set the text color for options */
-    padding: 10px; /* Add some padding for better readability */
-    transition: background-color 0.3s ease, color 0.3s ease; 
+
+
+  .option:hover {
+    background-color: #c4c4c4; /* Set the background color for options */
+ 
   }
   
-  .select-dropdown option {
-    background-color: #f7f7f7; /* Set the background color for options */
-    color: #333; /* Set the text color for options */
-    padding: 10px; /* Add some padding for better readability */
-    transition: background-color 0.3s ease, color 0.3s ease; 
+  .option:hover{
+    background-color: #cacaca; /* Set the background color for options */
+
   }
   
   .save-button,
@@ -150,7 +148,7 @@
    /* Inherited prototypes list */
     .info-list {
         margin-top: 15px;
-        font-size: 14px;
+        font-size: 15px;
         color: #777;
       }
       
@@ -223,7 +221,7 @@
   cursor: pointer;
   margin-top: 10px;
   margin-bottom: 10px;
-  font-size: 14px;
+  font-size: 15px;
   transition: background-color 0.3s;
 }
 
@@ -232,19 +230,6 @@
   color: white;
 }
 
-.add-inheritance-input {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.add-inheritance-input input {
-  flex-grow: 1;
-  padding: 8px;
-  border-radius: 4px;
-  font-size: 14px;
-}
 
 
 
@@ -303,7 +288,7 @@
   border-radius: 4px; /* Rounded corners */
   padding: 10px 16px; /* Padding around the text */
   cursor: pointer; /* Show pointer cursor on hover */
-  font-size: 14px;
+  font-size: 15px;
    /* Font size */
   transition: background-color 0.3s ease; /* Smooth transition for background color */
   align-self: flex-start;
@@ -361,7 +346,8 @@
   padding: 8px 12px;
   cursor: pointer;
   font-size: .9rem;
-  margin-left: 10px;
+  margin-top: 5px;
+  margin-left: 15px;
   transition: background-color 0.3s ease;
 }
 
@@ -382,6 +368,10 @@
 
 .cancel-button:hover {
   color: #484848;
+}
+
+.dropdown-section{
+  margin-top: 20px;
 }
 
 .cancel-field-button {
