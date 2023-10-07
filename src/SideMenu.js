@@ -86,14 +86,14 @@ function SideMenu(props) {
               {groupData[groupIndex] && (
                 <div className="content-scroll">
                   <div>
-                  <Box sx={{ alignItems: 'flex-start', marginTop: '20px', marginBottom:'20px', marginLeft:'10px' }}>
+                  {/* <Box sx={{ alignItems: 'flex-start', marginTop: '20px', marginBottom:'20px', marginLeft:'10px' }}>
                     <span className="all-local">
                     <Link to={`/${group.name.toLowerCase().replace(/\s+/g, '').replace("prototypes","")}` } className='all-local'>
                         All {group.name.toLowerCase().replace(/\s+/g, '').replace("prototypes","")} prototypes
                       </Link>
                       <NavigateNextIcon />
                     </span>
-                  </Box>
+                  </Box> */}
                   {groupData[groupIndex].map((prototype, itemIndex) => {
                     const formattedGroupName = group.name
                       .toLowerCase()
@@ -111,9 +111,9 @@ function SideMenu(props) {
                       >
                          <div>
                         {prototype.unformattedName === currentPrototype ? (
-                          <strong>{prototype.formattedName}</strong>
+                          <strong>{prototype.unformattedName}</strong>
                         ) : (
-                          prototype.formattedName
+                          prototype.unformattedName
                         )}
                       </div>
                       </Link>

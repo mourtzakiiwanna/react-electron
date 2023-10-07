@@ -72,15 +72,16 @@ function AddNamePage() {
     <div>
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '50vh',
+          height: "100%",
+          display:"flex",
+          marginTop: "240px",
+          alignItems:"center",
+          justifyContent:"center",
            // Adjust padding for responsiveness
          
         }}
       >
-        <Card sx={{ width: '100%', maxWidth: '500px' }}>
+        <Card sx={{ width: '100%', maxWidth: '600px' }}>
           <CardContent sx={{ margin: '70px'}}>           
           <h3 className='add-prototype-title' >Add Prototype Name</h3>
 

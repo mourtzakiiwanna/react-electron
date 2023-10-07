@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './Home'; // Import the Home component
+import Home from './HomePage'; // Import the Home component
 import './css/App.css';
 import Prototype from "./Prototype";
 import Local from "./LocalPrototypes";
@@ -72,16 +72,7 @@ function App() {
   return (
     <Router>
       <div>
-        <div>
-        <Link to="/" className='link'>
-        <Typography variant="h3" gutterBottom className='pageHeader' 
-          sx ={{margin: '120px', marginBottom:'50px', textDecoration:'none', fontWeight: 'bold' ,letterSpacing: '2px', fontFamily:'Arial',
-          '&:hover': { color: 'gray', textDecoration:'none'}
-
-          }}>Digital Library</Typography>      
-              
-        </Link>
-        </div>
+       
         <ValueContextProvider>
         <Routes>
           <Route path="/" element={<Home />} />

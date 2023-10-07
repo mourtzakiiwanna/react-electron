@@ -1,11 +1,19 @@
 /* Styling for the Create Prototype page */
+.create-prototype-container{
+  margin-top: 100px;
+  background-color: #f42424;
+}
+
 .create-page {
     max-width: 600px;
-    margin: 0 auto;
     padding: 20px;
-    background-color: #f5f5f5;
+    background-color: #f42424;
     border-radius: 6px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    top: 50% !important;
+    left: 50%;
+    transform: translate(50%, 50%);
+
   }
   
   .create-page h2 {

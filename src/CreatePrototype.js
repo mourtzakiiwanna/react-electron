@@ -21,25 +21,27 @@ function CreatePrototype() {
   };
 
   return (
-    <div className="create-page">
-      <h2>Create New Prototype</h2>
-      <form onSubmit={handleSubmit}>
-        {/* Render your input fields for prototype info */}
-        <label className="create-label">
-          Prototype Name:
-          <input
-            type="text"
-            name="prototypeName"
-            value={prototypeInfo.prototypeName || ''}
-            onChange={handleFieldChange}
-            className="create-input"
-          />
-        </label>
-        {/* Add more input fields as needed */}
-        <button type="submit" className="create-button">
-          Save Prototype
-        </button>
-      </form>
+    <div className='create-prototype-container'>
+      <div className="create-page">
+        <h2>Create New Prototype</h2>
+        <form onSubmit={handleSubmit}>
+          {/* Render your input fields for prototype info */}
+          <label className="create-label">
+            Prototype Name:
+            <input
+              type="text"
+              name="prototypeName"
+              value={prototypeInfo.prototypeName || ''}
+              onChange={handleFieldChange}
+              className="create-input"
+            />
+          </label>
+          {/* Add more input fields as needed */}
+          <button type="submit" className="create-button">
+            Save Prototype
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

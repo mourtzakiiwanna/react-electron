@@ -1,15 +1,15 @@
 /* SideMenu.css */
 .side-menu {
   width: 20%;
-  height: 100%;
   position: fixed;
   margin-left: 30px;
-  margin-top: 60px;
-  left: 0;
   padding-left: 20px;
   color: gray;
   overflow-y: auto;
   transition: width 0.3s;
+  top: 50%;
+  left: 0;
+  transform: translate(0, -50%);
 }
   
   .category-name {

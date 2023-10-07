@@ -1,14 +1,55 @@
 .prototype-container {
-  margin: auto;
   width: 70%;
-  margin-top: 40px;
-  padding: 40px;
-  background-color: white;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  max-width: 70%;
+  padding-top: 0;
+  overflow-y: hidden;
+
+
 }
 
-  
+.sticky-header {
+  position: fixed;
+  width: 56%;
+  max-width:56%; 
+  top: 0;
+  z-index: 1;
+  background-color: #e7e7e7; 
+  box-shadow:none;
+  box-shadow:none;
+  height: 50px;
+
+}
+
+      
+.header-info-container {
+  display: flex;
+  justify-content: space-between; /* Equal distribution of space between children */
+  align-items: center; /* Vertical alignment */
+  border-radius: 5px;
+  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  margin-top: 10px;
+
+}      
+
+.info-section {
+  flex: 1; /* Take 50% of available space */
+  padding: 20px;     
+
+}
+
+  /* Field item */
+  .field-section {
+    margin-top: 310px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1);
+    margin-bottom: -30px;
+
+  }
+
+ 
   /* Header styles */
   h2 {
     margin-bottom: 15px;
@@ -21,15 +62,7 @@
     padding: 0;
   }
   
-  /* Field item */
-  .field-section {
-    margin-top: 20px;
-    margin-bottom: 40px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1);
-  }
+
   
    /* Field item */
    ul li p {
@@ -73,10 +106,10 @@
   
   /* Inherited prototypes and all inherited prototypes */
   .inherited-prototypes,
-  .all-inherited-prototypes, .fields-data {
+  .all-inherited-prototypes {
     margin: 0;
     font-size: 15px;
-    margin-top: 5px;
+    margin-top: 10px;
     margin-bottom: 5px;
   }
 
@@ -151,48 +184,17 @@
         font-size: 15px;
         color: #777;
       }
-      
-    
- /* Inheritance section */
-    .info-section {
-        margin-top: 30px;
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 5px;
-        box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1);
-      }   
-      
-/* Inherited prototypes and all inherited prototypes */
-      .info-prototypes {
-        margin: 0;
-        font-size: 15px;
-        margin-top: 10px;
 
-      }    
+.prototype-header {   
+  flex: 1; /* Take 50% of available space */
+  font-size: 28px;
+  font-weight: bold;      
+  text-align: center;    
+  color: darkgray;
+  margin-right: 10px; /* Add some spacing between header and info section */
+}
       
-      .info-prototypes p {
-        margin-top: 5px;
-        margin-bottom: 5px;
-      }
-      
-      .info-prototypes span {
-        font-weight: bold;
-        color: #000000;
-        
-      }
- 
-      
-  
-  .header {
-    font-size: 27px;
-    font-weight: bold;
-    text-align: center;
-    margin-top: 40px;
-    margin-bottom: 40px;
-    color: darkgray;
 
-
-  }
   
   .subheader {
     font-size: 24px;
@@ -203,10 +205,10 @@
   
   .subsubheader {
     font-size: 20px;
+    margin-bottom: 10px;
     margin-top: 10px;
     color: gray;
     font-weight: bold;
-    margin-bottom: 10px;
   }
   
   /* Add Inheritance Prototype Button */
@@ -220,8 +222,7 @@
   border-radius: 4px;
   cursor: pointer;
   margin-top: 10px;
-  margin-bottom: 10px;
-  font-size: 15px;
+  font-size: 12px;
   transition: background-color 0.3s;
 }
 
@@ -229,7 +230,6 @@
   background-color: #a1a1a1;
   color: white;
 }
-
 
 
 
@@ -243,10 +243,13 @@
   font-weight: bold;
   border-radius: 4px;
   cursor: pointer;
-  margin-top: 20px;
   margin-bottom: 10px;
-  font-size: 13px;
+  font-size: 12px;
   transition: background-color 0.3s;
+}
+
+.add-field-button {
+  margin-left: 20px;
 }
 
 .add-field-button:hover, .add-inheritance-button:hover{
@@ -329,7 +332,7 @@
   cursor: pointer;
   margin-top: 10px;
   margin-bottom: 10px;
-  font-size: 13px;
+  font-size: 12px;
   transition: background-color 0.3s;
 }
 
@@ -417,7 +420,15 @@
 
 .alt-text {
   font-style: italic;
-  font-size: 15px;
+  font-size: 18px;
   color: rgba(128, 128, 128, 0.747);
+  text-align: left;
+  line-height: 1.7;
 }
 
+.alt-text-container {
+  display: flex;
+  justify-content: space-between; /* Equal distribution of space between children */
+  align-items: center; /* Vertical alignment */
+  padding:50px;
+}      
