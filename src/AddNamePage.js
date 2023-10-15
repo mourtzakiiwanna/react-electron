@@ -149,14 +149,11 @@ function AddNamePage() {
         </Card>
       </Box>
 
-      <Snackbar open={open} autoHideDuration={6000}>
+      <Snackbar open={open} autoHideDuration={10000}>
         <Alert icon={<CheckIcon fontSize="inherit" />} severity="success" sx={{ width: '100%' }}>
           Prototype created successfully!
         </Alert>
       </Snackbar>
-
- 
-
 
     </div>
   );

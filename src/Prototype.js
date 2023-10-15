@@ -38,6 +38,11 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
+import InputAdornment from '@mui/material/InputAdornment';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'; 
+import MuiAlert  from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
+import AddFieldModal from './AddFieldModal';
 
 import {
   GridRowModes,
@@ -55,8 +60,15 @@ import {
 
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
+const groups = [
+  { name: 'Local Prototypes', url: 'http://localhost:8080/getLocal' },
+  { name: 'Core Prototypes', url: 'http://localhost:8080/getCore' },
+  { name: 'Delta Prototypes', url: 'http://localhost:8080/getDelta' },
+];
 
 function Prototype(props) {
+  const navigate = useNavigate()
+
   let fID = 0;
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -78,7 +90,12 @@ function Prototype(props) {
     setOpen(false);
   };
 
+  const [openAlert, setOpenAlert] = React.useState(false);
+
+
   const dataGridContainerRef = useRef(null);
+
+  const [editRowId, setEditRowId] = useState(null);
 
   const navigation = useNavigate();
   const { groupName, prototypeName } = useParams();
@@ -89,11 +106,25 @@ function Prototype(props) {
     id: '',
     fgId: '',
     valueType: '',
-    trans: false,
-    array: false,
     constraint: '',
     defaultValue: '',
+    attributeType: '',
   });
+
+  const handleFieldToggleForm = () => {
+    console.log("clicked");
+    setIsFormVisible(!isFormVisible);
+    if (!isFormVisible) {
+      setNewFieldInfo({
+        id: '',
+        fgId: '',
+        valueType: '',
+        constraint: '',
+        defaultValue: '',
+        attributeType: '',
+      });
+    }
+  };
   const [addInheritance, setAddInheritance] = useState(false);
   const [newInheritance, setNewInheritance] = useState('');
   const [fieldToDelete, setFieldToDelete] = useState('');
@@ -116,17 +147,26 @@ function Prototype(props) {
     // Map prototypeInfo fields to initialRows
     const mappedFields = data.fields.map((field) => ({
       id: field.id,
+      fgID: field.fgID ,
       fieldId: field.id,
+      valueType: field.valueType,
+      defaultValue: field.defaultValue,
       attributeType: field.attributeType,
       constraints: field.constraints || '',
+      isMap: field.isMap,
     }));
     
     setInitialRows(mappedFields);
-    setRows(mappedFields); // Initialize 'rows' with data from 'initialRows'
+    setRows(mappedFields); 
+
+    // // Map prototypeInfo fields to initialRows
+    // const isMap = data.fields.map((field) => ({
+    //   id: field.id,
+    //   isMap: field.map,
+    // }));
+    
   };
   
-
-
 
       // Set initialRows
 
@@ -141,32 +181,95 @@ function Prototype(props) {
 
   const handleAddField = async () => {
     try {
-
-      var fullPath = "";
-      if (groupName == "core") {
-        fullPath = "butterfly" + "/" + groupName + "/" + prototypeName;
+      // Retrieve the necessary values from the newFieldInfo state
+      const { id, fgId, valueType, constraint, defaultValue, attributeType } = newFieldInfo;
+  
+      var fullPath = '';
+      if (groupName === 'core') {
+        fullPath = 'butterfly' + '/' + groupName + '/' + prototypeName;
       } else {
-        fullPath = groupName + "/" + prototypeName;
+        fullPath = groupName + '/' + prototypeName;
       }
-      const fieldUrl = `http://localhost:8080/addField?prototypePath=/${fullPath}&id=${newFieldInfo.id}&fgId=${newFieldInfo.fgId}&valueType=${newFieldInfo.valueType}&trans=${newFieldInfo.trans}&array=${newFieldInfo.array}&map=${newFieldInfo.map}&constraint=${newFieldInfo.constraint}&defaultValue=${newFieldInfo.defaultValue}`;
+      const fieldUrl = `http://localhost:8080/addField?prototypePath=/${fullPath}&id=${id}&fgId=${fgId}&valueType=${valueType}&constraint=${constraint}&defaultValue=${defaultValue}&attributeType=${attributeType}`;
+      console.log("fieldUrl", fieldUrl);
 
       const response = await fetch(fieldUrl);
-
+  
       if (!response.ok) {
         console.error('Error adding field');
         return;
       }
-
-      
+  
       fetchData();
     } catch (error) {
       console.error('API call error:', error);
     }
   };
 
+  const [groupData, setGroupData] = useState({});
+
+  const fetchAllData = async () => {
+    const data = {};
+
+    for (const group of groups) {
+      try {
+        const response = await fetch(group.url);
+        const groupData = await response.json();
+        data[group.name] = groupData;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    setGroupData(data); // Set the fetched data to the state
+  };
+
+  useEffect(() => {
+    // Fetch data for all groups when the component mounts
+    fetchAllData();
+  }, []);
+
+
+
 
   const columns = [
-    { field: 'fieldId', headerName: 'Field ID', width: 200, editable: true ,headerClassName: 'super-app-theme--header'  },
+    { field: 'fgID', headerName: 'Group', width: 200, editable: true ,headerClassName: 'super-app-theme--header'  },
+    { field: 'fieldId', headerName: 'Field ID', width: 220, editable: true ,headerClassName: 'super-app-theme--header'  },
+    { field: 'valueType', 
+      headerName: 'Value Type', 
+      width: 150, 
+      editable: true ,
+      type: 'singleSelect',
+      headerClassName: 'super-app-theme--header',
+        valueOptions: ['TEXT',
+        'BIGTEXT',
+        'RICHTEXT',
+        'KEYWORD',
+        'MIMETYPE',
+        'EMAIL',
+        'URL',
+        'BOOL',
+        'NUMBER',
+        'YEAR',
+        'DATE',
+        'REF',
+        'REF_PATH',
+        'EMBED',
+        'FILE_PATH',
+        'FILE',
+        'LOCALE',
+        'PROTOTYPE',
+        'DATASTORE',
+        'DATAINDEX',
+        'SCHEME',
+        'FIELD',
+        'FIELD_GROUP',
+        'FIELD_DEF',
+        'FIELD_GROUP_DEF',
+        'GEO_POINT']}, 
+
+    { field: 'defaultValue', headerName: 'Default Value', width: 200, editable: true ,headerClassName: 'super-app-theme--header'  },
+
     {
       field: 'attributeType',
       headerName: 'Attribute Type',
@@ -174,76 +277,134 @@ function Prototype(props) {
       editable: true,
       type: 'singleSelect',
       headerClassName: 'super-app-theme--header',
-      valueOptions: ['STANDALONE_FIELD', 'FIELD'],
+      valueOptions: ['STANDALONE_FIELD', 'FIELD', 'FIELD_GROUP', 'SCHEME', 'SCHEME_FIELD'],
     },
-    { field: 'constraints', headerName: 'Constraints', width: 200, editable: true, headerClassName: 'super-app-theme--header'},
+    { 
+      field: 'constraints', 
+      headerName: 'Constraints', 
+      width: 220, 
+      headerClassName: 'super-app-theme--header',
+      editable: true, 
+      renderEditCell: (params) => (
+        <FormControl style={{ width: 200 }}>
+          <Select
+            label={params.field}
+            value={params.value}
+            onChange={(e) => {
+              const selectedValue = e.target.value;
+              const groupName = params.value; // Get the selected groupName
+              const formattedValue = `/${groupName}/${selectedValue}`; // Format the value
+              console.log(formattedValue); // Log the selected value
+              params.api.setEditCellValue({ id: params.id, field: params.field, value: selectedValue });
+            }}
+            onBlur={(e) => params.api.setEditCellValue({ id: params.id, field: params.field, value: e.target.value })}
+            inputProps={{
+              name: 'constraints',
+              id: 'constraints',
+            }}
+          >
+            {Object.entries(groupData).flatMap(([groupName, groupValues]) => [
+              <MenuItem key={groupName} value={groupName} disabled>
+                {groupName}
+              </MenuItem>,
+              ...groupValues.map((value) => (
+                <MenuItem key={value} value={value}>
+                  {groupName.replace("Prototypes", "").toLowerCase().replace(" ", "").replace(/^/, '/')}/{value}
+                </MenuItem>
+              )),
+            ])}
+          </Select>
+        </FormControl>
+      ),
+    },
     {
       field: 'actions',
       type: 'actions',
       headerName: '',
-      width: 80,
+      width: 50,
       cellClassName: 'actions',
-      getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-              icon={<SaveIcon />}
-              label="Save"
-              sx={{
-                color: 'primary.main',
-              }}
-              onClick={handleSaveClick(id)}
-            />,
-            <GridActionsCellItem
-              icon={<CancelIcon />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
-              color="inherit"
-            />,
-          ];
+      renderCell: (params) => {
+        if (params.row.isMap) {
+          const isInEditMode = rowModesModel[params.id]?.mode === GridRowModes.Edit;
+    
+          if (isInEditMode) {
+            return (
+              <>
+                <GridActionsCellItem
+                  icon={<SaveIcon />}
+                  label="Save"
+                  sx={{
+                    color: 'primary.main',
+                  }}
+                  onClick={handleSaveClick(params.id)}
+                />
+                <GridActionsCellItem
+                  icon={<CancelIcon />}
+                  label="Cancel"
+                  className="textPrimary"
+                  onClick={handleCancelClick(params.id)}
+                  color="inherit"
+                />
+              </>
+            );
+          }
+    
+          return (
+            <>
+              <GridActionsCellItem
+                icon={<EditIcon />}
+                label="Edit"
+                className="textPrimary"
+                onClick={handleEditClick(params.id)}
+                color="inherit"
+              />
+              <GridActionsCellItem
+                icon={<DeleteIcon />}
+                label="Delete"
+                onClick={handleDeleteClick(params.id)}
+                color="inherit"
+              />
+            </>
+          );
         }
-
-        return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-          />,
-        ];
+        return null; // Hide actions for non-map fields
       },
     },
   ];
 
-  const [dropdownOptions, setDropdownOptions] = useState([]);
+  const [inheritanceDropdownOptions, setinheritanceDropdownOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
 
   const [rows, setRows] = React.useState(initialRows);
   const [rowModesModel, setRowModesModel] = React.useState({});
 
-  const handleRowEditStop = (params, event) => {
-    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      event.defaultMuiPrevented = true;
-    }
-  };
+  
 
   const handleEditClick = (id) => () => {
 
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
+  const handleCellDoubleClick = (params) => {
+    if (!params.row.isMap) {
+      setOpenAlert(true);
+      setTimeout(() => {
+        setOpenAlert(false);
+      }, 3000);
+      return;
+    }
+    handleEditClick(params.id);
+  };
 
+  const handleRowEditStop = (params, event) => {
+    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+      event.defaultMuiPrevented = true;
+    }
+
+  
+
+  };
 
   const handleDeleteClick = (id) => () => {
     setFieldToDelete(id); // Set the fieldToDelete state with the ID of the field to be deleted
@@ -290,6 +451,15 @@ function Prototype(props) {
     setIsFormVisible(false);
     setAddInheritance(false);
     setNewInheritance('');
+    setShowAllInheritedPrototypes(false);
+    setNewFieldInfo({
+      id: '',
+      fgId: '',
+      valueType: '',
+      constraint: '',
+      defaultValue: '',
+      attributeType: '',
+    });
     fetchData(); // Fetch data for the new prototype and initialize 'rows'
   }, [prototypeName, groupName]);
   
@@ -304,7 +474,7 @@ function Prototype(props) {
     // Fetch dropdown options from the URL when the component mounts
     fetch(`http://localhost:8080/${groupUrl}`) // Use backticks for template literals
       .then((response) => response.json())
-      .then((data) => setDropdownOptions(data))
+      .then((data) => setinheritanceDropdownOptions(data))
       .catch((error) => console.error("Error fetching data:", error));
   }, [prototypeName, groupName]);
 
@@ -362,6 +532,14 @@ function Prototype(props) {
     return <Link to={"/"}></Link>;
   }
 
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
+  const handlePrototypeClick = (fullPath) => {
+    navigate(fullPath);
+  };
+
   return (
     
     <div>
@@ -397,15 +575,40 @@ function Prototype(props) {
             <div className="info-section">
               {/* <h3 className="subsubheader">Prototype information</h3> */}
               
-              {!showAllInheritedPrototypes && (
-              <p className="inherited-prototypes">
-                <span>Inherited Prototypes:</span> {prototypeInfo.inheritedPrototypes.join(', ')}
-              </p>
+              {!showAllInheritedPrototypes && prototypeInfo.inheritedPrototypes.length > 0 && (
+                <p className="inherited-prototypes">
+                  <span>Inherited Prototypes:</span>{" "}
+                  {prototypeInfo.inheritedPrototypes.map((prototype, index) => {
+                    const fullPath = `/prototype${prototype.replace("butterfly/","")}`;
+                    return (
+                      <Link to={fullPath} key={`${groupName}-${index}`}>
+                        <div onClick={() => handlePrototypeClick(fullPath)}>
+                          {prototype}
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </p>
               )}
+                            
 
               {showAllInheritedPrototypes && (
                 <p className="inherited-prototypes">
-                  <span>Inherited Prototypes:</span> {prototypeInfo.allInheritedPrototypes.join(', ')}
+                  <span>Inherited Prototypes:</span> {" "}
+                  {prototypeInfo.allInheritedPrototypes.map((prototype, index) => {
+        
+                    const fullPath = `/prototype${prototype.replace("butterfly/","")}`;
+                    return (
+                      <Link
+                        to={fullPath}
+                        key={`${groupName}-${index}`}
+                      >
+                        <div onClick={() => handlePrototypeClick(fullPath)}>
+                          {prototype}
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </p>
               )}
 
@@ -415,13 +618,14 @@ function Prototype(props) {
               label="Label"
             > */}
 
-            <FormControlLabel control={<Switch checked={showAllInheritedPrototypes} 
+              {prototypeInfo.allInheritedPrototypes.length > 0  && 
+              (<FormControlLabel control={<Switch checked={showAllInheritedPrototypes} 
                 onChange={() => setShowAllInheritedPrototypes(!showAllInheritedPrototypes)} />} 
                 // label= {showAllInheritedPrototypes ? 'Hide All Inherited Prototypes' : 'Show All Inherited Prototypes'} 
                 label={
                   <Box component="div" fontSize={13}>
                   {showAllInheritedPrototypes ? 'Hide All Inherited Prototypes' : 'Show All Inherited Prototypes'}</Box>}
-                  />
+                  />)}
               {/* {showAllInheritedPrototypes ? 'Hide All Inherited Prototypes' : 'Show All Inherited Prototypes'} */}
 
               <br></br>
@@ -445,7 +649,7 @@ function Prototype(props) {
 
                   >
             
-                {dropdownOptions.map((option) => (
+                {inheritanceDropdownOptions.map((option) => (
                     <MenuItem
                     key={option}
                     value={option}
@@ -467,7 +671,7 @@ function Prototype(props) {
                 </button>
               )}
 
-          {!isFormVisible && (
+          {/* {!isFormVisible && (
             <button className="add-field-button" onClick={handleToggleForm}>
               Add Field
             </button>
@@ -535,7 +739,24 @@ function Prototype(props) {
                 Cancel
               </button>
             </div>
-          )}
+          )} */}
+
+            {!isFormVisible && (
+              <button className="add-field-button" onClick={handleFieldToggleForm}>
+                Add Field
+              </button>
+            )}    
+
+            {isFormVisible && (
+              <AddFieldModal
+                isOpen={true}
+                handleClose={handleFieldToggleForm}
+                prototypeId={prototypeInfo.id}
+                handleAddField={handleAddField}
+                newFieldInfo={newFieldInfo}
+                setNewFieldInfo={setNewFieldInfo}
+              />
+            )}
 
 
 
@@ -568,7 +789,7 @@ function Prototype(props) {
               sx={{
                 width: '100%',
                 marginTop: '20px',
-                height: 350,
+                height: 450,
                 '& .textPrimary': {
                   color: 'text.primary',
                 },
@@ -580,14 +801,21 @@ function Prototype(props) {
               <DataGrid
                 rows={rows}
                 columns={columns}
-                className = "fields-data"   
-                editMode="row"
+                className="overflow-grid"
+                editMode={'row'}
                 rowModesModel={rowModesModel}
                 onRowModesModelChange={handleRowModesModelChange}
                 onRowEditStop={handleRowEditStop}
                 processRowUpdate={processRowUpdate}
+                isCellEditable={(params) => params.row.isMap}
+                disableEdit={(params) => !params.row.isMap}
+                onCellDoubleClick={handleCellDoubleClick}
                 hideFooterPagination={true}
                 hideFooter={true}
+                initialState={{
+                  sorting: {
+                    sortModel: [{ field: 'fgID', sort: 'asc' }]}
+                }}
                 slotProps={{
                   toolbar: { setRows, setRowModesModel },
                 }}   
@@ -625,6 +853,11 @@ function Prototype(props) {
       </div>
       </div>
     </div>
+    <Snackbar open={openAlert}>
+      <Alert icon={false} severity="info"  sx={{ width: '100%' }}>
+        This field is not editable in this prototype.
+      </Alert>
+    </Snackbar>
     </div>
   );
 }

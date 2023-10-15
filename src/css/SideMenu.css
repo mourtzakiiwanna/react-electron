@@ -10,6 +10,10 @@
   top: 50%;
   left: 0;
   transform: translate(0, -50%);
+  border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
 }
   
   .category-name {
@@ -23,6 +27,7 @@
     cursor: pointer;
     transition: background-color 0.2s ease;   
     background-color: #ffffff;
+    color:#7e7e7e;
 }
     
 
@@ -37,7 +42,6 @@
 
   .category {
     align-self: center;
-    border-radius: 10px;
     padding: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background-color: #ffffff;
@@ -46,15 +50,17 @@
   .category-content {
     margin-top: 8px;
     background-color: #ffffff;
-    border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     overflow-y: auto;    
     }
     
   .content-scroll {
-    max-height: 400px; /* Set a maximum height for the content area */
+    max-height: 600px; /* Set a maximum height for the content area */
     overflow-y: auto; /* Enable scrolling within the content area */
     padding: 10px 20px 20px 20px;
+    margin-top: 10px; 
+    margin-bottom: 10px; 
+
   }
   
   .menu-link {

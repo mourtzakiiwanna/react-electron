@@ -68,7 +68,7 @@ function SideMenu(props) {
   return (
     <div className="side-menu">
       {groups.map((group, groupIndex) => (
-        <div key={groupIndex} className="category">
+        <div key={groupIndex} >
           <div
             className={`category-name ${
               expandedGroup === groupIndex ? "expanded" : ""

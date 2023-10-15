@@ -1,16 +1,17 @@
 .prototype-container {
-  width: 70%;
-  max-width: 70%;
   padding-top: 0;
   overflow-y: hidden;
+}
 
-
+.main-content {
+  margin-left: 7%; 
+  padding: 20px; 
 }
 
 .sticky-header {
   position: fixed;
-  width: 56%;
-  max-width:56%; 
+  width: 70%;
+  max-width:70%; 
   top: 0;
   z-index: 1;
   background-color: #e7e7e7; 
@@ -19,6 +20,21 @@
   height: 50px;
 
 }
+
+  /* Field item */
+  .field-section {
+    position: fixed;
+    width: 70%;
+    max-width: 70%;
+    height: 550px;
+    max-height: 550px;
+    margin-top: 290px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1);
+    margin-bottom: -30px;
+  }
 
       
 .header-info-container {
@@ -38,16 +54,11 @@
 
 }
 
-  /* Field item */
-  .field-section {
-    margin-top: 310px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1);
-    margin-bottom: -30px;
-
-  }
+.overflow-grid .MuiDataGrid-cell {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
 
  
   /* Header styles */
@@ -211,20 +222,6 @@
     font-weight: bold;
   }
   
-  /* Add Inheritance Prototype Button */
-.add-inheritance-button {
-  display: inline-block;
-  padding: 8px 16px;
-  background-color: #ffffff; /* Gray button color */
-  color: gray;
-  border: 2px solid gray;
-  font-weight: bold;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 10px;
-  font-size: 12px;
-  transition: background-color 0.3s;
-}
 
 .add-inheritance-button:hover {
   background-color: #a1a1a1;
@@ -257,20 +254,14 @@
 }
 
 .add-field-form {
-  border: 1px solid #ccc;
-  padding: 20px;
-  width: 50%;
-
-  border-radius: 8px;
-  margin-top: 20px;
+  padding: 10px;
 }
 
 .add-field-form h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
+  font-size: 24px;
+  margin-bottom: 20px;
   font-weight: bold;
   margin-top: 10px;
-  margin-bottom: 20px;
 }
 
 .add-new-field {
@@ -322,19 +313,7 @@
 
 
 
-.add-inheritance-button {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #f0f0f0;
-  color: black;
-  border: 2px solid rgb(219, 219, 219);
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  font-size: 12px;
-  transition: background-color 0.3s;
-}
+
 
 .add-inheritance-button:hover {
   background-color: #c2c2c2;
@@ -387,7 +366,6 @@
   transition: background-color 0.3s ease;
   background: none;
   width: 80px;
-
 }
 
 .cancel-field-button:hover {
