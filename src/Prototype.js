@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
 import Switch from '@mui/material/Switch';
+import Switcher from '@mui/joy/Switch';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
@@ -43,6 +44,8 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import MuiAlert  from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import AddFieldModal from './AddFieldModal';
+import InheritanceModal from './AddInheritanceModal';
+
 
 import {
   GridRowModes,
@@ -127,6 +130,29 @@ function Prototype(props) {
   };
   const [addInheritance, setAddInheritance] = useState(false);
   const [newInheritance, setNewInheritance] = useState('');
+
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedOption, setSelectedOption] = useState('');
+
+  const handleSaveInheritance = () => {
+    setShowDropdown(false);
+  };
+
+  const handleCancel = () => {
+    setShowDropdown(false);
+
+  };
+
+
+  const handleAddInheritanceClick = () => {
+    setSelectedOption(null);
+    setShowDropdown(true);
+  };
+
+  
+  const [inheritanceDropdownOptions, setinheritanceDropdownOptions] = useState([]);
+
+
   const [fieldToDelete, setFieldToDelete] = useState('');
   const [initialRows, setInitialRows] = useState([]);
   const [showAllInheritedPrototypes, setShowAllInheritedPrototypes] = useState(false);
@@ -372,9 +398,6 @@ function Prototype(props) {
     },
   ];
 
-  const [inheritanceDropdownOptions, setinheritanceDropdownOptions] = useState([]);
-  const [selectedOption, setSelectedOption] = useState("");
-  const [showDropdown, setShowDropdown] = useState(false);
 
   const [rows, setRows] = React.useState(initialRows);
   const [rowModesModel, setRowModesModel] = React.useState({});
@@ -483,19 +506,7 @@ function Prototype(props) {
     setSelectedOption(selectedValue);
   };
 
-  const handleAddInheritanceClick = () => {
-    setSelectedOption(null);
-    setShowDropdown(true);
-  };
-
-  const handleSaveInheritance = () => {
-    setShowDropdown(false);
-  };
-
-  const handleCancel = () => {
-    setShowDropdown(false);
-
-  };
+  
 
  
   useEffect(() => {
@@ -573,173 +584,95 @@ function Prototype(props) {
             <h2 className="prototype-header">{prototypeInfo.id}</h2>
             
             <div className="info-section">
-              {/* <h3 className="subsubheader">Prototype information</h3> */}
               
-              {!showAllInheritedPrototypes && prototypeInfo.inheritedPrototypes.length > 0 && (
+              {!showAllInheritedPrototypes && (
                 <p className="inherited-prototypes">
-                  <span>Inherited Prototypes:</span>{" "}
+                  <div>Inherited Prototypes</div>{" "}
                   {prototypeInfo.inheritedPrototypes.map((prototype, index) => {
                     const fullPath = `/prototype${prototype.replace("butterfly/","")}`;
                     return (
-                      <Link to={fullPath} key={`${groupName}-${index}`}>
-                        <div onClick={() => handlePrototypeClick(fullPath)}>
-                          {prototype}
-                        </div>
-                      </Link>
+                      <span>
+                      <React.Fragment key={`${groupName}-${index}`}>
+                        <span className = 'inherited-prototypes-list'>
+                        {index > 0 && " | "} 
+                        </span>
+                        <Link to={fullPath} onClick={() => handlePrototypeClick(fullPath)} className={`inherited-prototypes-list${index === 0 ? ' with-right-padding' : ' with-padding'}`}>
+                         {prototype}
+                        </Link>
+                      </React.Fragment>
+                      </span>
                     );
                   })}
                 </p>
-              )}
-                            
+              ) }
+                      
 
               {showAllInheritedPrototypes && (
                 <p className="inherited-prototypes">
-                  <span>Inherited Prototypes:</span> {" "}
+                  <div>Inherited Prototypes</div>{" "}
                   {prototypeInfo.allInheritedPrototypes.map((prototype, index) => {
-        
                     const fullPath = `/prototype${prototype.replace("butterfly/","")}`;
                     return (
-                      <Link
-                        to={fullPath}
-                        key={`${groupName}-${index}`}
-                      >
-                        <div onClick={() => handlePrototypeClick(fullPath)}>
-                          {prototype}
-                        </div>
-                      </Link>
+                      <span>
+                      <React.Fragment key={`${groupName}-${index}`}>
+                        <span className = 'inherited-prototypes-list'>
+                        {index > 0 && " | "} 
+                        </span>
+                        <Link to={fullPath} onClick={() => handlePrototypeClick(fullPath)} className = 'inherited-prototypes-list'> 
+                         {prototype}
+                        </Link>
+                      </React.Fragment>
+                      </span>
                     );
                   })}
                 </p>
               )}
+                
+              {prototypeInfo.inheritedPrototypes.length <= 0 && (
+                <p className="inherited-prototypes-alt-text">No inherited prototypes found.</p>
+              )} 
 
-            {/* <Switch
-              checked={showAllInheritedPrototypes}
-              onChange={() => setShowAllInheritedPrototypes(!showAllInheritedPrototypes)}
-              label="Label"
-            > */}
+          
+              <div>
+                {prototypeInfo.allInheritedPrototypes.length > 0 && prototypeInfo.allInheritedPrototypes.length != prototypeInfo.inheritedPrototypes.length && (
+                  <FormControlLabel
+                    control={
+                      <div className="switch-container">
+                        <Switcher
+                          disabled={false}
+                          size="md"
+                          variant="soft"
+                          sx={{ marginLeft: "10px", marginTop: "5px" }}
+                          checked={showAllInheritedPrototypes}
+                          onChange={() => setShowAllInheritedPrototypes(!showAllInheritedPrototypes)}
+                        />
+                        <span className="hover-label">
+                          {showAllInheritedPrototypes ? 'Hide all prototypes' : 'Show all prototypes'} 
+                        </span>
+                       
+                      </div>
+                    }
+                  />
+                )}
+              </div>
 
-              {prototypeInfo.allInheritedPrototypes.length > 0  && 
-              (<FormControlLabel control={<Switch checked={showAllInheritedPrototypes} 
-                onChange={() => setShowAllInheritedPrototypes(!showAllInheritedPrototypes)} />} 
-                // label= {showAllInheritedPrototypes ? 'Hide All Inherited Prototypes' : 'Show All Inherited Prototypes'} 
-                label={
-                  <Box component="div" fontSize={13}>
-                  {showAllInheritedPrototypes ? 'Hide All Inherited Prototypes' : 'Show All Inherited Prototypes'}</Box>}
-                  />)}
-              {/* {showAllInheritedPrototypes ? 'Hide All Inherited Prototypes' : 'Show All Inherited Prototypes'} */}
-
-              <br></br>
-
-
+              
               {showDropdown ? (
-                <div className = "dropdown-section">
-                  <FormControl
-                    sx={{width: 400}}>
-                  <InputLabel id="inherited-label"  sx = {{fontSize: 15}}>Inherited Prototype</InputLabel>
-
-                  <Select
-                    value={selectedOption}
-                    onChange={handleDropdownChange}
-                    MenuProps={MenuProps}
-                    labelId="inherited-label"
-                    id="inherited"
-                    sx={{ boxShadow: 'none', fontSize:15 }}
-                    input={<OutlinedInput label="Inherited Prototype" 
-                    />}
-
-                  >
-            
-                {inheritanceDropdownOptions.map((option) => (
-                    <MenuItem
-                    key={option}
-                    value={option}
-                    sx = {{fontSize: 14}}
-                  >
-                    {option}
-                  </MenuItem>
-                  ))}
-                    
-                  </Select>
-                  </FormControl>
-                  <button className="save-button" onClick={handleSaveInheritance}>Save</button>
-                  <button className="cancel-button" onClick={handleCancel}>Cancel</button>
-
-                </div>
+                <InheritanceModal
+                  showDropdown={showDropdown}
+                  selectedOption={selectedOption}
+                  handleDropdownChange={handleDropdownChange}
+                  inheritanceDropdownOptions={inheritanceDropdownOptions}
+                  handleSaveInheritance={handleSaveInheritance}
+                  handleCancel={handleCancel}
+                  handleAddInheritanceClick={handleAddInheritanceClick}
+                />
               ) : (
                 <button className="add-inheritance-button" onClick={handleAddInheritanceClick}>
                   Add Inherited Prototype
                 </button>
               )}
-
-          {/* {!isFormVisible && (
-            <button className="add-field-button" onClick={handleToggleForm}>
-              Add Field
-            </button>
-          )}
-
-
-          {isFormVisible && (
-            <div className="add-field-form">
-              <h3 className = "add-new-field">Add New Field</h3>
-
-          
-              <Stack spacing={2} sx = {{'margin':'10px'}}>
-
-                  <TextField
-                    required
-                    id="outlined-required"
-                    label="Field ID"
-                    size="small"
-                  />
-
-
-                  <TextField
-                    required
-                    id="outlined-required"
-                    label="Field Group ID"
-                    size="small"
-
-                  />
-
-                  <TextField
-                    required
-                    id="outlined-required"
-                    label="Value Type"
-                    size="small"
-
-                  />
-
-                  <TextField
-                    required
-                    id="outlined-required"
-                    label="Constraint"
-                    size="small"
-
-                  />
-                    
-                    <TextField
-                    required
-                    id="outlined-required"
-                    label="Default Value"
-                    size="small"
-                  />
-
-
-
-
-              <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }}/>} label="Trans" />
-              <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }}/>} label="Array" />
-
-            </Stack>
-  
-            <button className="save-field-button" onClick={handleAddField}>
-                Save
-              </button>
-              <button className="cancel-field-button" onClick={handleToggleForm}>
-                Cancel
-              </button>
-            </div>
-          )} */}
+           
 
             {!isFormVisible && (
               <button className="add-field-button" onClick={handleFieldToggleForm}>
