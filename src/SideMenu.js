@@ -107,6 +107,7 @@ function SideMenu(props) {
                         className={`menu-link ${
                           selectedItems[groupIndex] === itemIndex ? 'selected' : ''
                         }`} // Add class for selected item
+                        sx = {{fontSize: '15pt'}}
                         onClick={() => handleItemClick(fullPath)} // Pass groupIndex
                       >
                          <div>

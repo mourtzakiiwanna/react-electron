@@ -159,43 +159,33 @@ function Prototype(props) {
 
   const fetchData = async () => {
     let fullPath = '';
-  
+
     if (groupName === 'core') {
       fullPath = 'butterfly' + '/' + groupName + '/' + prototypeName;
     } else {
       fullPath = groupName + '/' + prototypeName;
     }
-  
+
     const response = await fetch(`http://localhost:8080/show?prototypePath=/${fullPath}&showSummary=true&showInheritance=true&showFields=true`);
     const data = await response.json();
     setPrototypeInfo(data);
-  
+
     // Map prototypeInfo fields to initialRows
     const mappedFields = data.fields.map((field) => ({
       id: field.id,
-      fgID: field.fgID ,
+      fgID: field.fgID,
       fieldId: field.id,
       valueType: field.valueType,
       defaultValue: field.defaultValue,
       attributeType: field.attributeType,
       constraints: field.constraints || '',
-      isMap: field.isMap,
+      isMap: field.map,
     }));
-    
-    setInitialRows(mappedFields);
-    setRows(mappedFields); 
 
-    // // Map prototypeInfo fields to initialRows
-    // const isMap = data.fields.map((field) => ({
-    //   id: field.id,
-    //   isMap: field.map,
-    // }));
-    
+    // Clear the existing rows before updating and remove duplicates
+    setRows((existingRows) => removeDuplicates([...existingRows, ...mappedFields]));
   };
   
-
-      // Set initialRows
-
   const handleToggleForm = () => {
     setIsFormVisible(!isFormVisible);
   };
@@ -259,13 +249,14 @@ function Prototype(props) {
 
 
   const columns = [
-    { field: 'fgID', headerName: 'Group', width: 200, editable: true ,headerClassName: 'super-app-theme--header'  },
-    { field: 'fieldId', headerName: 'Field ID', width: 220, editable: true ,headerClassName: 'super-app-theme--header'  },
+    { field: 'fgID', headerName: 'Group', width: 180, editable: true ,headerClassName: 'super-app-theme--header', sortable: false },
+    { field: 'fieldId', headerName: 'Field ID', width: 220, editable: true ,headerClassName: 'super-app-theme--header',sortable: false  },
     { field: 'valueType', 
       headerName: 'Value Type', 
       width: 150, 
       editable: true ,
       type: 'singleSelect',
+      sortable: false,
       headerClassName: 'super-app-theme--header',
         valueOptions: ['TEXT',
         'BIGTEXT',
@@ -294,7 +285,7 @@ function Prototype(props) {
         'FIELD_GROUP_DEF',
         'GEO_POINT']}, 
 
-    { field: 'defaultValue', headerName: 'Default Value', width: 200, editable: true ,headerClassName: 'super-app-theme--header'  },
+    { field: 'defaultValue', headerName: 'Default Value', width: 150, editable: true ,headerClassName: 'super-app-theme--header', sortable: false  },
 
     {
       field: 'attributeType',
@@ -304,13 +295,15 @@ function Prototype(props) {
       type: 'singleSelect',
       headerClassName: 'super-app-theme--header',
       valueOptions: ['STANDALONE_FIELD', 'FIELD', 'FIELD_GROUP', 'SCHEME', 'SCHEME_FIELD'],
+      sortable: false,
     },
     { 
       field: 'constraints', 
-      headerName: 'Constraints', 
+      headerName: 'Constraint', 
       width: 220, 
       headerClassName: 'super-app-theme--header',
       editable: true, 
+      sortable: false,
       renderEditCell: (params) => (
         <FormControl style={{ width: 200 }}>
           <Select
@@ -346,6 +339,7 @@ function Prototype(props) {
     {
       field: 'actions',
       type: 'actions',
+      sortable: false,
       headerName: '',
       width: 50,
       cellClassName: 'actions',
@@ -399,7 +393,19 @@ function Prototype(props) {
   ];
 
 
-  const [rows, setRows] = React.useState(initialRows);
+  const [rows, setRows] = React.useState([]); 
+  
+  const removeDuplicates = (array) => {
+    const uniqueIds = new Set();
+    return array.filter((item) => {
+      if (uniqueIds.has(item.id)) {
+        return false; // Duplicate found, filter it out
+      }
+      uniqueIds.add(item.id);
+      return true;
+    });
+  };
+
   const [rowModesModel, setRowModesModel] = React.useState({});
 
   
@@ -460,9 +466,11 @@ function Prototype(props) {
 
   const processRowUpdate = (newRow) => {
     const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+    // Update the rows, remove duplicates based on `field.id`
+    setRows((existingRows) => removeDuplicates(existingRows.map((row) => (row.id === newRow.id ? updatedRow : row))));
     return updatedRow;
   };
+  
 
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
@@ -536,7 +544,7 @@ function Prototype(props) {
 
 
   useEffect(() => {
-    fetchData();
+    fetchData(); // Fetch data when the component mounts
   }, [groupName, prototypeName]);
 
   if (!prototypeInfo) {
@@ -703,21 +711,6 @@ function Prototype(props) {
         <div ref={dataGridContainerRef}>
 
         <div className="subsubheader">Fields</div>
-        {/* <ul className="fields-list">
-          {prototypeInfo.fields.map((field, index) => (
-            <li key={index} className="field-item">
-              <p><span>Field ID:</span> {field.id}</p>
-              <p><span>Field Type:</span> {field.attributeType}</p>
-              {field.constraints && (
-                <p><span>Constraints:</span> {field.constraints}</p>
-              )}
-              {field.alias && (
-                <p><span>Alias:</span> {field.alias}</p>
-              )}
-            </li>
-          ))}
-        </ul> */}
-
         <Box
               sx={{
                 width: '100%',
@@ -747,12 +740,13 @@ function Prototype(props) {
                 hideFooter={true}
                 initialState={{
                   sorting: {
-                    sortModel: [{ field: 'fgID', sort: 'asc' }]}
+                    sortModel: [{ field: 'fieldId', sort: 'asc' }],
+                  },
                 }}
                 slotProps={{
                   toolbar: { setRows, setRowModesModel },
                 }}   
-                sx={{ '& .MuiDataGrid-row': { marginTop: 1, marginBottom: 1 }, 
+                sx={{ '& .MuiDataGrid-row': { marginTop: 1, marginBottom: 1 }, fontSize: "10pt",
                 '& .coloured': { textAlign: 'center', color: '#7181AD' },'& .MuiDataGrid-virtualScroller::-webkit-horizontal-scrollbar': {display: 'none' } }}
     
               />
@@ -787,7 +781,7 @@ function Prototype(props) {
       </div>
     </div>
     <Snackbar open={openAlert}>
-      <Alert icon={false} severity="info"  sx={{ width: '100%' }}>
+      <Alert icon={false} severity="warning"  sx={{ width: '100%' }}>
         This field is not editable in this prototype.
       </Alert>
     </Snackbar>

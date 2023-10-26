@@ -4,14 +4,14 @@
 }
 
 .main-content {
-  margin-left: 7%; 
+  margin-left: 3%; 
   padding: 20px; 
 }
 
 .sticky-header {
   position: fixed;
-  width: 70%;
-  max-width:70%; 
+  width: 75%;
+  max-width:75%; 
   top: 0;
   z-index: 1;
   background-color: #e7e7e7; 
@@ -24,8 +24,8 @@
   /* Field item */
   .field-section {
     position: fixed;
-    width: 70%;
-    max-width: 70%;
+    width: 75%;
+    max-width: 75%;
     height: 550px;
     max-height: 550px;
     margin-top: 290px;
@@ -407,7 +407,6 @@
   text-decoration: underline;
   transition: background-color 0.3s ease;
   background: none;
-  width: 80px;
 }
 
 .cancel-field-button:hover {
@@ -425,9 +424,17 @@
   width: 80px;
   margin: 10px;
   margin-top: 20px;
-
   transition: background-color 0.3s ease;
+  margin-right: 10px;
+
 }
+
+.field-button-container {
+  display: flex;
+  justify-content: space-between; /* Align "Save" to the left and "Cancel" to the right */
+  margin-top: 10px; /* Adjust the margin as needed */
+}
+
 
 .save-field-button:hover {
   background-color: #8b8b8b;
@@ -448,20 +455,24 @@
   width: 80px;
   margin: 10px;
   margin-top: 30px;
-  margin-left: 0px;
   transition: background-color 0.3s ease;
 }
 
 .cancel-inheritance-button {
   color: #777777;
   border: none;
-  padding: 10px 20px;
   cursor: pointer;
   font-size: 0.9rem;
   text-decoration: underline;
   transition: background-color 0.3s ease;
   background: none;
-  width: 80px;
+  margin-top: 10px;
+}
+
+.inheritance-button-container {
+  display: flex;
+  justify-content: space-between; /* Align "Save" to the left and "Cancel" to the right */
+  margin-top: 5px; /* Adjust the margin as needed */
 }
 
 .alt-text {
@@ -479,7 +490,7 @@
   color: #777777;
   font-size: 0.9rem;
   font-weight: normal;
-  margin-top: 0px;
+  margin-top: 7px;
 }
 
 .switch-container:hover .hover-label {

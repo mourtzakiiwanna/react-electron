@@ -178,7 +178,7 @@ const style = {
         <TextField
             required
             id="outlined-required"
-            label="Constraints"
+            label="Constraint"
             size="small"
             name="constraint"
             value={newFieldInfo.constraint}
@@ -209,12 +209,17 @@ const style = {
             </TextField>
         </Stack>
 
+        <div className="field-button-container">
+         
+        <button className="cancel-field-button" onClick={handleClose}>
+          Cancel
+        </button>
+
         <button className="save-field-button" onClick={handleSave}>
-        Save
-      </button>
-      <button className="cancel-field-button" onClick={handleClose}>
-        Cancel
-      </button>
+          Save
+        </button>
+
+      </div>
       </div>
       </Box>
     </Modal>

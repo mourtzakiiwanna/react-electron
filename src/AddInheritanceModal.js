@@ -56,7 +56,7 @@ const isInputLabelShrunk = !!selectedOption; // Check if a value is selected
                 displayEmpty: true,
                 renderValue: (selected) => (selected ? selected : ""),
             }}
-            sx={{ width: '280px' }}
+            sx={{ width: '300px' }}
           >
             {inheritanceDropdownOptions.map((option) => (
               <MenuItem key={option} value={option} sx={{ fontSize: 14 }}>
@@ -66,12 +66,16 @@ const isInputLabelShrunk = !!selectedOption; // Check if a value is selected
           </TextField>
         </FormControl>
 
-        <button className="save-inheritance-button" onClick={handleSaveInheritance}>
-          Save
-        </button>
-        <button className="cancel-inheritance-button" onClick={handleCancel}>
+        <div className="inheritance-button-container">
+
+          <button className="cancel-inheritance-button" onClick={handleCancel}>
           Cancel
-        </button>
+          </button>
+
+          <button className="save-inheritance-button" onClick={handleSaveInheritance}>
+            Save
+          </button>
+        </div>
       </div>
       </Box>
     </Modal>

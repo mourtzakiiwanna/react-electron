@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CustomAlert from './CustomAlert'; // Import the custom alert component
-import './css/AddNamePage.css'; // Import the CSS file
+import './css/AddNamePage.css';
 import Stack from '@mui/material/Stack';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -9,9 +8,10 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
-import MuiAlert  from '@mui/material/Alert';
+import MuiAlert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import CheckIcon from '@mui/icons-material/Check';
+import WarningIcon from '@mui/icons-material/Error'; // Import the warning icon
 
 function AddNamePage() {
   const navigate = useNavigate();
@@ -21,95 +21,66 @@ function AddNamePage() {
 
   const handleNameChange = (event) => {
     setPrototypeName(event.target.value);
-   
-  };
-
-  const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
-
-  const [open, setOpen] = React.useState(false);
-
-  const handleClick = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpen(false);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    try {
-      // Make the API call to the endpoint
-      const response = await fetch(`http://localhost:8080/create?prototypeName=${prototypeName}`);
-      if (response.ok) {
-        setOpen(true);
-        const unformattedName = prototypeName.replace(".xml", "");
-        const fullPath = `/prototype/local/${unformattedName}`;
-        console.log(fullPath);
-        await timeout(2000);
-        navigate(fullPath);
-      } else {
-        // Handle the error condition, e.g., show an error message
-        console.error('API call failed:', response.statusText);
-      }
-    } catch (error) {
-      console.error('An error occurred while making the API call:', error);
+    if (prototypeName) {
+      // If the prototypeName is not empty, display a success message
+      setAlertContent('The prototype has been successfully created!');
+    } else {
+      // If the prototypeName is empty, display "Enter name" message
+      setAlertContent('Please enter a valid prototype name.');
     }
+
+    setAlert(true); // Show the Snackbar alert
   };
 
   function timeout(delay) {
-    return new Promise( res => setTimeout(res, delay) );
-}
+    return new Promise((res) => setTimeout(res, delay));
+  }
 
   return (
     <div>
       <Box
         sx={{
-          height: "100%",
-          display:"flex",
-          marginTop: "240px",
-          alignItems:"center",
-          justifyContent:"center",
-           // Adjust padding for responsiveness
-         
+          height: '100%',
+          display: 'flex',
+          marginTop: '240px',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
         <Card sx={{ width: '100%', maxWidth: '600px' }}>
-          <CardContent sx={{ margin: '70px'}}>           
-          <h3 className='add-prototype-title' >Add Prototype Name</h3>
+          <CardContent sx={{ margin: '70px' }}>
+            <h3 className="add-prototype-title">Create Prototype</h3>
 
-            <form onSubmit={handleSubmit} >
+            <form onSubmit={handleSubmit} noValidate={true}>
               <TextField
                 required
-                id='standard-required'
-                label='Prototype Name'
-                defaultValue=''
-                variant='standard'
-                type='text'
-                size='small'
-                fullWidth // Take up full width
+                id="standard-required"
+                label="Prototype Name"
+                defaultValue=""
+                variant="standard"
+                type="text"
+                size="small"
+                fullWidth
                 value={prototypeName}
                 onChange={handleNameChange}
               />
 
               <Box
-                component='span'
-                display='flex'
-                justifyContent='space-between'
-                alignItems='center'
-                marginTop='40px'
+                component="span"
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                marginTop="40px"
               >
                 <Button
-                  variant='text'
+                  variant="text"
                   component={Link}
-                  to='/'
+                  to="/"
                   sx={{
                     height: '40px',
                     color: '#9b9b9b',
@@ -125,16 +96,16 @@ function AddNamePage() {
                 </Button>
 
                 <Button
-                  variant='contained'
-                  type='submit'
-                  size = 'small'
+                  variant="contained"
+                  type="submit"
+                  size="small"
                   sx={{
                     backgroundColor: '#b3b3b3',
                     height: '40px',
                     color: '#fff',
                     border: 'none',
                     borderRadius: '5px',
-                    minWidth: '80px', // Adjust width for responsiveness
+                    minWidth: '80px',
                     marginLeft: '20px',
                     '&:hover': {
                       backgroundColor: '#9b9b9b',
@@ -149,12 +120,15 @@ function AddNamePage() {
         </Card>
       </Box>
 
-      <Snackbar open={open} autoHideDuration={10000}>
-        <Alert icon={<CheckIcon fontSize="inherit" />} severity="success" sx={{ width: '100%' }}>
-          Prototype created successfully!
-        </Alert>
+      <Snackbar open={alert} autoHideDuration={6000} onClose={() => setAlert(false)}>
+        <MuiAlert
+          icon={prototypeName ? <CheckIcon /> : <WarningIcon />} // Use CheckIcon for success, WarningIcon for "Enter name"
+          severity={prototypeName ? 'success' : 'error'}
+          sx={{ width: '100%', fontWeight: '500' }}
+        >
+          {alertContent}
+        </MuiAlert>
       </Snackbar>
-
     </div>
   );
 }

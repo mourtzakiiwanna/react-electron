@@ -1,8 +1,8 @@
-/* SideMenu.css */
+
 .side-menu {
-  width: 20%;
+  width: 18%;
   position: fixed;
-  margin-left: 30px;
+  margin-left: 15px;
   padding-left: 20px;
   color: gray;
   overflow-y: auto;
@@ -10,36 +10,34 @@
   top: 50%;
   left: 0;
   transform: translate(0, -50%);
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+  
+.category-name {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  justify-content: space-between;
+  padding: 12px;
+  font-size: 17px;
   border-radius: 10px;
-    padding: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background-color: #ffffff;
-}
-  
-  .category-name {
-    display: flex;
-    align-items: center;
-    font-weight: bold;
-    justify-content: space-between;
-    padding: 12px;
-    font-size: 17px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;   
-    background-color: #ffffff;
-    color:#7e7e7e;
-}
+  cursor: pointer;
+  transition: background-color 0.2s ease;   
+  background-color: #ffffff;
+  color:#7e7e7e;
+}  
     
-
-  
-  .category-name:hover {
+ .category-name:hover {
     color: #c0c0c0; /* Background color for the expanded category */
   }
   
   .category-name.expanded {
     color: #c0c0c0; /* Background color for the expanded category */
   }
-
+ 
   .category {
     align-self: center;
     padding: 10px;
@@ -52,6 +50,8 @@
     background-color: #ffffff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     overflow-y: auto;    
+    font-size: 11pt;
+
     }
     
   .content-scroll {
