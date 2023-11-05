@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './css/SideMenu.css'; // Make sure to link your CSS file correctly
+import './css/SideMenu.css';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import Box from '@mui/material/Stack';
-import { useNavigate } from 'react-router'
+import { useNavigate } from 'react-router';
 
 function SideMenu(props) {
   const groups = [
@@ -13,13 +13,12 @@ function SideMenu(props) {
   ];
 
   const { currentGroup, currentPrototype } = props;
-  const [expandedGroup, setExpandedGroup] = useState(null);
+  const [expandedGroup, setExpandedGroup] = useState(0); // Set the default group to expand
   const [groupData, setGroupData] = useState({});
-  const [openForm, setOpenForm] = useState(false); // Track open form state
-  const [selectedItems, setSelectedItems] = useState({}); // Track selected items by category
-  
-  const navigate = useNavigate()
+  const [openForm, setOpenForm] = useState(false);
+  const [selectedItems, setSelectedItems] = useState({});
 
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async (url, index) => {
@@ -45,33 +44,31 @@ function SideMenu(props) {
 
   const handleGroupClick = (index) => {
     if (expandedGroup === index) {
-      setExpandedGroup(null);
-      setOpenForm(false); // Reset open form state
+      setExpandedGroup(null); // Collapse the group
+      setOpenForm(false);
     } else {
-      setExpandedGroup(index);
-      setOpenForm(false); // Reset open form state
+      setExpandedGroup(index); // Expand the group
+      setOpenForm(false);
     }
   };
-  
-
 
   const handleItemClick = (fullPath, groupIndex) => {
-    setOpenForm(false); // Reset open form state
-    setSelectedItems((prevItems) => ({
+    setExpandedGroup(groupIndex); // Expand the group when an item is clicked
+    setOpenForm(false);
+    setSelectedItems(prevItems => ({
       ...prevItems,
-      [groupIndex]: null, // Clear selected item for this group
+      [groupIndex]: null,
     }));
     navigate(fullPath);
   };
-  
-  
+
   return (
     <div className="side-menu">
       {groups.map((group, groupIndex) => (
-        <div key={groupIndex} >
+        <div key={groupIndex}>
           <div
             className={`category-name ${
-              expandedGroup === groupIndex ? "expanded" : ""
+              expandedGroup === groupIndex ? 'expanded' : ''
             }`}
             onClick={() => handleGroupClick(groupIndex)}
           >
@@ -85,15 +82,6 @@ function SideMenu(props) {
             <div className="category-content">
               {groupData[groupIndex] && (
                 <div className="content-scroll">
-                  <div>
-                  {/* <Box sx={{ alignItems: 'flex-start', marginTop: '20px', marginBottom:'20px', marginLeft:'10px' }}>
-                    <span className="all-local">
-                    <Link to={`/${group.name.toLowerCase().replace(/\s+/g, '').replace("prototypes","")}` } className='all-local'>
-                        All {group.name.toLowerCase().replace(/\s+/g, '').replace("prototypes","")} prototypes
-                      </Link>
-                      <NavigateNextIcon />
-                    </span>
-                  </Box> */}
                   {groupData[groupIndex].map((prototype, itemIndex) => {
                     const formattedGroupName = group.name
                       .toLowerCase()
@@ -105,23 +93,23 @@ function SideMenu(props) {
                         to={fullPath}
                         key={`${groupIndex}-${itemIndex}`}
                         className={`menu-link ${
-                          selectedItems[groupIndex] === itemIndex ? 'selected' : ''
-                        }`} // Add class for selected item
-                        sx = {{fontSize: '15pt'}}
-                        onClick={() => handleItemClick(fullPath)} // Pass groupIndex
+                          selectedItems[groupIndex] === itemIndex
+                            ? 'selected'
+                            : ''
+                        }`}
+                        sx={{ fontSize: '15pt' }}
+                        onClick={() => handleItemClick(fullPath, groupIndex)} // Pass groupIndex
                       >
-                         <div>
-                        {prototype.unformattedName === currentPrototype ? (
-                          <strong>{prototype.unformattedName}</strong>
-                        ) : (
-                          prototype.unformattedName
-                        )}
-                      </div>
+                        <div>
+                          {prototype.unformattedName === currentPrototype ? (
+                            <strong>{prototype.unformattedName}</strong>
+                          ) : (
+                            prototype.unformattedName
+                          )}
+                        </div>
                       </Link>
                     );
                   })}
-
-                  </div>
                 </div>
               )}
             </div>

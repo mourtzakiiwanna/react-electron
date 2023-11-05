@@ -155,7 +155,7 @@ const style = {
                 onChange={handleInputChange}
             />
  
-        <TextField
+        {/* <TextField
             required
             label="Attribute Type"
             size="small"
@@ -173,7 +173,7 @@ const style = {
                 <MenuItem value="FIELD_GROUP">FIELD_GROUP</MenuItem>
                 <MenuItem value="SCHEME">SCHEME</MenuItem>
                 <MenuItem value="SCHEME_FIELD">SCHEME_FIELD</MenuItem>
-        </TextField>
+        </TextField> */}
 
         <TextField
             required

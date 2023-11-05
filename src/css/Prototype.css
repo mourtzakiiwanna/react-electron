@@ -221,6 +221,13 @@
     font-size: medium;
   }
 
+  .inherited-prototypes-title {
+    font-weight: bold;
+    color: #000000;
+    font-size: medium;
+  }
+
+
    /* Inherited prototypes list */
     .info-list {
         margin-top: 15px;
@@ -247,7 +254,7 @@
   
   
   .subsubheader {
-    font-size: 20px;
+    font-size: 25px;
     margin-bottom: 10px;
     margin-top: 10px;
     color: gray;
@@ -260,10 +267,7 @@
   color: white;
 }
 
-
-
-
-.add-field-button, .add-inheritance-button{
+.add-inheritance-button{
   display: inline-block;
   padding: 10px 20px;
   background-color: #f0f0f0;
@@ -278,11 +282,32 @@
   transition: background-color 0.3s;
 }
 
+
+.add-field-button{
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #f0f0f0;
+  color: black;
+  border: 2px solid rgb(219, 219, 219);
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-size: 11px;
+  transition: background-color 0.3s;
+}
+
+
 .add-field-button {
   margin-left: 20px;
 }
 
 .add-field-button:hover, .add-inheritance-button:hover{
+  background-color: #c2c2c2;
+}
+
+
+.add-field-button:hover{
   background-color: #c2c2c2;
 }
 
@@ -484,18 +509,15 @@
 }
 
 /* Default styles for the hover label */
-.hover-label {
-  display: none; 
+.switch-label {
+  display: inline; 
   padding-left: 10px; 
   color: #777777;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: normal;
   margin-top: 7px;
 }
 
-.switch-container:hover .hover-label {
-  display: inline; 
-}
 
 .alt-text-container {
   display: flex;
@@ -507,5 +529,6 @@
 .switch-container {
   display: flex; /* Make it a flex container */
   align-items: center; /* Center items vertically */
+  margin-left: 20px;
 }
 

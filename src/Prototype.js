@@ -84,6 +84,7 @@ function Prototype(props) {
     },
   };
   const [open, setOpen] = React.useState(false);
+  const [openInherited, setOpenInherited] = React.useState(false);
 
   const handleClickOpen = (id) => {
     setOpen(true);
@@ -91,6 +92,10 @@ function Prototype(props) {
 
   const handleCloseConfirm = () => {
     setOpen(false);
+  };
+
+  const handleCloseConfirmInherited = () => {
+    setOpenInherited(false);
   };
 
   const [openAlert, setOpenAlert] = React.useState(false);
@@ -111,7 +116,6 @@ function Prototype(props) {
     valueType: '',
     constraint: '',
     defaultValue: '',
-    attributeType: '',
   });
 
   const handleFieldToggleForm = () => {
@@ -124,7 +128,6 @@ function Prototype(props) {
         valueType: '',
         constraint: '',
         defaultValue: '',
-        attributeType: '',
       });
     }
   };
@@ -154,6 +157,8 @@ function Prototype(props) {
 
 
   const [fieldToDelete, setFieldToDelete] = useState('');
+  const [inheritedToDelete, setInheritedToDelete] = useState('');
+
   const [initialRows, setInitialRows] = useState([]);
   const [showAllInheritedPrototypes, setShowAllInheritedPrototypes] = useState(false);
 
@@ -177,7 +182,6 @@ function Prototype(props) {
       fieldId: field.id,
       valueType: field.valueType,
       defaultValue: field.defaultValue,
-      attributeType: field.attributeType,
       constraints: field.constraints || '',
       isMap: field.map,
     }));
@@ -198,7 +202,7 @@ function Prototype(props) {
   const handleAddField = async () => {
     try {
       // Retrieve the necessary values from the newFieldInfo state
-      const { id, fgId, valueType, constraint, defaultValue, attributeType } = newFieldInfo;
+      const { id, fgId, valueType, constraint, defaultValue} = newFieldInfo;
   
       var fullPath = '';
       if (groupName === 'core') {
@@ -206,7 +210,7 @@ function Prototype(props) {
       } else {
         fullPath = groupName + '/' + prototypeName;
       }
-      const fieldUrl = `http://localhost:8080/addField?prototypePath=/${fullPath}&id=${id}&fgId=${fgId}&valueType=${valueType}&constraint=${constraint}&defaultValue=${defaultValue}&attributeType=${attributeType}`;
+      const fieldUrl = `http://localhost:8080/addField?prototypePath=/${fullPath}&id=${id}&fgId=${fgId}&valueType=${valueType}&constraint=${constraint}&defaultValue=${defaultValue}`;
       console.log("fieldUrl", fieldUrl);
 
       const response = await fetch(fieldUrl);
@@ -287,16 +291,16 @@ function Prototype(props) {
 
     { field: 'defaultValue', headerName: 'Default Value', width: 150, editable: true ,headerClassName: 'super-app-theme--header', sortable: false  },
 
-    {
-      field: 'attributeType',
-      headerName: 'Attribute Type',
-      width: 200,
-      editable: true,
-      type: 'singleSelect',
-      headerClassName: 'super-app-theme--header',
-      valueOptions: ['STANDALONE_FIELD', 'FIELD', 'FIELD_GROUP', 'SCHEME', 'SCHEME_FIELD'],
-      sortable: false,
-    },
+    // {
+    //   field: 'attributeType',
+    //   headerName: 'Attribute Type',
+    //   width: 200,
+    //   editable: true,
+    //   type: 'singleSelect',
+    //   headerClassName: 'super-app-theme--header',
+    //   valueOptions: ['STANDALONE_FIELD', 'FIELD', 'FIELD_GROUP', 'SCHEME', 'SCHEME_FIELD'],
+    //   sortable: false,
+    // },
     { 
       field: 'constraints', 
       headerName: 'Constraint', 
@@ -387,7 +391,42 @@ function Prototype(props) {
             </>
           );
         }
-        return null; // Hide actions for non-map fields
+
+        const isInEditMode = rowModesModel[params.id]?.mode === GridRowModes.Edit;
+    
+        if (isInEditMode) {
+          return (
+            <>
+              <GridActionsCellItem
+                icon={<SaveIcon />}
+                label="Save"
+                sx={{
+                  color: 'primary.main',
+                }}
+                onClick={handleSaveClick(params.id)}
+              />
+              <GridActionsCellItem
+                icon={<CancelIcon />}
+                label="Cancel"
+                className="textPrimary"
+                onClick={handleCancelClick(params.id)}
+                color="inherit"
+              />
+            </>
+          );
+        }
+        
+        return (
+          <>
+            <GridActionsCellItem
+              icon={<EditIcon />}
+              label="Edit"
+              className="textPrimary"
+              onClick={handleEditClick(params.id)}
+              color="inherit"
+            />
+          </>
+        );
       },
     },
   ];
@@ -416,16 +455,16 @@ function Prototype(props) {
   };
 
   const handleCellDoubleClick = (params) => {
-    if (!params.row.isMap) {
+    if (params.field === "defaultValue" || params.field === "constraints") {
+      handleEditClick(params.id);
+    } else if (!params.row.isMap) {
       setOpenAlert(true);
       setTimeout(() => {
         setOpenAlert(false);
       }, 3000);
-      return;
     }
-    handleEditClick(params.id);
   };
-
+  
   const handleRowEditStop = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
@@ -445,10 +484,24 @@ function Prototype(props) {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
+
+  const handleDeleteClickInherited = () => {
+    console.log('clicked');
+    setOpenInherited(true);
+  };
+
+
+  const handleSaveClickInherited = (id) => () => {
+  };
+
   const handleDeleteConfirm = () => {
     console.log("Field to delete:", fieldToDelete);
     setRows(rows.filter((row) => row.fieldId !== fieldToDelete));
     setOpen(false);
+  };
+  
+  const handleDeleteConfirmInherited = () => {
+    setOpenInherited(false);
   };
   
 
@@ -489,7 +542,6 @@ function Prototype(props) {
       valueType: '',
       constraint: '',
       defaultValue: '',
-      attributeType: '',
     });
     fetchData(); // Fetch data for the new prototype and initialize 'rows'
   }, [prototypeName, groupName]);
@@ -583,7 +635,7 @@ function Prototype(props) {
               sx ={{margin: '70px', marginBottom:'50px', textDecoration:'none', fontWeight: 'bold' ,letterSpacing: '2px', fontFamily:'Arial',
               '&:hover': { color: 'gray', textDecoration:'none'}
 
-              }}>Digital Library</Typography>      
+              }}>Prototypes</Typography>      
                   
             </Link>
             </div>
@@ -592,32 +644,58 @@ function Prototype(props) {
             <h2 className="prototype-header">{prototypeInfo.id}</h2>
             
             <div className="info-section">
-              
+              <div className="inherited-section">
+              <span className='inherited-prototypes-title'>Inherited Prototypes</span>{" "}
+                <span>
+                  {prototypeInfo.allInheritedPrototypes.length > 0 && prototypeInfo.allInheritedPrototypes.length != prototypeInfo.inheritedPrototypes.length && (
+                    <FormControlLabel
+                      control={
+                        <div className="switch-container">
+                          <Switcher
+                            disabled={false}
+                            size="sm"
+                            variant="soft"
+                            sx={{ marginLeft: "10px", marginTop: "5px" }}
+                            checked={showAllInheritedPrototypes}
+                            onChange={() => setShowAllInheritedPrototypes(!showAllInheritedPrototypes)}
+                          />
+                          <span className="switch-label">
+                            {showAllInheritedPrototypes ? 'Hide all prototypes' : 'Show all prototypes'} 
+                          </span>
+                        
+                        </div>
+                      }
+                    />
+                  )}
+                </span>
+              </div>
+
               {!showAllInheritedPrototypes && (
-                <p className="inherited-prototypes">
-                  <div>Inherited Prototypes</div>{" "}
-                  {prototypeInfo.inheritedPrototypes.map((prototype, index) => {
-                    const fullPath = `/prototype${prototype.replace("butterfly/","")}`;
-                    return (
-                      <span>
-                      <React.Fragment key={`${groupName}-${index}`}>
-                        <span className = 'inherited-prototypes-list'>
-                        {index > 0 && " | "} 
-                        </span>
+              <p className="inherited-prototypes">
+                {prototypeInfo.inheritedPrototypes.map((prototype, index) => {
+                  const fullPath = `/prototype${prototype.replace("butterfly/", "")}`;
+                  return (
+                    <React.Fragment key={`${groupName}-${index}`}>
+                      {index > 0 && " | "}
+                      <span className="inherited-prototypes-list">
                         <Link to={fullPath} onClick={() => handlePrototypeClick(fullPath)} className={`inherited-prototypes-list${index === 0 ? ' with-right-padding' : ' with-padding'}`}>
-                         {prototype}
+                          {prototype}
                         </Link>
-                      </React.Fragment>
+                        <span onClick={() => handleDeleteClickInherited(prototype)} style={{ cursor: 'pointer', color: 'red' }}>
+                          X
+                        </span>
                       </span>
-                    );
-                  })}
-                </p>
-              ) }
+                    </React.Fragment>
+                  );
+                })}
+              </p>
+            )}
                       
+              
+
 
               {showAllInheritedPrototypes && (
                 <p className="inherited-prototypes">
-                  <div>Inherited Prototypes</div>{" "}
                   {prototypeInfo.allInheritedPrototypes.map((prototype, index) => {
                     const fullPath = `/prototype${prototype.replace("butterfly/","")}`;
                     return (
@@ -629,6 +707,9 @@ function Prototype(props) {
                         <Link to={fullPath} onClick={() => handlePrototypeClick(fullPath)} className = 'inherited-prototypes-list'> 
                          {prototype}
                         </Link>
+                        <span onClick={() => handleDeleteClickInherited()} style={{ cursor: 'pointer', color: 'red' }}>
+                          X
+                        </span>
                       </React.Fragment>
                       </span>
                     );
@@ -641,29 +722,7 @@ function Prototype(props) {
               )} 
 
           
-              <div>
-                {prototypeInfo.allInheritedPrototypes.length > 0 && prototypeInfo.allInheritedPrototypes.length != prototypeInfo.inheritedPrototypes.length && (
-                  <FormControlLabel
-                    control={
-                      <div className="switch-container">
-                        <Switcher
-                          disabled={false}
-                          size="md"
-                          variant="soft"
-                          sx={{ marginLeft: "10px", marginTop: "5px" }}
-                          checked={showAllInheritedPrototypes}
-                          onChange={() => setShowAllInheritedPrototypes(!showAllInheritedPrototypes)}
-                        />
-                        <span className="hover-label">
-                          {showAllInheritedPrototypes ? 'Hide all prototypes' : 'Show all prototypes'} 
-                        </span>
-                       
-                      </div>
-                    }
-                  />
-                )}
-              </div>
-
+    
               
               {showDropdown ? (
                 <InheritanceModal
@@ -682,11 +741,7 @@ function Prototype(props) {
               )}
            
 
-            {!isFormVisible && (
-              <button className="add-field-button" onClick={handleFieldToggleForm}>
-                Add Field
-              </button>
-            )}    
+            
 
             {isFormVisible && (
               <AddFieldModal
@@ -710,7 +765,12 @@ function Prototype(props) {
         <div className='field-section'>
         <div ref={dataGridContainerRef}>
 
-        <div className="subsubheader">Fields</div>
+        <span className="subsubheader">Fields</span>
+        <span>
+          <button className="add-field-button" onClick={handleFieldToggleForm}>
+            Add new field
+          </button>   
+        </span> 
         <Box
               sx={{
                 width: '100%',
@@ -724,32 +784,48 @@ function Prototype(props) {
                 
               }}
             >
-              <DataGrid
-                rows={rows}
-                columns={columns}
-                className="overflow-grid"
-                editMode={'row'}
-                rowModesModel={rowModesModel}
-                onRowModesModelChange={handleRowModesModelChange}
-                onRowEditStop={handleRowEditStop}
-                processRowUpdate={processRowUpdate}
-                isCellEditable={(params) => params.row.isMap}
-                disableEdit={(params) => !params.row.isMap}
-                onCellDoubleClick={handleCellDoubleClick}
-                hideFooterPagination={true}
-                hideFooter={true}
-                initialState={{
-                  sorting: {
-                    sortModel: [{ field: 'fieldId', sort: 'asc' }],
-                  },
-                }}
-                slotProps={{
-                  toolbar: { setRows, setRowModesModel },
-                }}   
-                sx={{ '& .MuiDataGrid-row': { marginTop: 1, marginBottom: 1 }, fontSize: "10pt",
-                '& .coloured': { textAlign: 'center', color: '#7181AD' },'& .MuiDataGrid-virtualScroller::-webkit-horizontal-scrollbar': {display: 'none' } }}
-    
-              />
+           <DataGrid
+            rows={rows}
+            columns={columns}
+            className="overflow-grid"
+            editMode={'row'}
+            rowModesModel={rowModesModel}
+            onRowModesModelChange={handleRowModesModelChange}
+            onRowEditStop={handleRowEditStop}
+            processRowUpdate={processRowUpdate}
+            isCellEditable={(params) => {
+              if (params.field === "defaultValue" || params.field === "constraints") {
+                // Make the "defaultValue" column always editable
+                return true;
+              }
+              return params.row.isMap; // Make other columns editable based on the isMap condition
+            }}
+            disableEdit={(params) => {
+              if (params.field === "defaultValue" || params.field === "constraints") {
+                // Disable editing for the "defaultValue" column
+                return true;
+              }
+              return !params.row.isMap; // Disable other columns based on the isMap condition
+            }}
+            onCellDoubleClick={handleCellDoubleClick}
+            hideFooterPagination={true}
+            hideFooter={true}
+            initialState={{
+              sorting: {
+                sortModel: [{ field: 'fieldId', sort: 'asc' }],
+              },
+            }}
+            slotProps={{
+              toolbar: { setRows, setRowModesModel },
+            }}
+            sx={{
+              '& .MuiDataGrid-row': { marginTop: 1, marginBottom: 1 },
+              fontSize: "10pt",
+              '& .coloured': { textAlign: 'center', color: '#7181AD' },
+              '& .MuiDataGrid-virtualScroller::-webkit-horizontal-scrollbar': { display: 'none' }
+            }}
+          />
+
 
             </Box>
             </div>
@@ -775,6 +851,27 @@ function Prototype(props) {
               </DialogActions>
             </Dialog>
 
+            <Dialog
+              open={openInherited}
+              onClose={handleCloseConfirmInherited}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">
+                {"Delete Confirmation"}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  You are going to delete this inheritance. Are you sure?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleCloseConfirmInherited}>CANCEL</Button>
+                <Button onClick={handleDeleteConfirmInherited} autoFocus>
+                DELETE
+                </Button>
+              </DialogActions>
+            </Dialog>
 
   
       </div>

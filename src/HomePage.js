@@ -49,7 +49,7 @@ function Prototype(props) {
               sx ={{margin: '70px', marginBottom:'50px', textDecoration:'none', fontWeight: 'bold' ,letterSpacing: '2px', fontFamily:'Arial',
               '&:hover': { color: 'gray', textDecoration:'none'}
 
-              }}>Digital Library</Typography>      
+              }}>Prototypes</Typography>      
                   
             </Link>
 
