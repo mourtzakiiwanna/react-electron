@@ -237,11 +237,13 @@
 
 .prototype-header {   
   flex: 1; /* Take 50% of available space */
-  font-size: 28px;
+  font-size: 32px;
   font-weight: bold;      
-  text-align: center;    
+  text-align: left;    
   color: darkgray;
-  margin-right: 10px; /* Add some spacing between header and info section */
+  margin-right: 10px; 
+  margin-left: 25px;
+
 }
       
 

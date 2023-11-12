@@ -38,11 +38,7 @@ function Prototype(props) {
 
           <div className='header-and-button'>
 
-          <span className="center-button">
-                <Link to="/create" className="create-button">
-                  Create new prototype
-                </Link>
-          </span>
+      
           
             <Link to="/" className='link'>
             <Typography variant="h3" gutterBottom className='pageHeader' 

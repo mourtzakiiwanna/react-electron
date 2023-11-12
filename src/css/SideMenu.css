@@ -55,7 +55,7 @@
     }
     
   .content-scroll {
-    max-height: 650px; /* Set a maximum height for the content area */
+    max-height: 600px; /* Set a maximum height for the content area */
     overflow-y: auto; /* Enable scrolling within the content area */
     padding: 10px 20px 20px 20px;
     margin-top: 10px; 
@@ -93,4 +93,8 @@
   .all-local:hover{
     text-decoration: none;
     color: #777;
+  }
+
+  .page {
+    margin-top:20px;
   }

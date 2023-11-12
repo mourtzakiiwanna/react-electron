@@ -63,6 +63,12 @@ function SideMenu(props) {
   };
 
   return (
+    <div className='page'>
+    <span className="center-button">
+      <Link to="/create" className="create-button">
+        Create new prototype
+      </Link>
+    </span> 
     <div className="side-menu">
       {groups.map((group, groupIndex) => (
         <div key={groupIndex}>
@@ -116,6 +122,7 @@ function SideMenu(props) {
           )}
         </div>
       ))}
+    </div>
     </div>
   );
 }
