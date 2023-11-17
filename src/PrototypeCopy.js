@@ -45,7 +45,6 @@ import MuiAlert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import AddFieldModal from './AddFieldModal';
 import InheritanceModal from './AddInheritanceModal';
-import { darken, lighten, styled } from '@mui/material/styles';
 
 
 import {
@@ -64,16 +63,6 @@ import {
 
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
-
-
-
-const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
-  '& .super-app-theme--Hide': {
-    display: "none"
-  }, '& .super-app-theme--Show': {
-  },
-
-}));
 const groups = [
   { name: 'Local Prototypes', url: 'http://localhost:8080/getLocal' },
   { name: 'Core Prototypes', url: 'http://localhost:8080/getCore' },
@@ -111,8 +100,6 @@ function Prototype(props) {
 
   const [openAlert, setOpenAlert] = React.useState(false);
 
-
-  const [rows, setRows] = React.useState([]);
 
   const dataGridContainerRef = useRef(null);
 
@@ -166,16 +153,6 @@ function Prototype(props) {
     setShowDropdown(true);
   };
 
-  const handleRowClassName = (params, currentFgID) => {
-    console.log('Current fgID:', currentFgID);
-    console.log('Row field:', params.row.id);
-    console.log('Row fgID:', params.row.fgID);
-
-    const isHidden = params.row.fgID !== currentFgID;
-    console.log('Is Hidden:', isHidden);
-
-    return isHidden ? 'hidden-row' : '';
-  };
 
   const [inheritanceDropdownOptions, setinheritanceDropdownOptions] = useState([]);
 
@@ -189,35 +166,34 @@ function Prototype(props) {
 
   const fetchData = async () => {
     let fullPath = '';
-
+  
     if (groupName === 'core') {
       fullPath = 'butterfly' + '/' + groupName + '/' + prototypeName;
     } else {
       fullPath = groupName + '/' + prototypeName;
     }
-
+  
     const response = await fetch(`http://localhost:8080/show?prototypePath=/${fullPath}&showSummary=true&showInheritance=true&showFields=true`);
     const data = await response.json();
     setPrototypeInfo(data);
-
+  
     const mappedFields = data.fields.map((field) => ({
       id: field.id,
-      fgID: field.fgID !== undefined ? field.fgID : 'undefined', // Set to 'undefined' if fgID is undefined
+      fgID: field.fgID,
       fieldId: field.id,
       valueType: field.valueType,
       defaultValue: field.defaultValue,
       constraints: field.constraints || '',
       isMap: field.map,
     }));
-    
     // Create a mapping with fgID as key and an array of fields as value
     const map = mappedFields.reduce((acc, field) => {
-      const key = field.fgID !== undefined ? field.fgID : "undefined"; // Check if fgID is undefined
-
+      const key = field.fgID || 'undefined';
+  
       if (!acc[key]) {
         acc[key] = [];
       }
-
+  
       acc[key].push({
         id: field.id,
         fieldId: field.fieldId,
@@ -226,23 +202,20 @@ function Prototype(props) {
         constraints: field.constraints,
         isMap: field.isMap,
       });
-
+  
       return acc;
     }, {});
 
     setFieldMap(map);
-
+  
     setRows((existingRows) => removeDuplicates([...existingRows, ...mappedFields]));
   };
-
+  
 
   const uniqueFgIDs = Object.keys(fieldMap);
 
-  console.log("fgIds", uniqueFgIDs);
-  console.log("Rows", rows);
   console.log("map fields", fieldMap);
-
-
+  console.log("fgIds", uniqueFgIDs);
 
   const handleAddField = async () => {
     try {
@@ -299,7 +272,6 @@ function Prototype(props) {
 
   const columns = [
     { field: 'fgID', headerName: 'Group', width: 180, editable: true, headerClassName: 'super-app-theme--header', sortable: false },
-
     { field: 'fieldId', headerName: 'Field ID', width: 220, editable: true, headerClassName: 'super-app-theme--header', sortable: false },
     {
       field: 'valueType',
@@ -480,6 +452,7 @@ function Prototype(props) {
   ];
 
 
+  const [rows, setRows] = React.useState([]);
 
   const removeDuplicates = (array) => {
     const uniqueIds = new Set();
@@ -495,19 +468,10 @@ function Prototype(props) {
   const [rowModesModel, setRowModesModel] = React.useState({});
 
 
-  const handleEditClick = (id) => () => {
-    console.log("Clicked Edit for ID:", id);
-    console.log("All Rows:", rows);
-    console.log("All Fields:", fieldMap);
 
-    // Check if the row with the specified ID exists
-    const selectedRow = rows.find((row) => row.id === id);
-    if (selectedRow) {
-      console.log("Selected Row:", selectedRow);
-      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-    } else {
-      console.error(`No row with id ${id} found.`);
-    }
+  const handleEditClick = (id) => () => {
+
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
   const handleCellDoubleClick = (params) => {
@@ -575,7 +539,6 @@ function Prototype(props) {
 
   const processRowUpdate = (newRow) => {
     const updatedRow = { ...newRow, isNew: false };
-    console.log("newRow", newRow);
     // Update the rows, remove duplicates based on `field.id`
     setRows((existingRows) => removeDuplicates(existingRows.map((row) => (row.id === newRow.id ? updatedRow : row))));
     return updatedRow;
@@ -583,12 +546,8 @@ function Prototype(props) {
 
 
   const handleRowModesModelChange = (newRowModesModel) => {
-    // Filter the rowIds based on the condition
-
-    // Set the new row modes model
     setRowModesModel(newRowModesModel);
   };
-
 
 
   useEffect(() => {
@@ -597,8 +556,7 @@ function Prototype(props) {
     setAddInheritance(false);
     setNewInheritance('');
     setShowAllInheritedPrototypes(false);
-    setRows([]);
-    setFieldMap([]);
+    setRows('');
     setNewFieldInfo({
       id: '',
       fgId: '',
@@ -673,6 +631,7 @@ function Prototype(props) {
   const handlePrototypeClick = (fullPath) => {
     navigate(fullPath);
   };
+
 
 
   return (
@@ -829,106 +788,64 @@ function Prototype(props) {
                   Add new field
                 </button>
               </span>
-
-
               <Box
                 sx={{
                   width: '100%',
                   marginTop: '20px',
                   height: 450,
-                  overflowY: 'auto',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  padding: '10px',
-                  '&::-webkit-scrollbar': {
-                    width: '12px',
+                  '& .textPrimary': {
+                    color: 'text.primary',
                   },
-                  '&::-webkit-scrollbar-thumb': {
-                    backgroundColor: '#888',
-                    borderRadius: '6px',
+                  '& .super-app-theme--header': {
                   },
-                  '&::-webkit-scrollbar-track': {
-                    backgroundColor: 'transparent',
-                  },
+
                 }}
               >
-                {uniqueFgIDs.map((fgID) => (
-                  <div
-                    key={fgID}
-                    style={{
-                      marginBottom: '16px',
-                      flex: 1,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      height: "200px"
-                    }}
-                    className="fgID"
-                  >
-                    <div
-                      style={{
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        marginBottom: '8px',
-                        marginTop: '12px'
-                        
-                      }}
-                    >
-                      {fgID !== "undefined" ? fgID : "Standalone fields" }
-                    </div>
-                    <Box
-                      sx={{
-                        overflowY: 'auto',
-                        
-                      }}
-                    >
-                      <StyledDataGrid
-                        key={fgID}
-                        rows = {rows.filter(row => row.fgID === fgID)}
-                        columns={columns}
-                        className="overflow-grid"
-                        getRowId={(row) => row.id}
-                  
-                        editMode={'row'}
-                        rowModesModel={rowModesModel}
-                        onRowModesModelChange={handleRowModesModelChange}
-                        onRowEditStop={handleRowEditStop}
-                        processRowUpdate={processRowUpdate}
-                        isCellEditable={(params) => {
-                          if (params.field === 'defaultValue' || params.field === 'constraints') {
-                            return true;
-                          }
-                          return params.row.isMap;
-                        }}
-                        disableEdit={(params) => {
-                          if (params.field === 'defaultValue' || params.field === 'constraints') {
-                            return true;
-                          }
-                          return !params.row.isMap;
-                        }}
-                        onCellDoubleClick={handleCellDoubleClick}
-                        hideFooterPagination={true}
-                        hideFooter={true}
-                        initialState={{
-                          sorting: {
-                            sortModel: [{ field: 'fieldId', sort: 'asc' }],
-                          },
-                        }}
-                        slotProps={{
-                          toolbar: { setRows, setRowModesModel },
-                        }}
-                        sx={{
-                          '& .MuiDataGrid-row': { marginTop: 0.5, marginBottom: 0.5 },
-                          fontSize: '10pt',
-                          '& .coloured': { textAlign: 'center', color: '#7181AD' },
-                          '& .MuiDataGrid-virtualScroller::-webkit-horizontal-scrollbar': { display: 'none' },
-                        }}
-                      />
+                
+                <DataGrid
+                  rows={rows}
+                  columns={columns}
+                  className="overflow-grid"
+                  editMode={'row'}
+                  rowModesModel={rowModesModel}
+                  onRowModesModelChange={handleRowModesModelChange}
+                  onRowEditStop={handleRowEditStop}
+                  processRowUpdate={processRowUpdate}
+                  isCellEditable={(params) => {
+                    if (params.field === "defaultValue" || params.field === "constraints") {
+                      // Make the "defaultValue" column always editable
+                      return true;
+                    }
+                    return params.row.isMap; // Make other columns editable based on the isMap condition
+                  }}
+                  disableEdit={(params) => {
+                    if (params.field === "defaultValue" || params.field === "constraints") {
+                      // Disable editing for the "defaultValue" column
+                      return true;
+                    }
+                    return !params.row.isMap; // Disable other columns based on the isMap condition
+                  }}
+                  onCellDoubleClick={handleCellDoubleClick}
+                  hideFooterPagination={true}
+                  hideFooter={true}
+                  initialState={{
+                    sorting: {
+                      sortModel: [{ field: 'fieldId', sort: 'asc' }],
+                    },
+                  }}
+                  slotProps={{
+                    toolbar: { setRows, setRowModesModel },
+                  }}
+                  sx={{
+                    '& .MuiDataGrid-row': { marginTop: 1, marginBottom: 1 },
+                    fontSize: "10pt",
+                    '& .coloured': { textAlign: 'center', color: '#7181AD' },
+                    '& .MuiDataGrid-virtualScroller::-webkit-horizontal-scrollbar': { display: 'none' }
+                  }}
+                />
 
-                    </Box>
-                  </div>
-                ))}
+
               </Box>
-
             </div>
             <Dialog
               open={open}

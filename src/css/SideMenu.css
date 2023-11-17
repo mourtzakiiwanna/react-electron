@@ -1,8 +1,9 @@
 
 .side-menu {
-  width: 18%;
+  width: 20%;
   position: fixed;
-  margin-left: 15px;
+  margin-left: 30px;
+  margin-top: 10px;
   padding-left: 20px;
   color: gray;
   overflow-y: auto;
@@ -96,5 +97,6 @@
   }
 
   .page {
-    margin-top:20px;
+    margin-top:30px;
+    margin-left: 20px;
   }

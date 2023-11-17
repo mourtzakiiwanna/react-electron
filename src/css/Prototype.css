@@ -4,14 +4,14 @@
 }
 
 .main-content {
-  margin-left: 3%; 
+  margin-left: 10%; 
   padding: 20px; 
 }
 
 .sticky-header {
   position: fixed;
-  width: 75%;
-  max-width:75%; 
+  width: 65%;
+  max-width:65%; 
   top: 0;
   z-index: 1;
   background-color: #e7e7e7; 
@@ -24,12 +24,12 @@
   /* Field item */
   .field-section {
     position: fixed;
-    width: 75%;
-    max-width: 75%;
+    width: 65%;
+    max-width: 65%;
     height: 550px;
     max-height: 550px;
-    margin-top: 290px;
-    padding: 20px;
+    margin-top: 270px;
+    padding: 30px;
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1);
@@ -381,9 +381,6 @@
 
 
 
-
-
-
 .add-inheritance-button:hover {
   background-color: #c2c2c2;
   color: black;
@@ -521,6 +518,7 @@
 }
 
 
+
 .alt-text-container {
   display: flex;
   justify-content: space-between; /* Equal distribution of space between children */
@@ -534,3 +532,8 @@
   margin-left: 20px;
 }
 
+
+/* Add this to your CSS file or style block */
+.hidden-row {
+  background-color: green;
+}
