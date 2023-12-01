@@ -24,6 +24,7 @@ import MuiAlert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import InheritanceModal from './AddInheritanceModal';
 import AddFieldModal from './AddFieldModal';
+import UpdateFieldModal from './UpdateFieldModal';
 import { styled } from '@mui/material/styles';
 
 import {
@@ -33,7 +34,7 @@ import {
   GridRowEditStopReasons,
 } from '@mui/x-data-grid';
 import AddFieldGroupModal from './AddFieldGroupModal';
-
+import { ControlPointDuplicateRounded } from '@mui/icons-material';
 
 const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   '& .super-app-theme--Hide': {
@@ -146,13 +147,14 @@ async function putData(url = "", formData = new FormData()) {
   const [openFieldGroupAlert, setOpenFieldGroupAlert] = React.useState(false);
   const [openFieldAlert, setOpenFieldAlert] = React.useState(false);
   const [openFieldDeleteAlert, setOpenFieldDeleteAlert] = React.useState(false);
-  const [openFieldUpdateAlert, setOpenFieldUpdateAlert] = React.useState(false);
   const [openFieldGroupDeleteAlert, setOpenFieldGroupDeleteAlert] = React.useState(false);
+  const [openFieldUpdateAlert, setOpenFieldUpdateAlert] = React.useState(false);
 
   const [rows, setRows] = React.useState([]);
 
   const dataGridContainerRef = useRef(null);
 
+  const [rowModesModel, setRowModesModel] = React.useState({});
 
   const { groupName, prototypeName } = useParams();
   const [prototypeInfo, setPrototypeInfo] = useState();
@@ -207,12 +209,19 @@ async function putData(url = "", formData = new FormData()) {
   const [showInheritanceModal, setShowInheritanceModal] = useState(false);
   const [showFieldGroupModal, setShowFieldGroupModal] = useState(false);
   const [showFieldModal, setShowFieldModal] = useState(false);
+  const [showUpdateFieldModal, setShowUpdateFieldModal] = useState(false);
 
   const [selectedInheritedPrototype, setSelectedInheritedPrototype] = useState('');
   const [selectedFieldGroup, setSelectedFieldGroup] = useState('');
   const [selectedFieldId, setSelectedFieldId] = useState('');
   const [selectedFieldType, setSelectedFieldType] = useState('');
   const [selectedFieldConstraint, setSelectedFieldConstraint] = useState('');
+  const [selectedUpdateFieldId, setSelectedUpdateFieldId] = useState('');
+  const [selectedUpdateFieldType, setSelectedUpdateFieldType] = useState('');
+  const [selectedUpdateFieldConstraint, setSelectedUpdateFieldConstraint] = useState('');
+  const [updatedFieldId, setUpdatedFieldId] = useState('');
+  const [initialUpdateFieldType, setInitialUpdateFieldType] = useState('');
+  const [initialUpdateFieldConstraint, setInitialUpdateFieldConstraint] = useState('');
 
   const handleSaveInheritance = async (selectedValue) => {
     setShowInheritanceModal(false);
@@ -262,6 +271,28 @@ async function putData(url = "", formData = new FormData()) {
       }, 3000);
     });
   };
+
+  const handleSaveUpdateField = async (selectedUpdateFieldId, selectedUpdateFieldType, selectedUpdateFieldConstraint) => {
+    setShowUpdateFieldModal(false);
+    const formData = new FormData();
+    console.log("new type", selectedUpdateFieldType);
+    if (selectedUpdateFieldType!== null)
+      formData.append('type', selectedUpdateFieldType);
+    if (selectedUpdateFieldConstraint!== null) {
+      const constraint = selectedUpdateFieldConstraint.substring(selectedUpdateFieldConstraint.lastIndexOf('/') + 1);
+      formData.append('constraint', constraint);
+    }
+  
+    formData.append('fieldId',selectedUpdateFieldId);
+    console.log(selectedUpdateFieldId);
+    putData(`http://localhost:8080/api/type/${prototypeName}/field`, formData).then((data) => {
+      console.log(data); 
+      setOpenFieldAlert(true);
+      setTimeout(() => {
+        setOpenFieldAlert(false);
+      }, 3000);
+    });
+  };
   
 
   
@@ -278,6 +309,9 @@ async function putData(url = "", formData = new FormData()) {
     setShowFieldModal(false);
   };
 
+  const handleCancelUpdateField = () => {
+    setShowUpdateFieldModal(false);
+  };
 
   const handleClickInheritance = () => {
     setSelectedInheritedPrototype(null);
@@ -296,8 +330,18 @@ async function putData(url = "", formData = new FormData()) {
     setShowFieldModal(true);
   };
 
-  const [inheritanceDropdownOptions, setinheritanceDropdownOptions] = useState([]);
+  const handleClickUpdateField = (id, type, constraint) => {
+    setUpdatedFieldId(id);
+    setInitialUpdateFieldType(type);
+    setInitialUpdateFieldConstraint(constraint);
+    
+    setSelectedUpdateFieldId(null);
+    setSelectedUpdateFieldType(null);
+    setSelectedUpdateFieldConstraint(null);
+    setShowUpdateFieldModal(true);
+  };
 
+  const [inheritanceDropdownOptions, setinheritanceDropdownOptions] = useState([]);
 
   const [fieldToDelete, setFieldToDelete] = useState('');
   const [allInheritedPrototypes, setAllInheritedPrototypes] = useState('');
@@ -533,14 +577,13 @@ async function putData(url = "", formData = new FormData()) {
               </>
             );
           }
-
           return (
             <>
               <GridActionsCellItem
                 icon={<EditIcon />}
                 label="Edit"
                 className="textPrimary"
-                onClick={handleEditClick(params.id)}
+                onClick={() => handleClickUpdateField(params.id, params.row.valueType, params.row.constraint)}
                 color="inherit"
               />
               <GridActionsCellItem
@@ -583,7 +626,7 @@ async function putData(url = "", formData = new FormData()) {
               icon={<EditIcon />}
               label="Edit"
               className="textPrimary"
-              onClick={handleEditClick(params.id)}
+              onClick={() => handleClickUpdateField(params.id, params.row.valueType, params.row.constraint)}
               color="inherit"
             />
           </>
@@ -603,7 +646,20 @@ async function putData(url = "", formData = new FormData()) {
     });
   };
 
-  const [rowModesModel, setRowModesModel] = React.useState({});
+
+
+  // const handleEditClick = (id) => () => {
+  //   console.log("Clicked Edit for ID:", id);
+  //   console.log("All Rows:", rows);
+  //   console.log("All Fields:", fieldMap);
+
+  //   // Check if the row with the specified ID exists
+  //   const selectedRow = rows.find((row) => row.fieldId === id);
+    
+  //   console.log("Selected Row:", selectedRow);
+  //   setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    
+  // };
 
 
   const handleEditClick = (id) => () => {
@@ -611,14 +667,15 @@ async function putData(url = "", formData = new FormData()) {
     console.log("All Rows:", rows);
     console.log("All Fields:", fieldMap);
 
-    // Check if the row with the specified ID exists
-    const selectedRow = rows.find((row) => row.fieldId === id);
-    
-      console.log("Selected Row:", selectedRow);
-      setRowModesModel({ ...rowModesModel, [selectedRow.id]: { mode: GridRowModes.Edit } });
-    
-  };
 
+    // // Check if the row with the specified ID exists
+    // const selectedRow = rows.find((row) => row.fieldId === id);
+    
+    //   console.log("Selected Row:", selectedRow);
+    //   setRowModesModel({ ...rowModesModel, [selectedRow.fieldId]: { mode: GridRowModes.Edit } });
+  }
+
+  
   const handleCellDoubleClick = (params) => {
     if (params.field === "defaultValue" || params.field === "constraint") {
       handleEditClick(params.id);
@@ -634,9 +691,6 @@ async function putData(url = "", formData = new FormData()) {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
     }
-
-
-
   };
 
   const handleDeleteClick = (id) => () => {
@@ -736,7 +790,6 @@ async function putData(url = "", formData = new FormData()) {
   };
 
 
-
   const handleCancelInheritanceClick = (id) => () => {
     setRowModesModel({
       ...rowModesModel,
@@ -752,16 +805,22 @@ async function putData(url = "", formData = new FormData()) {
   const processRowUpdate = (newRow) => {
     const updatedRow = { ...newRow, isNew: false };
     console.log("newRow", newRow);
-    setRows((existingRows) => removeDuplicates(existingRows.map((row) => (row.id === newRow.id ? updatedRow : row))));
+  
+    setRows((existingRows) => {
+      const updatedRows = existingRows.map((row) =>
+        row.fgID === newRow.fgID && row.id === newRow.id ? updatedRow : row
+      );
+      return removeDuplicates(updatedRows);
+    });
+  
     const formData = new FormData();
     
     if (newRow.valueType !== null)
       formData.append('type', newRow.valueType);
-    if (newRow.constraint!== null) {
-      // const constraint = selectedFieldConstraint.substring(selectedFieldConstraint.lastIndexOf('/') + 1);
+    if (newRow.constraint !== null) {
       formData.append('constraint', newRow.constraint);
     }
-    formData.append('fieldId',newRow.fieldId);
+    formData.append('fieldId', newRow.fieldId);
     putData(`http://localhost:8080/api/type/${prototypeName}/field`, formData).then((data) => {
       console.log(data); 
       setOpenFieldUpdateAlert(true);
@@ -769,9 +828,10 @@ async function putData(url = "", formData = new FormData()) {
         setOpenFieldUpdateAlert(false);
       }, 3000);
     });
-
+  
     return updatedRow;
   };
+
 
 
   const handleRowModesModelChange = (newRowModesModel) => {
@@ -785,6 +845,7 @@ async function putData(url = "", formData = new FormData()) {
     // setAddInheritance(false);
     // setNewInheritance('');
     setShowAllInheritedPrototypes(false);
+    setShowUpdateFieldModal(false);
     setRows([]);
     setFieldMap([]);
     setNewFieldInfo({
@@ -839,6 +900,21 @@ async function putData(url = "", formData = new FormData()) {
     const selectedValue = e.target.value;
     setSelectedFieldConstraint(selectedValue);
   };
+
+  const handleUpdateFieldIdChange = (e) => {
+    const selectedValue = e.target.value;
+    setSelectedUpdateFieldId(selectedValue);
+  };
+
+  const handleUpdateFieldTypeChange = (e) => {
+    const selectedValue = e.target.value;
+    setSelectedUpdateFieldType(selectedValue);
+  };
+  const handleUpdateFieldConstraintChange = (e) => {
+    const selectedValue = e.target.value;
+    setSelectedUpdateFieldConstraint(selectedValue);
+  };
+
   // useEffect(() => {
   //   // Add a click event listener to the document
   //   const handleClickOutside = (event) => {
@@ -1045,7 +1121,24 @@ async function putData(url = "", formData = new FormData()) {
                       </button>
                     )}
             
-
+           
+            {showUpdateFieldModal ? (
+                        <UpdateFieldModal
+                         showUpdateFieldModal={showUpdateFieldModal}
+                         updatedFieldId={updatedFieldId}
+                         selectedUpdateFieldId={selectedUpdateFieldId}
+                         selectedUpdateFieldType={selectedUpdateFieldType}
+                         selectedUpdateFieldConstraint={selectedUpdateFieldConstraint}
+                         handleUpdateFieldIdChange={handleUpdateFieldIdChange}
+                         handleUpdateFieldTypeChange={handleUpdateFieldTypeChange}
+                         handleUpdateFieldConstraintChange={handleUpdateFieldConstraintChange}
+                         handleSaveUpdateField={() => handleSaveUpdateField(updatedFieldId,selectedUpdateFieldType,selectedUpdateFieldConstraint)} 
+                         handleCancelUpdateField={handleCancelUpdateField}
+                         initialUpdateFieldType={initialUpdateFieldType}
+                         initialUpdateFieldConstraint={initialUpdateFieldConstraint}
+                       />
+                    ) : (null)
+                }
 
               <Box
                 sx={{
@@ -1068,7 +1161,11 @@ async function putData(url = "", formData = new FormData()) {
                   },
                 }}
               >
+
+                
                 {uniqueFgIDs.map((fgID) => (
+
+                  
                 <div
                   key={fgID}
                   style={{
