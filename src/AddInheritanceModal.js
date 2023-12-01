@@ -1,8 +1,7 @@
 import React from 'react';
 import { Modal, TextField} from '@mui/material';
-import OutlinedInput from '@mui/material/OutlinedInput'; // Import OutlinedInput
 import Box from '@mui/material/Box';
-import { Select, MenuItem, FormControl, InputLabel, ListSubheader, makeStyles} from '@material-ui/core';
+import {  MenuItem, FormControl} from '@material-ui/core';
 
 const style = {
     position: 'absolute',
@@ -16,30 +15,37 @@ const style = {
     p: 4,
   };
 
+
   
-  const useStyles = makeStyles((theme) => ({
-    subheader: {
-      backgroundColor: 'white',
-    },
-  }));
-
-
-function AddInheritanceModal({
-  showDropdown,
-  selectedOption,
-  handleDropdownChange,
-  inheritanceDropdownOptions,
-  handleSaveInheritance,
-  handleCancel,
-  handleAddInheritanceClick,
-}) {
-
-const classes = useStyles();
-const isInputLabelShrunk = !!selectedOption; // Check if a value is selected
-
-  return (
-    <Modal open={showDropdown} onClose={handleCancel} aria-labelledby="modal-modal-title"
-    aria-describedby="modal-modal-description">
+  function AddInheritanceModal({
+    showInheritanceModal,
+    selectedInheritedPrototype,
+    handleInheritanceChange,
+    inheritanceDropdownOptions,
+    handleSaveInheritance,
+    handleCancelInheritance,
+  }) {
+  
+    const saveInheritance = async () => {
+      try {
+        // Assuming handleSaveInheritance is an async function that makes the API call
+        await handleSaveInheritance(selectedInheritedPrototype);
+  
+        // After successful API call, you can close the modal or perform any other actions
+        handleCancelInheritance();
+      } catch (error) {
+        console.error('Error saving inheritance:', error);
+        // Handle the error, show an alert, or perform other error handling actions
+      }
+    };
+  
+    return (
+      <Modal
+        open={showInheritanceModal}
+        onClose={handleCancelInheritance}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
     <Box sx={style}>
       <div className="add-inheritance-form">
         <h3 className="add-new-inheritance">Add Inherited Prototype</h3>        
@@ -50,8 +56,8 @@ const isInputLabelShrunk = !!selectedOption; // Check if a value is selected
             label="Inherited Prototype"
             size="medium"
             select
-            value={selectedOption}
-            onChange={handleDropdownChange}
+            value={selectedInheritedPrototype}
+            onChange={handleInheritanceChange}
             SelectProps={{
                 displayEmpty: true,
                 renderValue: (selected) => (selected ? selected : ""),
@@ -67,16 +73,15 @@ const isInputLabelShrunk = !!selectedOption; // Check if a value is selected
         </FormControl>
 
         <div className="inheritance-button-container">
-
-          <button className="cancel-inheritance-button" onClick={handleCancel}>
-          Cancel
+          <button className="cancel-inheritance-button" onClick={handleCancelInheritance}>
+            Cancel
           </button>
 
-          <button className="save-inheritance-button" onClick={handleSaveInheritance}>
+          <button className="save-inheritance-button" onClick={saveInheritance}>
             Save
           </button>
         </div>
-      </div>
+        </div>
       </Box>
     </Modal>
   );

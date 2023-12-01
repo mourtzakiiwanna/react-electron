@@ -2,8 +2,16 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './css/CreatePrototype.css'; // Import your CSS file for styling
 
+
 function CreatePrototype() {
   const navigate = useNavigate(); // Use the useNavigate hook
+
+  let headers = new Headers();
+
+  headers.append('Content-Type', 'application/json');
+  headers.append('Accept', 'application/json');
+  headers.append('Origin','http://localhost:3000');
+
   const [prototypeInfo, setPrototypeInfo] = useState({
     // Initialize your state for prototype information fields here
   });
@@ -15,10 +23,23 @@ function CreatePrototype() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Perform actions to save prototype info (e.g., API call, etc.)
-    // After saving, you can navigate back to the Home page
+    createPrototype(`http://localhost:8080/api/type/${prototypeInfo.name}`);
     navigate('/');
   };
+
+  async function createPrototype(url = "") {
+    const response = await fetch(url, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: headers,
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
+    
+    return response.json(); 
+  }
 
   return (
     <div className='create-prototype-container'>

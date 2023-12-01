@@ -6,10 +6,17 @@ import Box from '@mui/material/Stack';
 import { useNavigate } from 'react-router';
 
 function SideMenu(props) {
+
+  let headers = new Headers();
+
+  headers.append('Content-Type', 'application/json');
+  headers.append('Accept', 'application/json');
+  headers.append('Origin','http://localhost:3000');
+
   const groups = [
-    { name: 'Local Prototypes', url: 'http://localhost:8080/getLocal' },
-    { name: 'Core Prototypes', url: 'http://localhost:8080/getCore' },
-    { name: 'Delta Prototypes', url: 'http://localhost:8080/getDelta' },
+    { name: 'Local Prototypes', url: 'http://localhost:8080/api/type/category/local' },
+    { name: 'Core Prototypes', url: 'http://localhost:8080/api/type/category/core' },
+    { name: 'Delta Prototypes', url: 'http://localhost:8080/api/type/category/delta' },
   ];
 
   const { currentGroup, currentPrototype } = props;
@@ -23,7 +30,11 @@ function SideMenu(props) {
   useEffect(() => {
     const fetchData = async (url, index) => {
       try {
-        const response = await fetch(url);
+        const response = await fetch(url, 
+          {mode: 'cors',
+          method: 'GET',
+          headers: headers});
+
         const data = await response.json();
         const formattedData = data.map(name => ({
           formattedName: name.replace(/([A-Z])/g, ' $1'),

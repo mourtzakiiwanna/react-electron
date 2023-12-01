@@ -18,9 +18,9 @@ const style = {
   };
 
   const groups = [
-    { name: 'Local Prototypes', url: 'http://localhost:8080/getLocal' },
-    { name: 'Core Prototypes', url: 'http://localhost:8080/getCore' },
-    { name: 'Delta Prototypes', url: 'http://localhost:8080/getDelta' },
+    { name: 'Local Prototypes', url: 'http://localhost:8080/api/type/category/local' },
+    { name: 'Core Prototypes', url: 'http://localhost:8080/api/type/category/core' },
+    { name: 'Delta Prototypes', url: 'http://localhost:8080/api/type/category/delta' },
   ];
 
   const useStyles = makeStyles((theme) => ({
@@ -30,24 +30,37 @@ const style = {
   }));
 
   
-  const AddFieldModal = ({ isOpen, handleClose, prototypeId, handleAddField, newFieldInfo, setNewFieldInfo }) => {
+  function AddFieldModal({
+    showFieldModal,
+    selectedFieldId,
+    selectedFieldType,
+    selectedFieldConstraint,
+    handleFieldIdChange,
+    handleFieldTypeChange,
+    handleFieldConstraintChange,
+    handleSaveField,
+    handleCancelField,
+  }) {
+
+    const saveField = async () => {
+      try {
+        // Assuming handleSaveInheritance is an async function that makes the API call
+        console.log(selectedFieldId);
+        console.log(selectedFieldType);
+        console.log(selectedFieldConstraint);
+
+        await handleSaveField(selectedFieldId, selectedFieldType, selectedFieldConstraint);
+  
+        // After successful API call, you can close the modal or perform any other actions
+        handleCancelField();
+      } catch (error) {
+        console.error('Error saving field:', error);
+        // Handle the error, show an alert, or perform other error handling actions
+      }
+    };
+  
 
     const classes = useStyles();
-
-    const handleInputChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        const fieldValue = type === 'checkbox' ? checked : value;
-        setNewFieldInfo((prevFieldInfo) => ({
-          ...prevFieldInfo,
-          [name]: fieldValue,
-        }));
-      };
-    
-     const handleSave = () => {                 
-        handleAddField();
-        handleClose();
-    };
-
     const [groupData, setGroupData] = useState({});
 
     const fetchAllData = async () => {
@@ -75,15 +88,17 @@ const style = {
  
 
   return (
-    <Modal open={isOpen} onClose={handleClose} aria-labelledby="modal-modal-title"
+    <Modal open={showFieldModal} onClose={handleCancelField} aria-labelledby="modal-modal-title"
     aria-describedby="modal-modal-description">
     <Box sx={style}>
       <div className="add-field-form">
-        <h3 className="add-new-field">Add New Field</h3>
+        <h3 className="add-new-field">Add Field</h3>
+
+        <FormControl sx={{ width: '300px'}}> 
 
         <Stack spacing={2} sx={{ margin: '10px' }}>
         
-        <TextField
+        {/* <TextField
                 required
                 id="outlined-required"
                 label="Field Group ID"
@@ -91,7 +106,7 @@ const style = {
                 name="fgId"
                 value={newFieldInfo.fgId}
                 onChange={handleInputChange}
-            />
+            /> */}
 
         <TextField
                 required
@@ -99,18 +114,19 @@ const style = {
                 label="Field ID"
                 size="small"
                 name="id"
-                value={newFieldInfo.id}
-                onChange={handleInputChange}
+                value={selectedFieldId}
+                onChange={handleFieldIdChange}
+                sx={{ width: '300px' }}
+
             />
 
             <TextField
-            required
             label="Value Type"
             size="small"
             name="valueType"
             select
-            value={newFieldInfo.valueType}
-            onChange={handleInputChange}
+            value={selectedFieldType}
+            onChange={handleFieldTypeChange}
             SelectProps={{
                 displayEmpty: true,
                 renderValue: (selected) => (selected ? selected : ""),
@@ -145,7 +161,7 @@ const style = {
             </TextField>
 
 
-        <TextField
+        {/* <TextField
                 required
                 id="outlined-required"
                 label="Default Value"
@@ -153,7 +169,7 @@ const style = {
                 name="defaultValue"
                 value={newFieldInfo.defaultValue}
                 onChange={handleInputChange}
-            />
+            /> */}
  
         {/* <TextField
             required
@@ -176,13 +192,12 @@ const style = {
         </TextField> */}
 
         <TextField
-            required
             id="outlined-required"
             label="Constraint"
             size="small"
             name="constraint"
-            value={newFieldInfo.constraint}
-            onChange={handleInputChange}
+            value={selectedFieldConstraint}
+            onChange={handleFieldConstraintChange}
             select
             multiple
             renderValue={(selected) => {
@@ -208,14 +223,15 @@ const style = {
             ])}
             </TextField>
         </Stack>
+        </FormControl>
 
         <div className="field-button-container">
          
-        <button className="cancel-field-button" onClick={handleClose}>
+        <button className="cancel-field-button" onClick={handleCancelField}>
           Cancel
         </button>
 
-        <button className="save-field-button" onClick={handleSave}>
+        <button className="save-field-button" onClick={saveField}>
           Save
         </button>
 

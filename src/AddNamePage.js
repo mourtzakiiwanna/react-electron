@@ -18,25 +18,58 @@ function AddNamePage() {
   const [alert, setAlert] = useState(false);
   const [alertContent, setAlertContent] = useState('');
   const [prototypeName, setPrototypeName] = useState('');
+  const [success, setSuccess] = useState(false);
 
+  let headers = new Headers();
+
+  headers.append('Content-Type', 'application/json');
+  headers.append('Accept', 'application/json');
+  headers.append('Origin','http://localhost:3000');
   const handleNameChange = (event) => {
     setPrototypeName(event.target.value);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     if (prototypeName) {
       // If the prototypeName is not empty, display a success message
-      setAlertContent('The prototype has been successfully created!');
+      try {
+        await createPrototype(`http://localhost:8080/api/type/${prototypeName}`);
+        setSuccess(true);
+        setAlertContent('The prototype has been successfully created!');
+        setTimeout(() => {
+          navigate(`/prototype/local/${prototypeName}`);
+        }, 2000);
+        
+      } catch (error) {
+        console.error('Error creating prototype:', error);
+        setAlertContent('An error occurred. Please try again.');
+      }
     } else {
       // If the prototypeName is empty, display "Enter name" message
       setAlertContent('Please enter a valid prototype name.');
     }
-
+  
     setAlert(true); // Show the Snackbar alert
   };
 
+  async function createPrototype(url = "") {
+  const response = await fetch(url, {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    headers: headers,
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+
+  return response.json();
+}
   function timeout(delay) {
     return new Promise((res) => setTimeout(res, delay));
   }
@@ -122,8 +155,8 @@ function AddNamePage() {
 
       <Snackbar open={alert} autoHideDuration={6000} onClose={() => setAlert(false)}>
         <MuiAlert
-          icon={prototypeName ? <CheckIcon /> : <WarningIcon />} // Use CheckIcon for success, WarningIcon for "Enter name"
-          severity={prototypeName ? 'success' : 'error'}
+          icon={success ? <CheckIcon /> : <WarningIcon />} // Use CheckIcon for success, WarningIcon for "Enter name"
+          severity={success ? 'success' : 'error'}
           sx={{ width: '100%', fontWeight: '500' }}
         >
           {alertContent}
