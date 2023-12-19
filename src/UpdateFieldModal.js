@@ -51,7 +51,6 @@ const style = {
     initialUpdateFieldConstraint,
   }) {
 
-
     const saveField = async () => {
       try {
         // Assuming handleSaveInheritance is an async function that makes the API call
@@ -123,9 +122,12 @@ const style = {
                 label="Field ID"
                 size="small"
                 name="id"
+                disabled                
                 defaultValue={updatedFieldId}
-                sx={{ width: '300px' }}
-
+                sx={{
+                  width: '300px',
+                  color: (theme) => (theme.palette.mode === 'light' ? theme.palette.grey[500] : theme.palette.grey[300]),
+                }}
             />
 
             <TextField

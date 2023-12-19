@@ -5,7 +5,6 @@ import './css/Prototype.css'; // Import your CSS file
 import SideMenu from './SideMenu';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Box from '@mui/material/Box';
-import Switcher from '@mui/joy/Switch';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
@@ -26,6 +25,7 @@ import InheritanceModal from './AddInheritanceModal';
 import AddFieldModal from './AddFieldModal';
 import UpdateFieldModal from './UpdateFieldModal';
 import { styled } from '@mui/material/styles';
+import Switch from '@mui/material/Switch';
 
 import {
   GridRowModes,
@@ -147,6 +147,7 @@ async function putData(url = "", formData = new FormData()) {
   const [openFieldGroupAlert, setOpenFieldGroupAlert] = React.useState(false);
   const [openFieldAlert, setOpenFieldAlert] = React.useState(false);
   const [openFieldDeleteAlert, setOpenFieldDeleteAlert] = React.useState(false);
+  const [openInheritanceDeleteAlert, setOpenInheritanceDeleteAlert] = React.useState(false);
   const [openFieldGroupDeleteAlert, setOpenFieldGroupDeleteAlert] = React.useState(false);
   const [openFieldUpdateAlert, setOpenFieldUpdateAlert] = React.useState(false);
 
@@ -348,80 +349,81 @@ async function putData(url = "", formData = new FormData()) {
 
   const [showAllInheritedPrototypes, setShowAllInheritedPrototypes] = useState(false);
   const [fieldMap, setFieldMap] = useState([]);
+  const [emptyFieldGroups, setEmptyFieldGroups] = useState([]);
 
   const fetchData = async () => {
-
     console.log(prototypeName);
-    const response = await fetch(`http://localhost:8080/api/type/${prototypeName}`, 
-        {
-            mode: 'cors',
-            method: 'GET',
-            headers: headers
-        }
-    );
-
+    const response = await fetch(`http://localhost:8080/api/type/${prototypeName}`, {
+      mode: 'cors',
+      method: 'GET',
+      headers: headers
+    });
+  
     const data = await response.json();
     setPrototypeInfo(data);
-
-    // Extract fields and fieldGroups
-    const fields = data.fields || [];
-    const fieldGroups = data.fieldGroups || [];
-
+  
     // Map fields
+    const fields = data.fields || [];
     const mappedFields = fields.map((field) => ({
+      id: field.id,
+      fgID: field.fgID !== undefined ? field.fgID : 'undefined',
+      fieldId: field.id,
+      valueType: field.type,
+      defaultValue: field.defaultValue,
+      constraint: field.constraint || '',
+      isDefinedInThis: field.isDefinedInThis,
+    }));
+  
+    // Map fieldGroups and their fields
+    const fieldGroups = data.fieldGroups || {};
+    const newEmptyFieldGroups = Object.keys(fieldGroups).filter(groupName => fieldGroups[groupName].length === 0);
+    setEmptyFieldGroups(newEmptyFieldGroups);
+    const mappedFieldGroups = Object.keys(fieldGroups).flatMap((groupName) => {
+      const group = fieldGroups[groupName] || []; // Ensure group exists, even if it's empty
+      return group.map((field) => ({
         id: field.id,
-        fgID: field.fgID !== undefined ? field.fgID : 'undefined',
+        fgID: groupName, // Use the group name as fgID
         fieldId: field.id,
         valueType: field.type,
         defaultValue: field.defaultValue,
         constraint: field.constraint || '',
-        isMap: field.map,
-    }));
-
-    // Map fieldGroups and their fields
-    const mappedFieldGroups = fieldGroups.flatMap((group) => 
-        group.fields.map((field) => ({
-            id: field.id,
-            fgID: group.id, // Use the fieldGroup id as fgID
-            fieldId: field.id,
-            valueType: field.type,
-            defaultValue: field.defaultValue,
-            constraint: field.constraint|| '',
-            isMap: field.map,
-        }))
-    );
-
+        isDefinedInThis: field.isDefinedInThis,
+      }));
+    });
+    console.log(mappedFieldGroups);
     // Combine both mappedFields and mappedFieldGroups
     const allMappedFields = [...mappedFields, ...mappedFieldGroups];
-
+  
     // Create a mapping with fgID as key and an array of fields as value
     const map = allMappedFields.reduce((acc, field) => {
-        const key = field.fgID !== undefined ? field.fgID : 'undefined';
-
-        if (!acc[key]) {
-            acc[key] = [];
-        }
-
-        acc[key].push({
-            id: field.id,
-            fieldId: field.fieldId,
-            valueType: field.valueType,
-            defaultValue: field.defaultValue,
-            constraint: field.constraint,
-            isMap: field.isMap,
-        });
-
-        return acc;
+      const key = field.fgID !== undefined ? field.fgID : 'undefined';
+  
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+  
+      acc[key].push({
+        id: field.id,
+        fieldId: field.fieldId,
+        valueType: field.valueType,
+        defaultValue: field.defaultValue,
+        constraint: field.constraint,
+        isMap: field.isMap,
+      });
+  
+      return acc;
     }, {});
-
+  
     setFieldMap(map);
-
+  
     setRows((existingRows) => removeDuplicates([...existingRows, ...allMappedFields]));
-};
+  };
+  
 
 
 
-  const uniqueFgIDs = Object.keys(fieldMap);
+  const uniqueFgIDs = [...Object.keys(fieldMap), ...emptyFieldGroups];
+
 
   console.log(rows);
 
@@ -460,7 +462,7 @@ async function putData(url = "", formData = new FormData()) {
     {
       field: 'valueType',
       headerName: 'Value Type',
-      width: 150,
+      width: 200,
       editable: true,
       type: 'singleSelect',
       sortable: false,
@@ -493,7 +495,7 @@ async function putData(url = "", formData = new FormData()) {
         'GEO_POINT']
     },
 
-    { field: 'defaultValue', headerName: 'Default Value', width: 150, editable: false, headerClassName: 'super-app-theme--header', sortable: false },
+    { field: 'defaultValue', headerName: 'Default Value', width: 220, editable: false, headerClassName: 'super-app-theme--header', sortable: false },
 
     // {
     //   field: 'attributeType',
@@ -508,12 +510,12 @@ async function putData(url = "", formData = new FormData()) {
     {
       field: 'constraint',
       headerName: 'Constraint',
-      width: 220,
+      width: 250,
       headerClassName: 'super-app-theme--header',
       editable: true,
       sortable: false,
       renderEditCell: (params) => (
-        <FormControl style={{ width: 200 }}>
+        <FormControl style={{ width: 250 }}>
           <Select
             label={params.field}
             value={params.value}
@@ -546,14 +548,14 @@ async function putData(url = "", formData = new FormData()) {
     },
     {
       field: 'actions',
-      type: 'actions',
       sortable: false,
-      headerName: '',
-      width: 50,
+      headerName: 'Actions',
+      headerClassName: 'super-app-theme--header',
+      width: 200,
       cellClassName: 'actions',
       renderCell: (params) => {
         console.log(params.id);
-        if (params.row.isMap) {
+        if (params.row.isDefinedInThis) {
           const isInEditMode = rowModesModel[params.id]?.mode === GridRowModes.Edit;
 
           if (isInEditMode) {
@@ -741,6 +743,10 @@ async function putData(url = "", formData = new FormData()) {
     deleteData(`http://localhost:8080/api/type/${prototypeName}/inheritance`, formData).then((data) => {
       console.log(data); 
     });
+    setOpenInheritanceDeleteAlert(true);
+      setTimeout(() => {
+        setOpenInheritanceDeleteAlert(false);
+      }, 3000);
     setOpenInheritedModal(false);
   };
 
@@ -957,7 +963,13 @@ async function putData(url = "", formData = new FormData()) {
     navigate(fullPath);
   };
 
+  const handleSwitchChange = () => {
+    setShowAllInheritedPrototypes(!showAllInheritedPrototypes);
+  };
 
+  console.log(uniqueFgIDs);
+
+  
   return (
 
     <div>
@@ -991,17 +1003,14 @@ async function putData(url = "", formData = new FormData()) {
                 </span>
                 {" "}
                 <span>
-                  {allInheritedPrototypes.length > 0 && allInheritedPrototypes.length !== prototypeInfo.inherits.length && (
+                  {prototypeInfo.inheritsTransitively.length > 0 && prototypeInfo.inheritsTransitively.length !== prototypeInfo.inherits.length && (
                     <FormControlLabel
                       control={
                         <div className="switch-container">
-                          <Switcher
-                            disabled={false}
-                            size="sm"
-                            variant="soft"
-                            sx={{ marginLeft: "10px", marginTop: "5px" }}
+                          <Switch
+                            inputProps={{ 'aria-label': 'controlled' }}
                             checked={showAllInheritedPrototypes}
-                            onChange={() => setShowAllInheritedPrototypes(!showAllInheritedPrototypes)}
+                            onChange={handleSwitchChange}
                           />
                           <span className="switch-label">
                             {showAllInheritedPrototypes ? 'Hide all prototypes' : 'Show all prototypes'}
@@ -1010,11 +1019,12 @@ async function putData(url = "", formData = new FormData()) {
                       }
                     />
                   )}
+
                 </span>
               </div>
 
 
-                {!showAllInheritedPrototypes && prototypeInfo && (
+                {!showAllInheritedPrototypes && prototypeInfo.inherits && (
                 <p className="inherited-prototypes">
                   {prototypeInfo.inherits.map((prototype, index) => {
                     const fullPath = `/prototype${prototype.replace("butterfly/", "")}`;
@@ -1035,27 +1045,29 @@ async function putData(url = "", formData = new FormData()) {
                 </p>
               )}
 
-                {showAllInheritedPrototypes && prototypeInfo && (
-                  <p className="inherited-prototypes">
-                    {allInheritedPrototypes.map((prototype, index) => {
-                      const fullPath = `/prototype${prototype.replace("butterfly/", "")}`;
-                      return (
-                        <span>
-                          <React.Fragment key={`${groupName}-${index}`}>
-                            <span className='inherited-prototypes-list'>
-                              {index > 0 && " | "}
-                            </span>
-                            <Link to={fullPath} onClick={() => handlePrototypeClick(fullPath)} className='inherited-prototypes-list'>
-                              {prototype}
-                            </Link>
-                            <span onClick={() => handleDeleteClickInherited(prototype)} style={{ cursor: 'pointer', color: 'red' }}>
-                              X
-                            </span>
-                          </React.Fragment>
-                        </span>
-                      );
-                    })}
-                  </p>
+              {showAllInheritedPrototypes && prototypeInfo.inheritsTransitively && (
+                <p className="inherited-prototypes">
+                  {prototypeInfo.inheritsTransitively.map((prototype, index) => {
+                    const fullPath = `/prototype${prototype.replace("butterfly/", "")}`;
+
+                    // Check if the prototype exists in both inheritsTransitively and inherits
+                    const isInBothArrays = prototypeInfo.inherits.includes(prototype);
+
+                    return (
+                      <span key={`${groupName}-${index}`} className='inherited-prototypes-list'>
+                        {index > 0 && " | "}
+                        <Link to={fullPath} onClick={() => handlePrototypeClick(fullPath)} className='inherited-prototypes-list'>
+                          {prototype}
+                        </Link>
+                        {isInBothArrays && (
+                          <span onClick={() => handleDeleteClickInherited(prototype)} style={{ cursor: 'pointer', color: 'red' }}>
+                            X
+                          </span>
+                        )}
+                      </span>
+                    );
+                  })}
+                </p>
                 )}
 
                 {prototypeInfo.inherits.length <= 0 && (
@@ -1126,6 +1138,8 @@ async function putData(url = "", formData = new FormData()) {
                         <UpdateFieldModal
                          showUpdateFieldModal={showUpdateFieldModal}
                          updatedFieldId={updatedFieldId}
+                         initialUpdateFieldType={initialUpdateFieldType}
+                         initialUpdateFieldConstraint={initialUpdateFieldConstraint}
                          selectedUpdateFieldId={selectedUpdateFieldId}
                          selectedUpdateFieldType={selectedUpdateFieldType}
                          selectedUpdateFieldConstraint={selectedUpdateFieldConstraint}
@@ -1134,8 +1148,7 @@ async function putData(url = "", formData = new FormData()) {
                          handleUpdateFieldConstraintChange={handleUpdateFieldConstraintChange}
                          handleSaveUpdateField={() => handleSaveUpdateField(updatedFieldId,selectedUpdateFieldType,selectedUpdateFieldConstraint)} 
                          handleCancelUpdateField={handleCancelUpdateField}
-                         initialUpdateFieldType={initialUpdateFieldType}
-                         initialUpdateFieldConstraint={initialUpdateFieldConstraint}
+                  
                        />
                     ) : (null)
                 }
@@ -1162,7 +1175,6 @@ async function putData(url = "", formData = new FormData()) {
                 }}
               >
 
-                
                 {uniqueFgIDs.map((fgID) => (
 
                   
@@ -1187,11 +1199,17 @@ async function putData(url = "", formData = new FormData()) {
                       }}
                     >
                       {fgID !== "undefined" ? fgID : "Standalone fields" }
-                      {fgID !== "undefined" &&
-                        <span onClick={() => handleDeleteClickFieldGroup(fgID)} style={{ cursor: 'pointer', color: 'red', marginLeft:'10px' }}>
+                  
+
+                      {fgID !== "undefined" && (
+                        // Check if at least one field in the group is defined in the current context
+                        prototypeInfo.fieldGroups[fgID].some(field => field.isDefinedInThis) && (
+                          <span onClick={() => handleDeleteClickFieldGroup(fgID)} style={{ cursor: 'pointer', color: 'red', marginLeft:'10px' }}>
                             X
-                        </span>
-                      }
+                          </span>
+                        )
+                      )}
+
                     </div>
                     <Box
                       sx={{
@@ -1199,6 +1217,7 @@ async function putData(url = "", formData = new FormData()) {
                         
                       }}
                     >
+                      {prototypeInfo.fieldGroups[fgID]?.length > 0 || fgID == "undefined" ? (
                       <StyledDataGrid
                         key={fgID}
                         rows = {rows.filter(row => row.fgID === fgID)}
@@ -1214,13 +1233,13 @@ async function putData(url = "", formData = new FormData()) {
                           if (params.field === 'defaultValue' || params.field === 'constraint') {
                             return true;
                           }
-                          return params.row.isMap;
+                          return params.row.isDefinedInThis;
                         }}
                         disableEdit={(params) => {
                           if (params.field === 'defaultValue' || params.field === 'constraint') {
                             return true;
                           }
-                          return !params.row.isMap;
+                          return !params.row.isDefinedInThis;
                         }}
                         onCellDoubleClick={handleCellDoubleClick}
                         hideFooterPagination={true}
@@ -1240,6 +1259,9 @@ async function putData(url = "", formData = new FormData()) {
                           '& .MuiDataGrid-virtualScroller::-webkit-horizontal-scrollbar': { display: 'none' },
                         }}
                       />
+                      ) : (
+                        <p style={{ color: 'gray', fontStyle: 'italic', fontSize: '13px' }}>This field group has no fields.</p>
+                      )}
 
                     </Box>
                   </div>
@@ -1387,6 +1409,12 @@ async function putData(url = "", formData = new FormData()) {
       <Snackbar open={openFieldDeleteAlert}>
         <Alert icon={false} severity="success" sx={{ width: '100%' }}>
           The field deleted successfully!
+        </Alert>
+      </Snackbar>
+
+      <Snackbar open={openInheritanceDeleteAlert}>
+        <Alert icon={false} severity="success" sx={{ width: '100%' }}>
+          The inheritance deleted successfully!
         </Alert>
       </Snackbar>
 
