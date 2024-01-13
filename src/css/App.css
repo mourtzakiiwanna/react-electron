@@ -32,16 +32,16 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
 }
 
-/* styles.css */
 body {
   padding: 10px;
   font-family: Arial, Helvetica, sans-serif;
-  background-color: #e7e7e7; /* Light gray background */
+  background-color: #e7e7e7;
   z-index: 1;
 }
 
@@ -59,7 +59,7 @@ body {
   width: 80%;
   margin-bottom: 40px;
   background-color: white;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Light shadow effect */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
 }
 
@@ -82,7 +82,6 @@ body {
   font-size: 20px;
 }
 
-/* styles.css */
 .card {
   background-color: #f4f4f4;
   border-radius: 10px;
@@ -105,16 +104,11 @@ body {
   font-weight: bold;
 }
 
-
 .link-card:hover .card-details {
-
   color: gray;
   text-decoration: none !important;
 }
 
-
-
-/* styles.css */
 .group {
   align-self: center;
   border-radius: 10px;
@@ -123,13 +117,8 @@ body {
   padding: 16px;
   margin: auto;
   width: 50%;
-  margin-bottom: 16px;  }
-
-    /* styles.css */
-
-
-
-
+  margin-bottom: 16px;
+}
 
 .group-name {
   display: flex;
@@ -140,17 +129,14 @@ body {
   font-size: 17px;
   border-radius: 10px;
   cursor: pointer;
-  transition: background-color 0.2s ease;   
+  transition: background-color 0.2s ease;
   background-color: #ffffff;
 }
-  
+
 .group-name:hover {
-  color: #c0c0c0; /* Background color on hover */
+  color: #c0c0c0;
 }
-    
 
-
-    
 .group-name-text {
   font-weight: bold;
 }
@@ -163,8 +149,6 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
 }
-
-
 
 .subheader {
   font-size: 30px;
@@ -183,7 +167,7 @@ body {
 .label-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Align items to the left */
+  align-items: flex-start;
   margin-top: 20px;
 }
 
@@ -191,11 +175,11 @@ body {
   border: 1px solid #ccc;
   padding: 10px;
   margin-top: 20px;
-  background-color: #f7f7f7; /* Light gray background */
+  background-color: #f7f7f7;
   border-radius: 6px;
   display: flex;
-  flex-direction: column; /* Stack label and value vertically */
-  align-items: flex-start; /* Align items to the left */
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .field-header {
@@ -214,10 +198,6 @@ body {
   color: #777;
 }
 
-
-
-
 .link:hover {
   text-decoration: none;
 }
-  

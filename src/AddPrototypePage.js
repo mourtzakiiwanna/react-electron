@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './css/AddNamePage.css';
-import Stack from '@mui/material/Stack';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import TextField from '@mui/material/TextField';
+import CheckIcon from '@mui/icons-material/Check';
+import WarningIcon from '@mui/icons-material/Error';
+import MuiAlert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
-import MuiAlert from '@mui/material/Alert';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 import Snackbar from '@mui/material/Snackbar';
-import CheckIcon from '@mui/icons-material/Check';
-import WarningIcon from '@mui/icons-material/Error'; // Import the warning icon
+import TextField from '@mui/material/TextField';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-function AddNamePage() {
+function AddPrototypePage() {
+
+  const baseURL = 'http://localhost:8080/api/type';
+
   const navigate = useNavigate();
   const [alert, setAlert] = useState(false);
   const [alertContent, setAlertContent] = useState('');
@@ -24,26 +24,24 @@ function AddNamePage() {
 
   headers.append('Content-Type', 'application/json');
   headers.append('Accept', 'application/json');
-  headers.append('Origin','http://localhost:3000');
+  headers.append('Origin', 'http://localhost:3000');
   const handleNameChange = (event) => {
     setPrototypeName(event.target.value);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     if (prototypeName) {
       try {
-        // Check if the prototype with the same name already exists
-        const existingPrototypes = await fetchExistingPrototypes(`http://localhost:8080/api/type/category/local`);
-        
+        const existingPrototypes = await fetchExistingPrototypes(`${baseURL}/category/local`);
+
         const isPrototypeExists = existingPrototypes.includes(prototypeName);
-  
+
         if (isPrototypeExists) {
           setAlertContent('Prototype with the same name already exists. Please choose a different name.');
         } else {
-          // If the prototypeName is not empty and doesn't exist, create the prototype
-          await createPrototype(`http://localhost:8080/api/type/${prototypeName}`);
+          await createPrototype(`${baseURL}/${prototypeName}`);
           setSuccess(true);
           setAlertContent('The prototype has been successfully created!');
           setTimeout(() => {
@@ -55,11 +53,10 @@ function AddNamePage() {
         setAlertContent('An error occurred. Please try again.');
       }
     } else {
-      // If the prototypeName is empty, display "Enter name" message
       setAlertContent('Please enter a valid prototype name.');
     }
-  
-    setAlert(true); // Show the Snackbar alert
+
+    setAlert(true);
     setTimeout(() => {
       setAlert(false);
     }, 2000);
@@ -70,37 +67,33 @@ function AddNamePage() {
       method: "GET",
       headers: headers,
     });
-  
+
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-  
+
     const data = await response.json();
-    console.log(data);
-    return data; // Assuming the response contains an array of prototypes with a "name" property
+    return data;
   }
-  
 
   async function createPrototype(url = "") {
-  const response = await fetch(url, {
-    method: "POST",
-    mode: "cors",
-    cache: "no-cache",
-    credentials: "same-origin",
-    headers: headers,
-    redirect: "follow",
-    referrerPolicy: "no-referrer",
-  });
+    const response = await fetch(url, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: headers,
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    });
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    return response.json();
   }
 
-  return response.json();
-}
-  function timeout(delay) {
-    return new Promise((res) => setTimeout(res, delay));
-  }
 
   return (
     <div>
@@ -183,7 +176,7 @@ function AddNamePage() {
 
       <Snackbar open={alert} autoHideDuration={6000} onClose={() => setAlert(false)}>
         <MuiAlert
-          icon={success ? <CheckIcon /> : <WarningIcon />} // Use CheckIcon for success, WarningIcon for "Enter name"
+          icon={success ? <CheckIcon /> : <WarningIcon />}
           severity={success ? 'success' : 'error'}
           sx={{ width: '100%', fontWeight: '500' }}
         >
@@ -194,4 +187,4 @@ function AddNamePage() {
   );
 }
 
-export default AddNamePage;
+export default AddPrototypePage;

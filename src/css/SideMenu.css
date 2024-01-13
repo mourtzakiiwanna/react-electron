@@ -1,4 +1,3 @@
-
 .side-menu {
   width: 23%;
   position: fixed;
@@ -13,9 +12,9 @@
   border-radius: 5px;
   padding: 10px;
   background-color: #ffffff;
-  border: 2px solid #dadadad3; /* Add a border to the bottom of the sticky header */
+  border: 2px solid #dadadad3;
 }
-  
+
 .category-name {
   display: flex;
   align-items: center;
@@ -25,108 +24,113 @@
   font-size: 17px;
   border-radius: 10px;
   cursor: pointer;
-  transition: background-color 0.2s ease;   
+  transition: background-color 0.2s ease;
   background-color: #ffffff;
-  color:#7e7e7e;
-}  
-    
- .category-name:hover {
-    color: #c0c0c0; /* Background color for the expanded category */
-  }
-  
-  .category-name.expanded {
-    color: #c0c0c0; /* Background color for the expanded category */
-  }
- 
-  .category {
-    align-self: center;
-    padding: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background-color: #ffffff;
-    
+  color: #7e7e7e;
 }
 
-  .category-content {
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;    
-    font-size: 11pt;
+.category-name:hover {
+  color: #c0c0c0;
+}
 
-    }
-    
-  .content-scroll {
-    max-height: 830px; /* Set a maximum height for the content area */
-    overflow-y: auto; /* Enable scrolling within the content area */
-    padding: 10px 20px 10px 20px;
-    
+.category-name.expanded {
+  color: #c0c0c0;
+}
 
-  }
-  
-  .menu-link {
-    text-decoration: none;
-    color: #585858;
-    display: block;
-    padding: 8px;
-    transition: background-color 0.3s; /* Add a smooth transition effect for background color */
-  }
-  
-  .menu-link:hover {
-    background-color: #cecece75;
-    color: #585858;     
-    text-decoration: none; /* Background color on hover */
-  }
-  
-  .menu-link.selected {
-    font-weight: bold; /* Make the selected item bold */
-    background-color: #c5c5c5;
-    color: #fff; /* Text color for the selected item */
-  }
+.category {
+  align-self: center;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
 
-  /* Default styles for larger screens */
+.category-content {
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  font-size: 11pt;
+}
 
+.content-scroll {
+  max-height: 830px;
+  overflow-y: auto;
+  padding: 10px 20px 10px 20px;
+}
 
-  .all-local{
-    color:black;
-  }
+.menu-link {
+  text-decoration: none;
+  color: #585858;
+  display: block;
+  padding: 8px;
+  transition: background-color 0.3s;
+}
 
-  .all-local:hover{
-    text-decoration: none;
-    color: #777;
-  }
+.menu-link:hover {
+  background-color: #cecece75;
+  color: #585858;
+  text-decoration: none;
+}
 
-  .page {
-    margin-left: 20px;
-  }
+.menu-link.selected {
+  font-weight: bold;
+  background-color: #c5c5c5;
+  color: #fff;
+}
 
-  .create-button {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #f0f0f0;
-    color: black;
-    border: 2px solid rgb(219, 219, 219);
-    font-weight: bold;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    transition: background-color 0.3s;
-  }
-  
-  .create-button:hover {
-    background-color: #c2c2c2;
-    text-decoration: none;
-    color:black;  
-  }
+.all-local {
+  color: black;
+}
 
-  .invisible-button {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #f0f0f000;
-    color: rgba(0, 0, 0, 0);
-    border: 2px solid rgba(219, 219, 219, 0);
-    font-weight: bold;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    transition: background-color 0.3s;
-  }
-  
+.all-local:hover {
+  text-decoration: none;
+  color: #777;
+}
+
+.page {
+  margin-left: 20px;
+}
+
+.create-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  color: black;
+  border: 2px solid rgb(219, 219, 219);
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.3s;
+}
+
+.create-button:hover {
+  background-color: #c2c2c2;
+  text-decoration: none;
+  color: black;
+}
+
+.invisible-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #f0f0f000;
+  color: rgba(0, 0, 0, 0);
+  border: 2px solid rgba(219, 219, 219, 0);
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.3s;
+}
+
+.invisible-button:hover {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #f0f0f000;
+  color: rgba(0, 0, 0, 0);
+  border: 2px solid rgba(219, 219, 219, 0);
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.3s;
+}

@@ -1,48 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import './css/Prototype.css'; // Import your CSS file
+import React from 'react';
 import SideMenu from './SideMenu';
-import Typography from '@mui/material/Typography';
-
-import {
-  GridRowModes,
-  DataGrid,
-  GridToolbarContainer,
-  GridActionsCellItem,
-  GridRowEditStopReasons,
-} from '@mui/x-data-grid';
-import {
-  randomCreatedDate,
-  randomTraderName,
-  randomId,
-  randomArrayItem,
-} from '@mui/x-data-grid-generator';
-
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-
+import './css/Prototype.css';
 
 function Prototype(props) {
-  
+
   return (
-    
     <div>
       <SideMenu />
-      
       <div className="main-content">
-
-      <div className="prototype-container">
-
-        {/* <button onClick={() => navigation("/")}  className="back-button">Back</button>  */}
-        <div className='sticky-header'>
-        <div className="alt-text-container">
-          <h2 className="alt-text">Please select a prototype from the side menu to explore their properties,
-          or create a new one pressing the "Create new prototype" button.</h2> 
+        <div className="prototype-container">
+          <div className='sticky-header'>
+            <div className="alt-text-container">
+              <h2 className="alt-text">Please select a prototype from the side menu to explore their properties,
+                or create a new one pressing the "Create new prototype" button.</h2>
+            </div>
+          </div>
         </div>
-
       </div>
-    </div>
-    </div>
     </div>
   );
 }

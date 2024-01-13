@@ -1,28 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './css/SideMenu.css';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import Box from '@mui/material/Stack';
 import { useNavigate } from 'react-router';
 
 function SideMenu(props) {
+
+  const baseURL = 'http://localhost:8080/api/type';
+
+  const groups = [
+    { name: 'Local Prototypes', url: `${baseURL}/category/local` },
+    { name: 'Core Prototypes', url: `${baseURL}/category/core` },
+  ];
 
   let headers = new Headers();
 
   headers.append('Content-Type', 'application/json');
   headers.append('Accept', 'application/json');
-  headers.append('Origin','http://localhost:3000');
-
-  const groups = [
-    { name: 'Local Prototypes', url: 'http://localhost:8080/api/type/category/local' },
-    { name: 'Core Prototypes', url: 'http://localhost:8080/api/type/category/core' },
-    // { name: 'Delta Prototypes', url: 'http://localhost:8080/api/type/category/delta' },
-  ];
-
+  headers.append('Origin', 'http://localhost:3000');
+ 
   const { currentGroup, currentPrototype } = props;
-  const [expandedGroup, setExpandedGroup] = useState(0); // Set the default group to expand
+  const [expandedGroup, setExpandedGroup] = useState(0); 
   const [groupData, setGroupData] = useState({});
-  const [openForm, setOpenForm] = useState(false);
   const [selectedItems, setSelectedItems] = useState({});
 
   const navigate = useNavigate();
@@ -30,10 +28,12 @@ function SideMenu(props) {
   useEffect(() => {
     const fetchData = async (url, index) => {
       try {
-        const response = await fetch(url, 
-          {mode: 'cors',
-          method: 'GET',
-          headers: headers});
+        const response = await fetch(url,
+          {
+            mode: 'cors',
+            method: 'GET',
+            headers: headers
+          });
 
         const data = await response.json();
         const formattedData = data.map(name => ({
@@ -51,30 +51,26 @@ function SideMenu(props) {
         fetchData(group.url, index);
       }
     });
-  }, [expandedGroup]);
+  });
 
   const handleGroupClick = (index) => {
     if (expandedGroup === index) {
-      setExpandedGroup(null); // Collapse the group
-      setOpenForm(false);
+      setExpandedGroup(null); 
     } else {
-      setExpandedGroup(index); // Expand the group
-      setOpenForm(false);
+      setExpandedGroup(index); 
     }
   };
 
   const handleItemClick = (fullPath, groupIndex) => {
-    setExpandedGroup(groupIndex); // Expand the group when an item is clicked
-    setOpenForm(false);
+    setExpandedGroup(groupIndex); 
     setSelectedItems((prevItems) => ({
       ...prevItems,
       [groupIndex]: null,
     }));
-  
-      navigate(fullPath);
-    
+
+    navigate(fullPath);
+
   };
-  
 
   return (
     <div className='page'>
@@ -82,9 +78,8 @@ function SideMenu(props) {
         {groups.map((group, groupIndex) => (
           <div key={groupIndex}>
             <div
-              className={`category-name ${
-                expandedGroup === groupIndex ? 'expanded' : ''
-              }`}
+              className={`category-name ${expandedGroup === groupIndex ? 'expanded' : ''
+                }`}
               onClick={() => handleGroupClick(groupIndex)}
             >
               {group.name === currentGroup ? (
@@ -92,7 +87,6 @@ function SideMenu(props) {
               ) : (
                 group.name
               )}
-              {/* Conditionally render the "Create new prototype" link */}
               {group.name === 'Local Prototypes' && expandedGroup === groupIndex && (
                 <span className="center-button">
                   <Link to="/create" className="create-button">
@@ -102,9 +96,9 @@ function SideMenu(props) {
               )}
               {group.name === 'Core Prototypes' && expandedGroup === groupIndex && (
                 <span className="center-button">
-                  <Link to="/create" className="invisible-button">
+                  <span className="invisible-button">
                     Invisibe button
-                  </Link>
+                  </span>
                 </span>
               )}
             </div>
@@ -122,13 +116,12 @@ function SideMenu(props) {
                         <Link
                           to={fullPath}
                           key={`${groupIndex}-${itemIndex}`}
-                          className={`menu-link ${
-                            selectedItems[groupIndex] === itemIndex
+                          className={`menu-link ${selectedItems[groupIndex] === itemIndex
                               ? 'selected'
                               : ''
-                          }`}
+                            }`}
                           sx={{ fontSize: '15pt' }}
-                          onClick={() => handleItemClick(fullPath,  groupIndex)}
+                          onClick={() => handleItemClick(fullPath, groupIndex)}
                         >
                           <div>
                             {prototype.unformattedName === currentPrototype ? (
