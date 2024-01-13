@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './HomePage'; // Import the Home component
 import './css/App.css';
 import Prototype from "./Prototype";
+import PrototypeCore from "./PrototypeCore";
 import Local from "./LocalPrototypes";
 import Core from "./CorePrototypes";
 import SideMenu from "./SideMenu";
@@ -79,6 +80,7 @@ function App() {
           <Route path="/local" element ={<Local />} />
           <Route path="/core" element ={<Core />} />
           <Route path="/prototype/:groupName/:prototypeName" element ={<Prototype />} />
+          <Route path="/prototype-core/:groupName/:prototypeName" element ={<PrototypeCore />} />
           <Route path="/create" element={<AddNamePage />} />
           <Route path="/add-inheritance" element={<AddInheritancePage />} />
           <Route path="/add-fields" element={<AddFieldsPage />} />

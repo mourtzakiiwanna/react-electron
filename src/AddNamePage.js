@@ -31,18 +31,27 @@ function AddNamePage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+  
     if (prototypeName) {
-      // If the prototypeName is not empty, display a success message
       try {
-        await createPrototype(`http://localhost:8080/api/type/${prototypeName}`);
-        setSuccess(true);
-        setAlertContent('The prototype has been successfully created!');
-        setTimeout(() => {
-          navigate(`/prototype/local/${prototypeName}`);
-        }, 2000);
+        // Check if the prototype with the same name already exists
+        const existingPrototypes = await fetchExistingPrototypes(`http://localhost:8080/api/type/category/local`);
         
+        const isPrototypeExists = existingPrototypes.includes(prototypeName);
+  
+        if (isPrototypeExists) {
+          setAlertContent('Prototype with the same name already exists. Please choose a different name.');
+        } else {
+          // If the prototypeName is not empty and doesn't exist, create the prototype
+          await createPrototype(`http://localhost:8080/api/type/${prototypeName}`);
+          setSuccess(true);
+          setAlertContent('The prototype has been successfully created!');
+          setTimeout(() => {
+            navigate(`/prototype/local/${prototypeName}`);
+          }, 2000);
+        }
       } catch (error) {
-        console.error('Error creating prototype:', error);
+        console.error('Error checking existing prototypes or creating prototype:', error);
         setAlertContent('An error occurred. Please try again.');
       }
     } else {
@@ -51,7 +60,26 @@ function AddNamePage() {
     }
   
     setAlert(true); // Show the Snackbar alert
+    setTimeout(() => {
+      setAlert(false);
+    }, 2000);
   };
+
+  async function fetchExistingPrototypes(url = "") {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: headers,
+    });
+  
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+  
+    const data = await response.json();
+    console.log(data);
+    return data; // Assuming the response contains an array of prototypes with a "name" property
+  }
+  
 
   async function createPrototype(url = "") {
   const response = await fetch(url, {

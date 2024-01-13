@@ -35,22 +35,6 @@ function Prototype(props) {
 
         {/* <button onClick={() => navigation("/")}  className="back-button">Back</button>  */}
         <div className='sticky-header'>
-
-          <div className='header-and-button'>
-
-      
-          
-            <Link to="/" className='link'>
-            <Typography variant="h3" gutterBottom className='pageHeader' 
-              sx ={{margin: '70px', marginBottom:'50px', textDecoration:'none', fontWeight: 'bold' ,letterSpacing: '2px', fontFamily:'Arial',
-              '&:hover': { color: 'gray', textDecoration:'none'}
-
-              }}>Prototypes</Typography>      
-                  
-            </Link>
-
-            </div>
-
         <div className="alt-text-container">
           <h2 className="alt-text">Please select a prototype from the side menu to explore their properties,
           or create a new one pressing the "Create new prototype" button.</h2> 

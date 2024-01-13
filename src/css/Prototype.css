@@ -1,52 +1,75 @@
+
 .prototype-container {
-  padding-top: 0;
-  overflow-y: hidden;
+  margin: auto;
+  margin-left: 25%; 
 }
 
-.main-content {
-  margin-left: 10%; 
-  padding: 20px; 
-}
 
 .sticky-header {
-  position: fixed;
-  width: 65%;
-  max-width:65%; 
+  position: sticky;
+  width: 100%;
+  max-width: 100%;
   top: 0;
-  z-index: 1;
-  background-color: #e7e7e7; 
-  box-shadow:none;
-  box-shadow:none;
+  background-color: #e7e7e7;
   height: 50px;
-
+  z-index: 100;
+  margin-top: 5px;
 }
 
-  /* Field item */
-  .field-section {
-    position: fixed;
-    width: 65%;
-    max-width: 65%;
-    height: 550px;
-    max-height: 550px;
-    margin-top: 270px;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1);
-    margin-bottom: -30px;
-  }
 
+
+.field-section {
+  position: relative;
+  margin-top: 170px;
+  background-color: #fff;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 10px;
+  border: 2px solid #dadadad3; /* Add a border to the bottom of the sticky header */
+}
       
+.fields {
+  padding: 20px;
+}
+  
+
 .header-info-container {
   display: flex;
   justify-content: space-between; /* Equal distribution of space between children */
   align-items: center; /* Vertical alignment */
   border-radius: 5px;
-  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1);
   background-color: #fff;
-  margin-top: 10px;
-
+  margin-top: 5px;
+  border: 2px solid #dadadad3; /* Add a border to the bottom of the sticky header */
 }      
+
+.delete-prototype-container {
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: underline !important;
+  display: inline-block;
+}
+
+.delete-prototype-button:hover {
+  background-color: rgb(146, 4, 4);
+  color:white;
+}
+
+.delete-prototype-button{
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #f0f0f0;
+  color: rgb(146, 4, 4);
+  border: 2px solid rgb(146, 4, 4);
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.3s;
+  margin-left: 20px;
+}
+
 
 .info-section {
   flex: 1.4; /* Take 50% of available space */
@@ -54,11 +77,6 @@
 
 }
 
-.overflow-grid .MuiDataGrid-cell {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
 
  
   /* Header styles */
@@ -112,7 +130,6 @@
     padding: 20px;
     background-color: #fff;
     border-radius: 5px;
-    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1);
   }
   
   /* Inherited prototypes and all inherited prototypes */
@@ -120,14 +137,12 @@
   .all-inherited-prototypes {
     margin: 0;
     font-size: 15px;
-    margin-top: 15px;
     margin-bottom: 5px;
   }
 
   .inherited-prototypes-alt-text{
     font-style: italic;
     font-size: 15px;
-    margin-top: 10px;
     margin-bottom: 12px;
     color: #777;
   }
@@ -221,12 +236,7 @@
     font-size: medium;
   }
 
-  .inherited-prototypes-title {
-    font-weight: bold;
-    color: #000000;
-    font-size: medium;
-    justify-content: space-between
-  }
+
 
 
    /* Inherited prototypes list */
@@ -237,14 +247,13 @@
       }
 
 .prototype-header {   
-  flex: 1; /* Take 50% of available space */
+  flex: 0.8; /* Take 50% of available space */
   font-size: 32px;
   font-weight: bold;      
   text-align: left;    
   color: darkgray;
   margin-right: 10px; 
   margin-left: 30px;
-
 }
       
 
@@ -262,6 +271,7 @@
     margin-top: 10px;
     color: gray;
     font-weight: bold;
+    margin-left: 10px;
   }
   
 
@@ -280,7 +290,7 @@
   border-radius: 4px;
   cursor: pointer;
   margin-bottom: 10px;
-  margin-top: 10px;
+  margin-top: 20px;
   font-size: 12px;
   transition: background-color 0.3s;
 }
@@ -508,17 +518,6 @@
   line-height: 1.7;
 }
 
-/* Default styles for the hover label */
-.switch-label {
-  display: inline; 
-  padding-left: 10px; 
-  color: #777777;
-  font-size: 0.8rem;
-  font-weight: normal;
-  margin-top: 7px;
-}
-
-
 
 .alt-text-container {
   display: flex;
@@ -527,14 +526,43 @@
   padding:50px;
 }      
 
-.switch-container {
-  display: flex; /* Make it a flex container */
-  align-items: center; /* Center items vertically */
-  margin-left: 20px;
+.inherited-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 }
+
+.inherited-prototypes-title {
+  font-weight: bold;
+  color: #000000;
+  font-size: medium;
+  margin-right: 10px; /* Adjust the margin as needed */
+
+}
+
+.switch-container {
+  display: flex;
+  align-items: center;
+  margin-left: 10px; /* Adjust the margin as needed */
+}
+
+.switch-label {
+  color: #777777;
+  font-size: 0.8rem;
+  font-weight: normal;
+}
+
 
 
 /* Add this to your CSS file or style block */
 .hidden-row {
   background-color: green;
+}
+
+.inline-buttons {
+  margin-top: 20px;
+}
+
+.fields-box {
+  overflow-y: auto;
 }

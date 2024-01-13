@@ -25,7 +25,7 @@ import InheritanceModal from './AddInheritanceModal';
 import AddFieldModal from './AddFieldModal';
 import UpdateFieldModal from './UpdateFieldModal';
 import { styled } from '@mui/material/styles';
-import Checkbox from '@material-ui/core/Checkbox';
+import Switch from '@mui/material/Switch';
 
 import {
   GridRowModes,
@@ -254,35 +254,24 @@ async function putData(url = "", formData = new FormData()) {
   const handleSaveField = async (selectedFieldId, selectedFieldType, selectedFieldConstraint) => {
     setShowFieldModal(false);
     const formData = new FormData();
-    console.log(selectedFieldConstraint);
-  
+    
     if (selectedFieldType !== null)
       formData.append('type', selectedFieldType);
-  
-    if (selectedFieldConstraint !== null) {
-      let group = null;  
-      if (selectedFieldConstraint.includes("Local")) {
-        group = "/local/";
-      } else {
-        group = "/butterfly/core/";
-      }
-      const prototype = selectedFieldConstraint.substring(selectedFieldConstraint.lastIndexOf('/') + 1);
-      const constraint = group + prototype;
+    if (selectedFieldConstraint!== null) {
+      const constraint = selectedFieldConstraint.substring(selectedFieldConstraint.lastIndexOf('/') + 1);
       formData.append('constraint', constraint);
     }
   
-    formData.append('fieldId', selectedFieldId);
+    formData.append('fieldId',selectedFieldId);
     console.log(selectedFieldId);
-  
     postData(`http://localhost:8080/api/type/${prototypeName}/field`, formData).then((data) => {
-      console.log(data);
+      console.log(data); 
       setOpenFieldAlert(true);
       setTimeout(() => {
         setOpenFieldAlert(false);
       }, 3000);
     });
   };
-  
 
   const handleSaveUpdateField = async (selectedUpdateFieldId, selectedUpdateFieldType, selectedUpdateFieldConstraint) => {
     setShowUpdateFieldModal(false);
@@ -299,9 +288,9 @@ async function putData(url = "", formData = new FormData()) {
     console.log(selectedUpdateFieldId);
     putData(`http://localhost:8080/api/type/${prototypeName}/field`, formData).then((data) => {
       console.log(data); 
-      setOpenFieldUpdateAlert(true);
+      setOpenFieldAlert(true);
       setTimeout(() => {
-        setOpenFieldUpdateAlert(false);
+        setOpenFieldAlert(false);
       }, 3000);
     });
   };
@@ -361,29 +350,17 @@ async function putData(url = "", formData = new FormData()) {
   const [showAllInheritedPrototypes, setShowAllInheritedPrototypes] = useState(false);
   const [fieldMap, setFieldMap] = useState([]);
   const [emptyFieldGroups, setEmptyFieldGroups] = useState([]);
-  const fetchDataWithRetry = async () => {
-    let retryCount = 0;
-    const maxRetries = 3; // Set the maximum number of retries
+
+  const fetchData = async () => {
+    console.log(prototypeName);
+    const response = await fetch(`http://localhost:8080/api/type/${prototypeName}`, {
+      mode: 'cors',
+      method: 'GET',
+      headers: headers
+    });
   
-    const fetchWithRetry = async () => {
-      try {
-        const isCore = groupName === 'core';
-        const requestUrl = isCore
-          ? `http://localhost:8080/api/type/${prototypeName}?isCore=true`
-          : `http://localhost:8080/api/type/${prototypeName}`;
-  
-        const response = await fetch(requestUrl, {
-          mode: 'cors',
-          method: 'GET',
-          headers: headers,
-        });
-  
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-  
-        const data = await response.json();
-        setPrototypeInfo(data);
+    const data = await response.json();
+    setPrototypeInfo(data);
   
     // Map fields
     const fields = data.fields || [];
@@ -396,8 +373,6 @@ async function putData(url = "", formData = new FormData()) {
       constraint: field.constraint || '',
       isDefinedInThis: field.isDefinedInThis,
     }));
-
-    console.log(mappedFields);
   
     // Map fieldGroups and their fields
     const fieldGroups = data.fieldGroups || {};
@@ -440,33 +415,11 @@ async function putData(url = "", formData = new FormData()) {
     }, {});
   
     setFieldMap(map);
-    setRows((existingRows) => removeDuplicates([...existingRows, ...allMappedFields]));
   
-  } catch (error) {
-    // Handle errors here
-    console.error('Error fetching data:', error);
+    setRows((existingRows) => removeDuplicates([...existingRows, ...allMappedFields]));
+  };
+  
 
-    // Retry logic
-    if (retryCount < maxRetries) {
-      retryCount++;
-      console.log(`Retrying (${retryCount}/${maxRetries})...`);
-      window.location.reload();
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for 1 second before retrying
-      await fetchWithRetry();
-    } else {
-      console.error('Max retries reached. Unable to fetch data.');
-    }
-  }
-};
-
-await fetchWithRetry();
-};
-
-// Call the fetchDataWithRetry function instead of fetchData
-useEffect(() => {
-fetchDataWithRetry();
-// Fetch data when the component mounts
-}, [groupName, prototypeName]);
 
 
   const uniqueFgIDs = [...Object.keys(fieldMap), ...emptyFieldGroups];
@@ -505,18 +458,44 @@ fetchDataWithRetry();
 
   const columns = [
 
-    { field: 'fieldId', headerName: 'Field ID', width: 250, editable: false, headerClassName: 'super-app-theme--header', sortable: false },
+    { field: 'fieldId', headerName: 'Field ID', width: 220, editable: false, headerClassName: 'super-app-theme--header', sortable: false },
     {
       field: 'valueType',
       headerName: 'Value Type',
-      width: 250,
-      editable: false,
+      width: 200,
+      editable: true,
       type: 'singleSelect',
       sortable: false,
       headerClassName: 'super-app-theme--header',
+      valueOptions: ['TEXT',
+        'BIGTEXT',
+        'RICHTEXT',
+        'KEYWORD',
+        'MIMETYPE',
+        'EMAIL',
+        'URL',
+        'BOOL',
+        'NUMBER',
+        'YEAR',
+        'DATE',
+        'REF',
+        'REF_PATH',
+        'EMBED',
+        'FILE_PATH',
+        'FILE',
+        'LOCALE',
+        'PROTOTYPE',
+        'DATASTORE',
+        'DATAINDEX',
+        'SCHEME',
+        'FIELD',
+        'FIELD_GROUP',
+        'FIELD_DEF',
+        'FIELD_GROUP_DEF',
+        'GEO_POINT']
     },
 
-    { field: 'defaultValue', headerName: 'Default Value', width: 250, editable: false, headerClassName: 'super-app-theme--header', sortable: false },
+    { field: 'defaultValue', headerName: 'Default Value', width: 220, editable: false, headerClassName: 'super-app-theme--header', sortable: false },
 
     // {
     //   field: 'attributeType',
@@ -531,60 +510,131 @@ fetchDataWithRetry();
     {
       field: 'constraint',
       headerName: 'Constraint',
-      width: 400,
+      width: 250,
       headerClassName: 'super-app-theme--header',
-      editable: false,
+      editable: true,
       sortable: false,
+      renderEditCell: (params) => (
+        <FormControl style={{ width: 250 }}>
+          <Select
+            label={params.field}
+            value={params.value}
+            onChange={(e) => {
+              const selectedValue = e.target.value;
+              const groupName = params.value; // Get the selected groupName
+              const formattedValue = `/${groupName}/${selectedValue}`; // Format the value
+              console.log(formattedValue); // Log the selected value
+              params.api.setEditCellValue({ id: params.id, field: params.field, value: selectedValue });
+            }}
+            onBlur={(e) => params.api.setEditCellValue({ id: params.id, field: params.field, value: e.target.value })}
+            inputProps={{
+              name: 'constraint',
+              id: 'constraint',
+            }}
+          >
+            {Object.entries(groupData).flatMap(([groupName, groupValues]) => [
+              <MenuItem key={groupName} value={groupName} disabled>
+                {groupName}
+              </MenuItem>,
+              ...groupValues.map((value) => (
+                <MenuItem key={value} value={value}>
+                  {groupName.replace("Prototypes", "").toLowerCase().replace(" ", "").replace(/^/, '/')}/{value}
+                </MenuItem>
+              )),
+            ])}
+          </Select>
+        </FormControl>
+      ),
     },
     {
-      field: groupName === 'local' ? 'Actions' : null,
+      field: 'actions',
       sortable: false,
-      headerName: groupName === 'local' ? 'Actions' : null,
+      headerName: 'Actions',
       headerClassName: 'super-app-theme--header',
-      width: 100,
+      width: 200,
       cellClassName: 'actions',
       renderCell: (params) => {
-        if (groupName === 'local') {
-          console.log(params.id);
-          if (params.row.isDefinedInThis) {
-    
+        console.log(params.id);
+        if (params.row.isDefinedInThis) {
+          const isInEditMode = rowModesModel[params.id]?.mode === GridRowModes.Edit;
+
+          if (isInEditMode) {
             return (
               <>
                 <GridActionsCellItem
-                  icon={<EditIcon />}
-                  label="Edit"
-                  className="textPrimary"
-                  onClick={() => handleClickUpdateField(params.id, params.row.valueType, params.row.constraint)}
-                  color="inherit"
+                  icon={<SaveIcon />}
+                  label="Save"
+                  sx={{
+                    color: 'primary.main',
+                  }}
+                  onClick={handleSaveClick(params.id)}
                 />
                 <GridActionsCellItem
-                  icon={<DeleteIcon />}
-                  label="Delete"
-                  onClick={handleDeleteClick(params.id)}
+                  icon={<CancelIcon />}
+                  label="Cancel"
+                  className="textPrimary"
+                  onClick={handleCancelInheritanceClick(params.id)}
                   color="inherit"
                 />
               </>
             );
           }
-    
           return (
             <>
-              {/* <GridActionsCellItem
+              <GridActionsCellItem
                 icon={<EditIcon />}
                 label="Edit"
                 className="textPrimary"
                 onClick={() => handleClickUpdateField(params.id, params.row.valueType, params.row.constraint)}
                 color="inherit"
-              /> */}
+              />
+              <GridActionsCellItem
+                icon={<DeleteIcon />}
+                label="Delete"
+                onClick={handleDeleteClick(params.id)}
+                color="inherit"
+              />
             </>
           );
         }
-        
-        // If groupName is not 'local', return null to render nothing
-        return null;
+
+        const isInEditMode = rowModesModel[params.id]?.mode === GridRowModes.Edit;
+
+        if (isInEditMode) {
+          return (
+            <>
+              <GridActionsCellItem
+                icon={<SaveIcon />}
+                label="Save"
+                sx={{
+                  color: 'primary.main',
+                }}
+                onClick={handleSaveClick(params.id)}
+              />
+              <GridActionsCellItem
+                icon={<CancelIcon />}
+                label="Cancel"
+                className="textPrimary"
+                onClick={handleCancelInheritanceClick(params.id)}
+                color="inherit"
+              />
+            </>
+          );
+        }
+
+        return (
+          <>
+            <GridActionsCellItem
+              icon={<EditIcon />}
+              label="Edit"
+              className="textPrimary"
+              onClick={() => handleClickUpdateField(params.id, params.row.valueType, params.row.constraint)}
+              color="inherit"
+            />
+          </>
+        );
       },
     },
-    
   ];
 
   const removeDuplicates = (array) => {
@@ -627,12 +677,33 @@ fetchDataWithRetry();
     //   setRowModesModel({ ...rowModesModel, [selectedRow.fieldId]: { mode: GridRowModes.Edit } });
   }
 
+  
+  const handleCellDoubleClick = (params) => {
+    if (params.field === "defaultValue" || params.field === "constraint") {
+      handleEditClick(params.id);
+    } else if (!params.row.isMap) {
+      setOpenAlert(true);
+      setTimeout(() => {
+        setOpenAlert(false);
+      }, 3000);
+    }
+  };
 
-
+  const handleRowEditStop = (params, event) => {
+    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+      event.defaultMuiPrevented = true;
+    }
+  };
 
   const handleDeleteClick = (id) => () => {
     setFieldToRemove(id); // Set the fieldToDelete state with the ID of the field to be deleted
     setOpenFieldDeleteModal(true);
+  };
+
+
+  const handleSaveClick = (id) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    console.log(id);
   };
 
 
@@ -725,6 +796,53 @@ fetchDataWithRetry();
   };
 
 
+  const handleCancelInheritanceClick = (id) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+
+    const editedRow = rows.find((row) => row.id === id);
+    if (editedRow.isNew) {
+      setRows(rows.filter((row) => row.id !== id));
+    }
+  };
+
+  const processRowUpdate = (newRow) => {
+    const updatedRow = { ...newRow, isNew: false };
+    console.log("newRow", newRow);
+  
+    setRows((existingRows) => {
+      const updatedRows = existingRows.map((row) =>
+        row.fgID === newRow.fgID && row.id === newRow.id ? updatedRow : row
+      );
+      return removeDuplicates(updatedRows);
+    });
+  
+    const formData = new FormData();
+    
+    if (newRow.valueType !== null)
+      formData.append('type', newRow.valueType);
+    if (newRow.constraint !== null) {
+      formData.append('constraint', newRow.constraint);
+    }
+    formData.append('fieldId', newRow.fieldId);
+    putData(`http://localhost:8080/api/type/${prototypeName}/field`, formData).then((data) => {
+      console.log(data); 
+      setOpenFieldUpdateAlert(true);
+      setTimeout(() => {
+        setOpenFieldUpdateAlert(false);
+      }, 3000);
+    });
+  
+    return updatedRow;
+  };
+
+
+
+  const handleRowModesModelChange = (newRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
 
 
   useEffect(() => {
@@ -743,7 +861,7 @@ fetchDataWithRetry();
       constraint: '',
       defaultValue: '',
     });
-    fetchDataWithRetry(); // Fetch data for the new prototype and initialize 'rows'
+    fetchData(); // Fetch data for the new prototype and initialize 'rows'
   }, [prototypeName, groupName]);
 
   useEffect(() => {
@@ -829,9 +947,9 @@ fetchDataWithRetry();
   // }, [selectedFIeldID, rowModesModel]);
 
 
-  // useEffect(() => {
-  //   fetchData(); // Fetch data when the component mounts
-  // }, [groupName, prototypeName]);
+  useEffect(() => {
+    fetchData(); // Fetch data when the component mounts
+  }, [groupName, prototypeName]);
 
   if (!prototypeInfo) {
     return <Link to={"/"}></Link>;
@@ -845,38 +963,12 @@ fetchDataWithRetry();
     navigate(fullPath);
   };
 
-
-  const handleCheckboxChange = (event) => {
-    setShowAllInheritedPrototypes(event.target.checked);
+  const handleSwitchChange = () => {
+    setShowAllInheritedPrototypes(!showAllInheritedPrototypes);
   };
 
   console.log(uniqueFgIDs);
-  const BpIcon = styled('span')(({ theme }) => ({
-    borderRadius: 3,
-    width: 16,
-    height: 16,
-    boxShadow:
-      theme.palette.mode === 'dark'
-        ? '0 0 0 1px rgb(16 22 26 / 40%)'
-        : 'inset 0 0 0 1px rgba(16,22,26,.2), inset 0 -1px 0 rgba(16,22,26,.1)',
-    backgroundColor: theme.palette.mode === 'dark' ? '#394b59' : '#f5f8fa',
-    backgroundImage:
-      theme.palette.mode === 'dark'
-        ? 'linear-gradient(180deg,hsla(0,0%,100%,.05),hsla(0,0%,100%,0))'
-        : 'linear-gradient(180deg,hsla(0,0%,100%,.8),hsla(0,0%,100%,0))',
-    '.Mui-focusVisible &': {
-      outline: '2px auto rgba(19,124,189,.6)',
-      outlineOffset: 2,
-    },
-    'input:hover ~ &': {
-      backgroundColor: theme.palette.mode === 'dark' ? '#30404d' : '#ebf1f5',
-    },
-    'input:disabled ~ &': {
-      boxShadow: 'none',
-      background:
-        theme.palette.mode === 'dark' ? 'rgba(57,75,89,.5)' : 'rgba(206,217,224,.5)',
-    },
-  }));
+
   
   return (
 
@@ -889,33 +981,43 @@ fetchDataWithRetry();
 
           {/* <button onClick={() => navigation("/")}  className="back-button">Back</button>  */}
           <div className='sticky-header'>
-               
+            <div className="div-delete-prototype-container">
+              <button className="delete-prototype-button" onClick={() => handleDeleteClickPrototype(prototypeName)}>Delete prototype</button>
+            </div>
                 
+            {/* <span onClick={() => handleDeleteClickPrototype(prototypeName)}>Delete prototype</span> */}
             <div className="header-info-container">
             
               <h2 className="prototype-header">{prototypeInfo.id}</h2>
               <div className="info-section">
               
-              <span className="inherited-section">
+              <div className="inherited-section">
                 <span className='inherited-prototypes-title'>
                   <span>Inherited Prototypes</span>
+
+                </span>
+                {" "}
+                <span>
+                  {prototypeInfo.inheritsTransitively.length > 0 && prototypeInfo.inheritsTransitively.length !== prototypeInfo.inherits.length && (
+                    <FormControlLabel
+                      control={
+                        <div className="switch-container">
+                          <Switch
+                            inputProps={{ 'aria-label': 'controlled' }}
+                            checked={showAllInheritedPrototypes}
+                            onChange={handleSwitchChange}
+                          />
+                          <span className="switch-label">
+                            {showAllInheritedPrototypes ? 'Hide all prototypes' : 'Show all prototypes'}
+                          </span>
+                        </div>
+                      }
+                    />
+                  )}
+
                 </span>
                 
-                {prototypeInfo.inheritsTransitively.length > 0 && prototypeInfo.inheritsTransitively.length !== prototypeInfo.inherits.length && (
-                  <div className="switch-container">
-                    <Checkbox
-                      checked={showAllInheritedPrototypes}
-                      onChange={handleCheckboxChange}
-                      color="default"
-                      size="small"
-                      inputProps={{ 'aria-label': 'controlled' }}
-                    />
-                    <span className="switch-label">
-                      Show all prototypes
-                    </span>
-                  </div>
-                )}
-            </span>
+              </div>
 
 
                 {!showAllInheritedPrototypes && prototypeInfo.inherits && (
@@ -929,88 +1031,69 @@ fetchDataWithRetry();
                           <Link to={fullPath} onClick={() => handlePrototypeClick(fullPath)} className={`inherited-prototypes-list${index === 0 ? ' with-right-padding' : ' with-padding'}`}>
                             {prototype}
                           </Link>
-                          {groupName === 'local' && ( 
-                            <span onClick={() => handleDeleteClickInherited(prototype)} style={{ cursor: 'pointer', color: 'red' }}>
-                              X
-                            </span>
-                          )}
+                          <span onClick={() => handleDeleteClickInherited(prototype)} style={{ cursor: 'pointer', color: 'red' }}>
+                            X
+                          </span>
                         </span>
                       </React.Fragment>
                     );
                   })}
                 </p>
               )}
-              {
-                showAllInheritedPrototypes && prototypeInfo.inheritsTransitively && (
-                  <p className="inherited-prototypes">
-                    {prototypeInfo.inheritsTransitively.map((prototype, index) => {
-                      const fullPath = `/prototype${prototype.replace("butterfly/", "")}`;
 
-                      // Check if the prototype exists in both inheritsTransitively and inherits
-                      const isInBothArrays = prototypeInfo.inherits.includes(prototype);
+              {showAllInheritedPrototypes && prototypeInfo.inheritsTransitively && (
+                <p className="inherited-prototypes">
+                  {prototypeInfo.inheritsTransitively.map((prototype, index) => {
+                    const fullPath = `/prototype${prototype.replace("butterfly/", "")}`;
 
-                      return (
-                        <span key={`${groupName}-${index}`} className='inherited-prototypes-list'>
-                          {index > 0 && " | "}
-                          <Link to={fullPath} onClick={() => handlePrototypeClick(fullPath)} className='inherited-prototypes-list'>
-                            {prototype}
-                          </Link>
-                          {groupName === 'local' && isInBothArrays && ( 
-                            <span onClick={() => handleDeleteClickInherited(prototype)} style={{ cursor: 'pointer', color: 'red' }}>
-                              X
-                            </span>
-                          )}
-                        </span>
-                      );
-                    })}
-                  </p>
-                )
-              }
+                    // Check if the prototype exists in both inheritsTransitively and inherits
+                    const isInBothArrays = prototypeInfo.inherits.includes(prototype);
+
+                    return (
+                      <span key={`${groupName}-${index}`} className='inherited-prototypes-list'>
+                        {index > 0 && " | "}
+                        <Link to={fullPath} onClick={() => handlePrototypeClick(fullPath)} className='inherited-prototypes-list'>
+                          {prototype}
+                        </Link>
+                        {isInBothArrays && (
+                          <span onClick={() => handleDeleteClickInherited(prototype)} style={{ cursor: 'pointer', color: 'red' }}>
+                            X
+                          </span>
+                        )}
+                      </span>
+                    );
+                  })}
+                </p>
+                )}
 
                 {prototypeInfo.inherits.length <= 0 && (
                   <p className="inherited-prototypes-alt-text">No inherited prototypes found.</p>
                 )}
 
-                {
-                  showInheritanceModal ? (
-                    <InheritanceModal
-                      showInheritanceModal={showInheritanceModal}
-                      selectedInheritedPrototype={selectedInheritedPrototype}
-                      handleInheritanceChange={handleInheritanceChange}
-                      inheritanceDropdownOptions={inheritanceDropdownOptions}
-                      handleSaveInheritance={() => handleSaveInheritance(selectedInheritedPrototype)} 
-                      handleCancelInheritance={handleCancelInheritance}
-                    />
-                  ) : (
-                    groupName === 'local' && (
-                    
-                    <span className= "inline-buttons">
-                      <button
-                        className="add-inheritance-button"
-                        onClick={handleClickInheritance}
-                      >
+
+
+
+              {showInheritanceModal ? (
+                      <InheritanceModal
+                        showInheritanceModal={showInheritanceModal}
+                        selectedInheritedPrototype={selectedInheritedPrototype}
+                        handleInheritanceChange={handleInheritanceChange}
+                        inheritanceDropdownOptions={inheritanceDropdownOptions}
+                        handleSaveInheritance={() => handleSaveInheritance(selectedInheritedPrototype)} 
+                        handleCancelInheritance={handleCancelInheritance}
+                      />
+                    ) : (
+                      <button className="add-inheritance-button" onClick={handleClickInheritance}>
                         Add Inherited Prototype
                       </button>
-
-                        <button className = "delete-prototype-button"
-                        onClick={() => handleDeleteClickPrototype(prototypeName)}>
-                          Delete prototype
-                        </button>
-                     
-
-                    </span>
-                    )
-                  )
-                }
-
-
+                    )}
                   </div>
             </div>
           </div>
 
           <div className='field-section'>
-            <div className='fields'>
             <div ref={dataGridContainerRef}>
+
               <span className="subsubheader">Structure</span>
 
               {showFieldModal ? (
@@ -1026,13 +1109,10 @@ fetchDataWithRetry();
                         handleCancelField={handleCancelField}
                       />
                     ) : (
-                      groupName === 'local' && (
                       <button className="add-field-button" onClick={handleClickField}>
                         Add new field
                       </button>
-                    )
-                    )
-                  }
+                    )}
 
 
               {showFieldGroupModal ? (
@@ -1044,13 +1124,10 @@ fetchDataWithRetry();
                         handleCancelFieldGroup={handleCancelFieldGroup}
                       />
                     ) : (
-                      groupName === 'local' && (
                       <button className="add-field-button" onClick={handleClickFieldGroup}>
                         Add new field group
                       </button>
-                    )
-                    )
-                  }
+                    )}
             
            
             {showUpdateFieldModal ? (
@@ -1075,10 +1152,22 @@ fetchDataWithRetry();
               <Box
                 sx={{
                   width: '100%',
-                  height: 'auto',
-                  overflowY: 'visible',
+                  marginTop: '20px',
+                  height: 450,
+                  overflowY: 'auto',
+                  display: 'flex',
+                  flexDirection: 'column',
                   padding: '10px',
-                
+                  '&::-webkit-scrollbar': {
+                    width: '12px',
+                  },
+                  '&::-webkit-scrollbar-thumb': {
+                    backgroundColor: '#888',
+                    borderRadius: '6px',
+                  },
+                  '&::-webkit-scrollbar-track': {
+                    backgroundColor: 'transparent',
+                  },
                 }}
               >
 
@@ -1092,7 +1181,7 @@ fetchDataWithRetry();
                     flex: 1,
                     display: 'flex',
                     flexDirection: 'column',
-                    height: 'auto'
+                    height: '400px'
                   }}
                     className="fgID"
                   >
@@ -1120,23 +1209,51 @@ fetchDataWithRetry();
                     </div>
                     <Box
                       sx={{
-                        width: '100%',
-                        height: 'auto',
-                        overflowY: 'visible', // Set to 'visible' to allow content to overflow without scrollbars
-                        padding: '10px',
+                        overflowY: 'auto',
+                        
                       }}
                     >
                       {prototypeInfo.fieldGroups[fgID]?.length > 0 || fgID == "undefined" ? (
-                      <DataGrid
+                      <StyledDataGrid
                         key={fgID}
                         rows = {rows.filter(row => row.fgID === fgID)}
                         columns={columns}
+                        className="overflow-grid"
                         getRowId={(row) => row.id}
+                        editMode={'row'}
                         rowModesModel={rowModesModel}
-                        isCellEditable={false}
+                        onRowModesModelChange={handleRowModesModelChange}
+                        onRowEditStop={handleRowEditStop}
+                        processRowUpdate={processRowUpdate}
+                        isCellEditable={(params) => {
+                          if (params.field === 'defaultValue' || params.field === 'constraint') {
+                            return true;
+                          }
+                          return params.row.isDefinedInThis;
+                        }}
+                        disableEdit={(params) => {
+                          if (params.field === 'defaultValue' || params.field === 'constraint') {
+                            return true;
+                          }
+                          return !params.row.isDefinedInThis;
+                        }}
+                        onCellDoubleClick={handleCellDoubleClick}
                         hideFooterPagination={true}
                         hideFooter={true}
-                
+                        initialState={{
+                          sorting: {
+                            sortModel: [{ field: 'fieldId', sort: 'asc' }],
+                          },
+                        }}
+                        slotProps={{
+                          toolbar: { setRows, setRowModesModel },
+                        }}
+                        sx={{
+                          '& .MuiDataGrid-row': { marginTop: 0.5, marginBottom: 0.5 },
+                          fontSize: '10pt',
+                          '& .coloured': { textAlign: 'center', color: '#7181AD' },
+                          '& .MuiDataGrid-virtualScroller::-webkit-horizontal-scrollbar': { display: 'none' },
+                        }}
                       />
                       ) : (
                         <p style={{ color: 'gray', fontStyle: 'italic', fontSize: '13px' }}>This field group has no fields.</p>
@@ -1146,7 +1263,7 @@ fetchDataWithRetry();
                   </div>
                 ))}
               </Box>
-              </div>
+
             </div>
             <Dialog
               open={open}

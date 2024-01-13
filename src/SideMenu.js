@@ -16,7 +16,7 @@ function SideMenu(props) {
   const groups = [
     { name: 'Local Prototypes', url: 'http://localhost:8080/api/type/category/local' },
     { name: 'Core Prototypes', url: 'http://localhost:8080/api/type/category/core' },
-    { name: 'Delta Prototypes', url: 'http://localhost:8080/api/type/category/delta' },
+    // { name: 'Delta Prototypes', url: 'http://localhost:8080/api/type/category/delta' },
   ];
 
   const { currentGroup, currentPrototype } = props;
@@ -66,74 +66,87 @@ function SideMenu(props) {
   const handleItemClick = (fullPath, groupIndex) => {
     setExpandedGroup(groupIndex); // Expand the group when an item is clicked
     setOpenForm(false);
-    setSelectedItems(prevItems => ({
+    setSelectedItems((prevItems) => ({
       ...prevItems,
       [groupIndex]: null,
     }));
-    navigate(fullPath);
+  
+      navigate(fullPath);
+    
   };
+  
 
   return (
     <div className='page'>
-    <span className="center-button">
-      <Link to="/create" className="create-button">
-        Create new prototype
-      </Link>
-    </span> 
-    <div className="side-menu">
-      {groups.map((group, groupIndex) => (
-        <div key={groupIndex}>
-          <div
-            className={`category-name ${
-              expandedGroup === groupIndex ? 'expanded' : ''
-            }`}
-            onClick={() => handleGroupClick(groupIndex)}
-          >
-            {group.name === currentGroup ? (
-              <strong>{group.name}</strong>
-            ) : (
-              group.name
-            )}
-          </div>
-          {expandedGroup === groupIndex && (
-            <div className="category-content">
-              {groupData[groupIndex] && (
-                <div className="content-scroll">
-                  {groupData[groupIndex].map((prototype, itemIndex) => {
-                    const formattedGroupName = group.name
-                      .toLowerCase()
-                      .replace(/\s+/g, '')
-                      .replace('prototypes', '');
-                    const fullPath = `/prototype/${formattedGroupName}/${prototype.unformattedName}`;
-                    return (
-                      <Link
-                        to={fullPath}
-                        key={`${groupIndex}-${itemIndex}`}
-                        className={`menu-link ${
-                          selectedItems[groupIndex] === itemIndex
-                            ? 'selected'
-                            : ''
-                        }`}
-                        sx={{ fontSize: '15pt' }}
-                        onClick={() => handleItemClick(fullPath, groupIndex)} // Pass groupIndex
-                      >
-                        <div>
-                          {prototype.unformattedName === currentPrototype ? (
-                            <strong>{prototype.unformattedName}</strong>
-                          ) : (
-                            prototype.unformattedName
-                          )}
-                        </div>
-                      </Link>
-                    );
-                  })}
-                </div>
+      <div className="side-menu">
+        {groups.map((group, groupIndex) => (
+          <div key={groupIndex}>
+            <div
+              className={`category-name ${
+                expandedGroup === groupIndex ? 'expanded' : ''
+              }`}
+              onClick={() => handleGroupClick(groupIndex)}
+            >
+              {group.name === currentGroup ? (
+                <strong>{group.name}</strong>
+              ) : (
+                group.name
+              )}
+              {/* Conditionally render the "Create new prototype" link */}
+              {group.name === 'Local Prototypes' && expandedGroup === groupIndex && (
+                <span className="center-button">
+                  <Link to="/create" className="create-button">
+                    Create new prototype
+                  </Link>
+                </span>
+              )}
+              {group.name === 'Core Prototypes' && expandedGroup === groupIndex && (
+                <span className="center-button">
+                  <Link to="/create" className="invisible-button">
+                    Invisibe button
+                  </Link>
+                </span>
               )}
             </div>
-          )}
-        </div>
-      ))}
-    </div>
+            {expandedGroup === groupIndex && (
+              <div className="category-content">
+                {groupData[groupIndex] && (
+                  <div className="content-scroll">
+                    {groupData[groupIndex].map((prototype, itemIndex) => {
+                      const formattedGroupName = group.name
+                        .toLowerCase()
+                        .replace(/\s+/g, '')
+                        .replace('prototypes', '');
+                      const fullPath = `/prototype/${formattedGroupName}/${prototype.unformattedName}`;
+                      return (
+                        <Link
+                          to={fullPath}
+                          key={`${groupIndex}-${itemIndex}`}
+                          className={`menu-link ${
+                            selectedItems[groupIndex] === itemIndex
+                              ? 'selected'
+                              : ''
+                          }`}
+                          sx={{ fontSize: '15pt' }}
+                          onClick={() => handleItemClick(fullPath,  groupIndex)}
+                        >
+                          <div>
+                            {prototype.unformattedName === currentPrototype ? (
+                              <strong>{prototype.unformattedName}</strong>
+                            ) : (
+                              prototype.unformattedName
+                            )}
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
