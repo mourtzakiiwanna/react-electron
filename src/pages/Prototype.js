@@ -14,7 +14,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Link, useNavigate, useParams} from 'react-router-dom';
 import AddFieldModal from '../modals/AddFieldModal';
 import InheritanceModal from '../modals/AddInheritanceModal';
-import SideMenu from './SideMenu';
+import SideMenu from '../pages/SideMenu';
 import UpdateFieldModal from '../modals/UpdateFieldModal';
 import '../css/Prototype.css';
 

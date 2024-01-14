@@ -1,5 +1,5 @@
 import React from 'react';
-import SideMenu from './SideMenu';
+import SideMenu from '../pages/SideMenu';
 import '../css/Prototype.css';
 
 function Prototype(props) {
