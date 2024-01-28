@@ -20,6 +20,7 @@ import '../css/Prototype.css';
 
 import {DataGrid, GridActionsCellItem} from '@mui/x-data-grid';
 import AddFieldGroupModal from '../modals/AddFieldGroupModal';
+import BatchActionsModal from "../modals/BatchActionsModal";
 
 
 const baseURL = 'http://localhost:8080/api/type';
@@ -111,6 +112,9 @@ function Prototype(props) {
     const [openInheritanceDeleteAlert, setOpenInheritanceDeleteAlert] = React.useState(false);
     const [openFieldGroupDeleteAlert, setOpenFieldGroupDeleteAlert] = React.useState(false);
     const [openFieldUpdateAlert, setOpenFieldUpdateAlert] = React.useState(false);
+    const [addedToBatchAlert, setAddedToBatchAlert] = React.useState(false);
+
+    const [actionExistsAlert, setActionExistsAlert] = useState(false);
 
     const [rows, setRows] = React.useState([]);
 
@@ -139,33 +143,21 @@ function Prototype(props) {
     const [updatedFieldId, setUpdatedFieldId] = useState('');
     const [initialUpdateFieldType, setInitialUpdateFieldType] = useState('');
     const [initialUpdateFieldConstraint, setInitialUpdateFieldConstraint] = useState('');
+    const [batchActions, setBatchActions] = useState([]);
+    const [batchActionsModal, setBatchActionsModal] = useState(false);
 
-    const handleSaveInheritance = async (selectedValue) => {
-        setShowInheritanceModal(false);
-        selectedValue = "/local/" + selectedValue;
-        const formData = new FormData();
-        formData.append('inherited', selectedValue);
-        postData(`${baseURL}/${prototypeName}/inheritance`, formData).then((data) => {
+    const [deleteAllActionsAlert, setDeleteAllActionsAlert] = useState(false);
+    const [deleteActionAlert, setDeleteActionAlert] = useState(false);
 
-            setOpenInheritanceAlert(true);
-            setTimeout(() => {
-                setOpenInheritanceAlert(false);
-            }, 3000);
-        });
+
+    const showBatchActionsModal = () => {
+        setBatchActionsModal(true);
     };
 
-    const handleSaveFieldGroup = async (groupValue) => {
-        setShowFieldGroupModal(false);
-        const formData = new FormData();
-        formData.append('groupId', groupValue);
-        postData(`${baseURL}/${prototypeName}/group`, formData).then((data) => {
-
-            setOpenFieldGroupAlert(true);
-            setTimeout(() => {
-                setOpenFieldGroupAlert(false);
-            }, 3000);
-        });
+    const closeBatchActionsModal = () => {
+        setBatchActionsModal(false);
     };
+
 
     const handleSaveField = async (selectedFieldId, selectedFieldType, selectedFieldConstraint) => {
         setShowFieldModal(false);
@@ -197,6 +189,155 @@ function Prototype(props) {
         });
     };
 
+    const handleAddFieldToBatch = async (selectedFieldId, selectedFieldType, selectedFieldConstraint) => {
+        setShowFieldModal(false);
+    
+        let constraint = "";
+    
+        if (selectedFieldConstraint !== null) {
+            let group = null;
+            if (selectedFieldConstraint.includes("Local")) {
+                group = "/local/";
+            } else {
+                group = "/butterfly/core/";
+            }
+            const prototype = selectedFieldConstraint.substring(selectedFieldConstraint.lastIndexOf('/') + 1);
+            constraint = group + prototype;
+        }
+    
+        const actionObject = {
+            action: 'AddField',
+            prototypePath: prototypeInfo.id,
+            id: selectedFieldId,
+            type: selectedFieldType,
+            constraint: constraint,
+        };
+    
+        const existingActions = JSON.parse(localStorage.getItem('batchActions')) || [];
+    
+        const isActionExists = existingActions.some(
+            (existingAction) =>
+                existingAction.action === actionObject.action &&
+                existingAction.prototypePath === actionObject.prototypePath &&
+                existingAction.id === actionObject.id &&
+                existingAction.type === actionObject.type &&
+                existingAction.constraint === actionObject.constraint
+        );
+    
+        if (isActionExists) {
+            setActionExistsAlert(true);
+            setTimeout(() => {
+                setActionExistsAlert(false);
+            }, 3000);
+        } else {
+            existingActions.push(actionObject);
+            localStorage.setItem('batchActions', JSON.stringify(existingActions));
+    
+            setAddedToBatchAlert(true);
+            setTimeout(() => {
+                setAddedToBatchAlert(false);
+            }, 3000);
+        }
+    };
+    
+    const handleSaveInheritance = async (selectedValue) => {
+        setShowInheritanceModal(false);
+        selectedValue = "/local/" + selectedValue;
+        const formData = new FormData();
+        formData.append('inherited', selectedValue);
+        postData(`${baseURL}/${prototypeName}/inheritance`, formData).then((data) => {
+
+            setOpenInheritanceAlert(true);
+            setTimeout(() => {
+                setOpenInheritanceAlert(false);
+            }, 3000);
+        });
+    };
+
+    const handleAddInheritanceToBatch = async (selectedValue) => {
+        setShowInheritanceModal(false);
+        selectedValue = '/local/' + selectedValue;
+    
+        const actionObject = {
+            action: 'AddInheritance',
+            prototypePath: prototypeInfo.id,
+            inheritedPrototypes: selectedValue,
+        };
+    
+        const existingActions = JSON.parse(localStorage.getItem('batchActions')) || [];
+    
+        const isActionExists = existingActions.some(
+            (existingAction) =>
+                existingAction.action === actionObject.action &&
+                existingAction.prototypePath === actionObject.prototypePath &&
+                existingAction.inheritedPrototypes === actionObject.inheritedPrototypes
+        );
+    
+        if (isActionExists) {
+            setActionExistsAlert(true);
+            setTimeout(() => {
+                setActionExistsAlert(false);
+            }, 3000);
+        } else {
+            existingActions.push(actionObject);
+            localStorage.setItem('batchActions', JSON.stringify(existingActions));
+    
+            setAddedToBatchAlert(true);
+            setTimeout(() => {
+                setAddedToBatchAlert(false);
+            }, 3000);
+        }
+    };
+    
+
+    const handleSaveFieldGroup = async (groupValue) => {
+        setShowFieldGroupModal(false);
+        const formData = new FormData();
+        formData.append('groupId', groupValue);
+        postData(`${baseURL}/${prototypeName}/group`, formData).then((data) => {
+
+            setOpenFieldGroupAlert(true);
+            setTimeout(() => {
+                setOpenFieldGroupAlert(false);
+            }, 3000);
+        });
+    };
+
+    const handleAddFieldGroupToBatch = async (groupValue) => {
+        setShowFieldGroupModal(false);
+    
+        const actionObject = {
+            action: 'AddFieldGroup',
+            prototypePath: prototypeInfo.id,
+            groupId: selectedFieldGroup,
+        };
+    
+        const existingActions = JSON.parse(localStorage.getItem('batchActions')) || [];
+    
+        const isActionExists = existingActions.some(
+            (existingAction) =>
+                existingAction.action === actionObject.action &&
+                existingAction.prototypePath === actionObject.prototypePath &&
+                existingAction.groupId === actionObject.groupId
+        );
+    
+        if (isActionExists) {
+            setActionExistsAlert(true);
+            setTimeout(() => {
+                setActionExistsAlert(false);
+            }, 3000);
+        } else {
+            existingActions.push(actionObject);
+            localStorage.setItem('batchActions', JSON.stringify(existingActions));
+    
+            setAddedToBatchAlert(true);
+            setTimeout(() => {
+                setAddedToBatchAlert(false);
+            }, 3000);
+        }
+    };
+    
+
 
     const handleSaveUpdateField = async (selectedUpdateFieldId, selectedUpdateFieldType, selectedUpdateFieldConstraint) => {
         setShowUpdateFieldModal(false);
@@ -217,6 +358,48 @@ function Prototype(props) {
             }, 3000);
         });
     };
+
+    const handleUpdateFieldToBatch = async (selectedUpdateFieldId, selectedUpdateFieldType, selectedUpdateFieldConstraint) => {
+        setShowUpdateFieldModal(false);
+    
+        let constraint = '';
+        if (selectedUpdateFieldConstraint !== null) {
+            constraint = selectedUpdateFieldConstraint.substring(selectedUpdateFieldConstraint.lastIndexOf('/') + 1);
+        }
+    
+        const actionObject = {
+            action: 'UpdateField',
+            prototypePath: prototypeInfo.id,
+            id: selectedUpdateFieldId,
+            type: selectedUpdateFieldType,
+            constraint: constraint,
+        };
+    
+        const existingActions = JSON.parse(localStorage.getItem('batchActions')) || [];
+    
+        const isActionExists = existingActions.some(
+            (existingAction) =>
+                existingAction.action === actionObject.action &&
+                existingAction.prototypePath === actionObject.prototypePath &&
+                existingAction.id === actionObject.id
+        );
+    
+        if (isActionExists) {
+            setActionExistsAlert(true);
+            setTimeout(() => {
+                setActionExistsAlert(false);
+            }, 3000);
+        } else {
+            existingActions.push(actionObject);
+            localStorage.setItem('batchActions', JSON.stringify(existingActions));
+    
+            setAddedToBatchAlert(true);
+            setTimeout(() => {
+                setAddedToBatchAlert(false);
+            }, 3000);
+        }
+    };
+    
 
     const handleCancelInheritance = () => {
         setShowInheritanceModal(false);
@@ -261,6 +444,38 @@ function Prototype(props) {
         setSelectedUpdateFieldConstraint(null);
         setShowUpdateFieldModal(true);
     };
+
+    const handleRemoveAllActions = () => {
+        setDeleteAllActionsAlert(true);
+        setTimeout(() => {
+            setDeleteAllActionsAlert(false);
+        }, 6000);
+
+        closeBatchActionsModal();     
+        localStorage.removeItem('batchActions');
+        
+    };
+
+    const handleRemoveAction = (indexToRemove) => {
+
+        const existingActions = JSON.parse(localStorage.getItem('batchActions')) || [];
+      
+        if (indexToRemove >= 0 && indexToRemove < existingActions.length) {
+        setDeleteActionAlert(true);
+        setTimeout(() => {
+            setDeleteActionAlert(false);
+        }, 6000);
+
+          const updatedActions = existingActions.filter((_, index) => index !== indexToRemove);
+      
+          localStorage.setItem('batchActions', JSON.stringify(updatedActions));
+      
+          setBatchActions(prevBatchActions => {
+            return JSON.parse(localStorage.getItem('batchActions')) || [];
+          });
+        }
+      };
+      
 
     const [inheritanceDropdownOptions, setinheritanceDropdownOptions] = useState([]);
     // eslint-disable-next-line
@@ -519,6 +734,43 @@ function Prototype(props) {
         setOpenInheritedModal(false);
     };
 
+    const handleDeleteInheritanceAddToBatch = () => {
+        const removedValue = inheritedToRemove;
+    
+        const actionObject = {
+            action: "DeleteInheritance",
+            prototypePath: prototypeInfo.id,
+            inherited: removedValue,
+        };
+    
+        const existingActions = JSON.parse(localStorage.getItem('batchActions')) || [];
+    
+        const isActionExists = existingActions.some(
+            (action) =>
+                action.action === actionObject.action &&
+                action.prototypePath === actionObject.prototypePath &&
+                action.inherited === actionObject.inherited
+        );
+    
+        if (isActionExists) {
+            setActionExistsAlert(true);
+            setTimeout(() => {
+                setActionExistsAlert(false);
+            }, 3000);
+        } else {
+            existingActions.push(actionObject);
+            localStorage.setItem('batchActions', JSON.stringify(existingActions));
+    
+            setAddedToBatchAlert(true);
+            setTimeout(() => {
+                setAddedToBatchAlert(false);
+            }, 3000);
+        }
+    
+        setOpenInheritedModal(false);
+    };
+    
+
     const handleDeleteConfirmField = () => {
 
         const removedValue = fieldToRemove;
@@ -535,6 +787,43 @@ function Prototype(props) {
         setRows(rows.filter((row) => row.fieldId !== fieldToRemove));
     };
 
+    const handleDeleteFieldAddToBatch = () => {
+        const removedValue = fieldToRemove;
+    
+        const actionObject = {
+            action: 'DeleteField',
+            prototypePath: prototypeInfo.id,
+            id: removedValue,
+        };
+    
+        const existingActions = JSON.parse(localStorage.getItem('batchActions')) || [];
+    
+        const isActionExists = existingActions.some(
+            (existingAction) =>
+                existingAction.action === actionObject.action &&
+                existingAction.prototypePath === actionObject.prototypePath &&
+                existingAction.id === actionObject.id
+        );
+    
+        if (isActionExists) {
+            setActionExistsAlert(true);
+            setTimeout(() => {
+                setActionExistsAlert(false);
+            }, 3000);
+        } else {
+            existingActions.push(actionObject);
+            localStorage.setItem('batchActions', JSON.stringify(existingActions));
+    
+            setAddedToBatchAlert(true);
+            setTimeout(() => {
+                setAddedToBatchAlert(false);
+            }, 3000);
+        }
+    
+        setOpenFieldDeleteModal(false);
+    };
+    
+
     const handleDeleteConfirmFieldGroup = () => {
 
         const removedValue = fieldGroupToRemove;
@@ -550,6 +839,42 @@ function Prototype(props) {
         setOpenFieldGroupDeleteModal(false);
     };
 
+    const handleDeleteFieldGroupAddToBatch = () => {
+        const removedValue = fieldGroupToRemove;
+    
+        const actionObject = {
+            action: 'DeleteFieldGroup',
+            prototypePath: prototypeInfo.id,
+            fieldGroup: removedValue,
+        };
+    
+        const existingActions = JSON.parse(localStorage.getItem('batchActions')) || [];
+    
+        const isActionExists = existingActions.some(
+            (existingAction) =>
+                existingAction.action === actionObject.action &&
+                existingAction.prototypePath === actionObject.prototypePath &&
+                existingAction.fieldGroup === actionObject.fieldGroup
+        );
+    
+        if (isActionExists) {
+            setActionExistsAlert(true);
+            setTimeout(() => {
+                setActionExistsAlert(false);
+            }, 3000);
+        } else {
+            existingActions.push(actionObject);
+            localStorage.setItem('batchActions', JSON.stringify(existingActions));
+    
+            setAddedToBatchAlert(true);
+            setTimeout(() => {
+                setAddedToBatchAlert(false);
+            }, 3000);
+        }
+    
+        setOpenFieldGroupDeleteModal(false);
+    };
+    
     const handleDeleteConfirmPrototype = () => {
 
         deleteData(`${baseURL}/api/type/${prototypeName}`, {}).then((data) => {
@@ -622,6 +947,13 @@ function Prototype(props) {
         const selectedValue = e.target.value;
         setSelectedUpdateFieldConstraint(selectedValue);
     };
+       
+
+    const handleSaveAllActions = async () => {    
+    
+        setBatchActions([]);
+        setBatchActionsModal(false);
+    };
 
 
     if (!prototypeInfo) {
@@ -642,16 +974,20 @@ function Prototype(props) {
     };
 
 
+    console.log(batchActions);
+
     return (
 
         <div>
             <SideMenu currentGroup={groupName} currentPrototype={prototypeName}/>
 
             <div className="main-content">
+
                 <div className="prototype-container">
                     <div className='sticky-header'>
                         <div className="header-info-container">
                             <h2 className="prototype-header">{prototypeInfo.id}</h2>
+
                             <div className="info-section">
                 <span className="inherited-section">
                   <span className='inherited-prototypes-title'>
@@ -726,6 +1062,8 @@ function Prototype(props) {
                                     inheritanceDropdownOptions={inheritanceDropdownOptions}
                                     handleSaveInheritance={() => handleSaveInheritance(selectedInheritedPrototype)}
                                     handleCancelInheritance={handleCancelInheritance}
+                                    handleAddInheritanceToBatch={handleAddInheritanceToBatch}
+
                                 />) : null}
 
 
@@ -743,6 +1081,17 @@ function Prototype(props) {
                             onClick={() => handleDeleteClickPrototype(prototypeName)}>
                       Delete prototype
                     </button>
+
+                    <button className="batch-actions-button" onClick={showBatchActionsModal}>Show Batch Actions</button>
+                    {showBatchActionsModal && (
+                        <BatchActionsModal
+                            handleRemoveAllActions={handleRemoveAllActions}
+                            handleSaveAllActions={handleSaveAllActions}
+                            handleCloseModal={closeBatchActionsModal}
+                            handleShowModal={batchActionsModal}
+                            handleRemoveAction={handleRemoveAction}
+                        />
+                    )}
                   </span>)}
 
                                 {groupName === 'core' && (
@@ -756,10 +1105,11 @@ function Prototype(props) {
 
                   </span>)}
 
+
+
                             </div>
                         </div>
                     </div>
-
                     <div className='field-section'>
                         <div className='fields'>
                             <div ref={dataGridContainerRef}>
@@ -775,6 +1125,7 @@ function Prototype(props) {
                                     handleFieldConstraintChange={handleFieldConstraintChange}
                                     handleSaveField={() => handleSaveField(selectedFieldId, selectedFieldType, selectedFieldConstraint)}
                                     handleCancelField={handleCancelField}
+                                    handleAddFieldToBatch={handleAddFieldToBatch}
                                 />) : (groupName === 'local' && (
                                     <button className="add-field-button" onClick={handleClickField}>
                                         Add new field
@@ -786,6 +1137,7 @@ function Prototype(props) {
                                     handleFieldGroupChange={handleFieldGroupChange}
                                     handleSaveFieldGroup={() => handleSaveFieldGroup(selectedFieldGroup)}
                                     handleCancelFieldGroup={handleCancelFieldGroup}
+                                    handleAddFieldGroupToBatch={handleAddFieldGroupToBatch}
                                 />)}
 
                                 {groupName === 'local' && (
@@ -806,6 +1158,7 @@ function Prototype(props) {
                                     handleUpdateFieldConstraintChange={handleUpdateFieldConstraintChange}
                                     handleSaveUpdateField={() => handleSaveUpdateField(updatedFieldId, selectedUpdateFieldType, selectedUpdateFieldConstraint)}
                                     handleCancelUpdateField={handleCancelUpdateField}
+                                    handleUpdateFieldToBatch={handleUpdateFieldToBatch}
 
                                 />) : (null)}
 
@@ -902,6 +1255,7 @@ function Prototype(props) {
                             onClose={handleCloseConfirmInherited}
                             aria-labelledby="alert-dialog-title"
                             aria-describedby="alert-dialog-description"
+                            className="inheritance-dialog"
                         >
                             <DialogTitle id="alert-dialog-title">
                                 {"Delete Confirmation"}
@@ -912,10 +1266,19 @@ function Prototype(props) {
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions>
-                                <Button onClick={handleCloseConfirmInherited}>CANCEL</Button>
-                                <Button onClick={handleDeleteConfirmInherited} autoFocus>
-                                    DELETE
-                                </Button>
+
+                                <button className="cancel-field-button" onClick={handleCloseConfirmInherited}>
+                                    Cancel
+                                </button>
+
+                                <button className="save-action-button" onClick={handleDeleteConfirmInherited}>
+                                    Delete
+                                </button>
+
+                                <button className="add-action-batch-button" onClick={handleDeleteInheritanceAddToBatch}>
+                                    Add to Batch
+                                </button>
+
                             </DialogActions>
                         </Dialog>
 
@@ -934,10 +1297,18 @@ function Prototype(props) {
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions>
-                                <Button onClick={handleCloseConfirmField}>CANCEL</Button>
-                                <Button onClick={handleDeleteConfirmField} autoFocus>
-                                    DELETE
-                                </Button>
+                                <button className="cancel-field-button" onClick={handleCloseConfirmField}>
+                                    Cancel
+                                </button>
+
+                                <button className="save-action-button" onClick={handleDeleteConfirmField}>
+                                    Delete
+                                </button>
+
+                                <button className="add-action-batch-button" onClick={handleDeleteFieldAddToBatch}>
+                                    Add to Batch
+                                </button>
+
                             </DialogActions>
                         </Dialog>
 
@@ -956,10 +1327,17 @@ function Prototype(props) {
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions>
-                                <Button onClick={handleCloseConfirmFieldGroup}>CANCEL</Button>
-                                <Button onClick={handleDeleteConfirmFieldGroup} autoFocus>
-                                    DELETE
-                                </Button>
+                                <button className="cancel-field-button" onClick={handleCloseConfirmFieldGroup}>
+                                    Cancel
+                                </button>
+
+                                <button className="save-action-button" onClick={handleDeleteConfirmFieldGroup}>
+                                    Delete
+                                </button>
+
+                                <button className="add-action-batch-button" onClick={handleDeleteFieldGroupAddToBatch}>
+                                    Add to Batch
+                                </button>
                             </DialogActions>
                         </Dialog>
 
@@ -978,12 +1356,21 @@ function Prototype(props) {
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions>
-                                <Button onClick={handleCloseConfirmPrototype}>CANCEL</Button>
-                                <Button onClick={handleDeleteConfirmPrototype} autoFocus>
-                                    DELETE
-                                </Button>
+
+                                <button className="cancel-field-button" onClick={handleCloseConfirmPrototype}>
+                                    Cancel
+                                </button>
+
+                                <button className="save-action-button" onClick={handleDeleteConfirmPrototype}>
+                                    Delete
+                                </button>
+
                             </DialogActions>
                         </Dialog>
+
+                        
+
+                
 
                     </div>
                 </div>
@@ -1030,6 +1417,29 @@ function Prototype(props) {
                     The field group deleted successfully!
                 </Alert>
             </Snackbar>
+
+            <Snackbar open={addedToBatchAlert}>
+                <Alert icon={false} severity="success" sx={{width: '100%'}}>
+                    The action added to batch successfully!
+                </Alert>
+            </Snackbar>
+
+            <Snackbar open={actionExistsAlert}>
+                <Alert icon={false} severity="warning" sx={{width: '100%'}}>
+                    This action already exists in the batch.
+                </Alert>
+            </Snackbar>
+            <Snackbar open={deleteAllActionsAlert}>
+                <Alert icon={false} severity="success" sx={{width: '100%'}}>
+                    All the actions have been successfully deleted from the batch!
+                </Alert>
+            </Snackbar>
+            <Snackbar open={deleteActionAlert}>
+                <Alert icon={false} severity="success" sx={{width: '100%'}}>
+                    The action has been successfully deleted from the batch!
+                </Alert>
+            </Snackbar>
+
 
         </div>
     );

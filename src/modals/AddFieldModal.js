@@ -41,7 +41,9 @@ function AddFieldModal({
                            handleFieldConstraintChange,
                            handleSaveField,
                            handleCancelField,
+                           handleAddFieldToBatch
                        }) {
+
 
                         
     const saveField = async () => {
@@ -51,6 +53,11 @@ function AddFieldModal({
         } catch (error) {
             console.error('Error saving field:', error);
         }
+    };
+
+    const addToBatch = () => {
+        handleAddFieldToBatch(selectedFieldId, selectedFieldType, selectedFieldConstraint);
+        handleCancelField();
     };
 
 
@@ -181,8 +188,12 @@ function AddFieldModal({
                             Cancel
                         </button>
 
-                        <button className="save-field-button" onClick={saveField}>
+                        <button className="save-action-button" onClick={saveField}>
                             Save
+                        </button>
+
+                        <button className="add-action-batch-button" onClick={addToBatch}>
+                            Add to Batch
                         </button>
 
                     </div>

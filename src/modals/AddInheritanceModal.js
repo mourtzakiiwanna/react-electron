@@ -1,7 +1,7 @@
-import {FormControl, MenuItem} from '@material-ui/core';
-import {Modal, TextField} from '@mui/material';
+import { FormControl, MenuItem } from '@material-ui/core';
+import { Modal, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const style = {
     position: 'absolute',
@@ -21,8 +21,22 @@ function AddInheritanceModal({
                                  handleInheritanceChange,
                                  inheritanceDropdownOptions,
                                  handleSaveInheritance,
+                                 handleAddInheritanceToBatch,
                                  handleCancelInheritance,
                              }) {
+    const [groupData, setGroupData] = useState({});
+
+    useEffect(() => {
+        // Fetch group data when the component mounts
+        fetchAllData();
+    }, []);
+
+    const fetchAllData = async () => {
+        const data = {};
+
+        // Fetch group data here and update state using setGroupData
+        // Example: use fetch or axios to fetch data and update the state
+    };
 
     const saveInheritance = async () => {
         try {
@@ -31,6 +45,11 @@ function AddInheritanceModal({
         } catch (error) {
             console.error('Error saving inheritance:', error);
         }
+    };
+
+    const addToBatch = () => {
+       handleAddInheritanceToBatch(selectedInheritedPrototype);
+       handleCancelInheritance();
     };
 
     return (
@@ -44,7 +63,7 @@ function AddInheritanceModal({
                 <div className="add-inheritance-form">
                     <h3 className="add-new-inheritance">Add Inherited Prototype</h3>
 
-                    <FormControl sx={{width: '300px'}}>
+                    <FormControl sx={{ width: '300px' }}>
                         <TextField
                             required
                             label="Inherited Prototype"
@@ -56,10 +75,10 @@ function AddInheritanceModal({
                                 displayEmpty: true,
                                 renderValue: (selected) => (selected ? selected : ""),
                             }}
-                            sx={{width: '300px'}}
+                            sx={{ width: '310px' }}
                         >
                             {inheritanceDropdownOptions.map((option) => (
-                                <MenuItem key={option} value={option} sx={{fontSize: 14}}>
+                                <MenuItem key={option} value={option} sx={{ fontSize: 14 }}>
                                     {option}
                                 </MenuItem>
                             ))}
@@ -71,8 +90,13 @@ function AddInheritanceModal({
                             Cancel
                         </button>
 
-                        <button className="save-inheritance-button" onClick={saveInheritance}>
+                        <button className="save-action-button" onClick={saveInheritance}>
                             Save
+                        </button>
+
+                        {/* Button for "Add to Batch" */}
+                        <button className="add-action-batch-button" onClick={addToBatch}>
+                            Add to Batch
                         </button>
                     </div>
                 </div>

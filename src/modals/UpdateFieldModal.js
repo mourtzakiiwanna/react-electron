@@ -48,6 +48,7 @@ function UpdateFieldModal({
                               handleSaveUpdateField,
                               handleCancelUpdateField,
                               initialUpdateFieldConstraint,
+                              handleUpdateFieldToBatch
                           }) {
 
     const saveField = async () => {
@@ -58,6 +59,12 @@ function UpdateFieldModal({
             console.error('Error saving field:', error);
         }
     };
+
+    const addToBatch = () => {
+        handleUpdateFieldToBatch(updatedFieldId, selectedUpdateFieldType, selectedUpdateFieldConstraint);
+        handleCancelUpdateField();
+    };
+
 
     const classes = useStyles();
     const [groupData, setGroupData] = useState({});
@@ -190,8 +197,12 @@ function UpdateFieldModal({
                             Cancel
                         </button>
 
-                        <button className="save-field-button" onClick={saveField}>
+                        <button className="save-action-button" onClick={saveField}>
                             Save
+                        </button>
+
+                        <button className="add-action-batch-button" onClick={addToBatch}>
+                            Add to Batch
                         </button>
 
                     </div>

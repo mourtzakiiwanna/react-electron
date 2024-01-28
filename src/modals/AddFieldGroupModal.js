@@ -1,7 +1,7 @@
-import {FormControl} from '@material-ui/core';
-import {Modal, TextField} from '@mui/material';
+import { FormControl, TextField } from '@mui/material';
+import { Modal } from '@mui/material';
 import Box from '@mui/material/Box';
-import React from 'react';
+import React, { useState } from 'react';
 
 const style = {
     position: 'absolute',
@@ -20,8 +20,10 @@ function AddFieldGroupModal({
                                 selectedFieldGroup,
                                 handleFieldGroupChange,
                                 handleSaveFieldGroup,
+                                handleAddFieldGroupToBatch,  // Add this prop for "Add to Batch" functionality
                                 handleCancelFieldGroup,
                             }) {
+    const [groupData, setGroupData] = useState({});
 
     const saveFieldGroup = async () => {
         try {
@@ -30,6 +32,11 @@ function AddFieldGroupModal({
         } catch (error) {
             console.error('Error saving field group:', error);
         }
+    };
+
+    const addToBatch = () => {
+        handleAddFieldGroupToBatch(selectedFieldGroup);
+        handleCancelFieldGroup();
     };
 
     return (
@@ -43,25 +50,28 @@ function AddFieldGroupModal({
                 <div className="add-inheritance-form">
                     <h3 className="add-new-inheritance">Add Field Group</h3>
 
-                    <FormControl sx={{width: '300px'}}>
+                    <FormControl sx={{ width: '300px' }}>
                         <TextField
                             required
                             label="Field Group"
                             size="medium"
                             value={selectedFieldGroup}
                             onChange={handleFieldGroupChange}
-                            sx={{width: '300px'}}
-                        >
-                        </TextField>
+                            sx={{ width: '310px' }}
+                        />
                     </FormControl>
 
-                    <div className="inheritance-button-container">
-                        <button className="cancel-inheritance-button" onClick={handleCancelFieldGroup}>
+                    <div className="field-button-container">
+                        <button className="cancel-field-button" onClick={handleCancelFieldGroup}>
                             Cancel
                         </button>
 
-                        <button className="save-inheritance-button" onClick={saveFieldGroup}>
+                        <button className="save-action-button" onClick={saveFieldGroup}>
                             Save
+                        </button>
+
+                        <button className="add-action-batch-button" onClick={addToBatch}>
+                            Add to Batch
                         </button>
                     </div>
                 </div>
