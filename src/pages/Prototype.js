@@ -10,15 +10,15 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Snackbar from '@mui/material/Snackbar';
-import React, {useEffect, useRef, useState} from 'react';
-import {Link, useNavigate, useParams} from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import AddFieldModal from '../modals/AddFieldModal';
 import InheritanceModal from '../modals/AddInheritanceModal';
 import SideMenu from '../pages/SideMenu';
 import UpdateFieldModal from '../modals/UpdateFieldModal';
 import '../css/Prototype.css';
 
-import {DataGrid, GridActionsCellItem} from '@mui/x-data-grid';
+import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import AddFieldGroupModal from '../modals/AddFieldGroupModal';
 import BatchActionsModal from "../modals/BatchActionsModal";
 
@@ -26,8 +26,8 @@ import BatchActionsModal from "../modals/BatchActionsModal";
 const baseURL = 'http://localhost:8080/api/type';
 
 const groups = [
-    {name: 'Local Prototypes', url: `${baseURL}/category/local`},
-    {name: 'Core Prototypes', url: `${baseURL}/category/core`},
+    { name: 'Local Prototypes', url: `${baseURL}/category/local` },
+    { name: 'Core Prototypes', url: `${baseURL}/category/core` },
 ];
 
 function Prototype(props) {
@@ -121,7 +121,7 @@ function Prototype(props) {
     const dataGridContainerRef = useRef(null);
     // eslint-disable-next-line
     const [rowModesModel, setRowModesModel] = React.useState({});
-    const {groupName, prototypeName} = useParams();
+    const { groupName, prototypeName } = useParams();
     const [prototypeInfo, setPrototypeInfo] = useState();
     const [inheritedToRemove, setInheritedToRemove] = useState('');
     const [fieldToRemove, setFieldToRemove] = useState('');
@@ -191,9 +191,9 @@ function Prototype(props) {
 
     const handleAddFieldToBatch = async (selectedFieldId, selectedFieldType, selectedFieldConstraint) => {
         setShowFieldModal(false);
-    
+
         let constraint = "";
-    
+
         if (selectedFieldConstraint !== null) {
             let group = null;
             if (selectedFieldConstraint.includes("Local")) {
@@ -204,7 +204,7 @@ function Prototype(props) {
             const prototype = selectedFieldConstraint.substring(selectedFieldConstraint.lastIndexOf('/') + 1);
             constraint = group + prototype;
         }
-    
+
         const actionObject = {
             action: 'AddField',
             prototypePath: prototypeInfo.id,
@@ -212,9 +212,9 @@ function Prototype(props) {
             type: selectedFieldType,
             constraint: constraint,
         };
-    
+
         const existingActions = JSON.parse(localStorage.getItem('batchActions')) || [];
-    
+
         const isActionExists = existingActions.some(
             (existingAction) =>
                 existingAction.action === actionObject.action &&
@@ -223,7 +223,7 @@ function Prototype(props) {
                 existingAction.type === actionObject.type &&
                 existingAction.constraint === actionObject.constraint
         );
-    
+
         if (isActionExists) {
             setActionExistsAlert(true);
             setTimeout(() => {
@@ -232,14 +232,14 @@ function Prototype(props) {
         } else {
             existingActions.push(actionObject);
             localStorage.setItem('batchActions', JSON.stringify(existingActions));
-    
+
             setAddedToBatchAlert(true);
             setTimeout(() => {
                 setAddedToBatchAlert(false);
             }, 3000);
         }
     };
-    
+
     const handleSaveInheritance = async (selectedValue) => {
         setShowInheritanceModal(false);
         selectedValue = "/local/" + selectedValue;
@@ -257,22 +257,22 @@ function Prototype(props) {
     const handleAddInheritanceToBatch = async (selectedValue) => {
         setShowInheritanceModal(false);
         selectedValue = '/local/' + selectedValue;
-    
+
         const actionObject = {
             action: 'AddInheritance',
             prototypePath: prototypeInfo.id,
             inheritedPrototypes: selectedValue,
         };
-    
+
         const existingActions = JSON.parse(localStorage.getItem('batchActions')) || [];
-    
+
         const isActionExists = existingActions.some(
             (existingAction) =>
                 existingAction.action === actionObject.action &&
                 existingAction.prototypePath === actionObject.prototypePath &&
                 existingAction.inheritedPrototypes === actionObject.inheritedPrototypes
         );
-    
+
         if (isActionExists) {
             setActionExistsAlert(true);
             setTimeout(() => {
@@ -281,14 +281,14 @@ function Prototype(props) {
         } else {
             existingActions.push(actionObject);
             localStorage.setItem('batchActions', JSON.stringify(existingActions));
-    
+
             setAddedToBatchAlert(true);
             setTimeout(() => {
                 setAddedToBatchAlert(false);
             }, 3000);
         }
     };
-    
+
 
     const handleSaveFieldGroup = async (groupValue) => {
         setShowFieldGroupModal(false);
@@ -305,22 +305,22 @@ function Prototype(props) {
 
     const handleAddFieldGroupToBatch = async (groupValue) => {
         setShowFieldGroupModal(false);
-    
+
         const actionObject = {
             action: 'AddFieldGroup',
             prototypePath: prototypeInfo.id,
             groupId: selectedFieldGroup,
         };
-    
+
         const existingActions = JSON.parse(localStorage.getItem('batchActions')) || [];
-    
+
         const isActionExists = existingActions.some(
             (existingAction) =>
                 existingAction.action === actionObject.action &&
                 existingAction.prototypePath === actionObject.prototypePath &&
                 existingAction.groupId === actionObject.groupId
         );
-    
+
         if (isActionExists) {
             setActionExistsAlert(true);
             setTimeout(() => {
@@ -329,14 +329,14 @@ function Prototype(props) {
         } else {
             existingActions.push(actionObject);
             localStorage.setItem('batchActions', JSON.stringify(existingActions));
-    
+
             setAddedToBatchAlert(true);
             setTimeout(() => {
                 setAddedToBatchAlert(false);
             }, 3000);
         }
     };
-    
+
 
 
     const handleSaveUpdateField = async (selectedUpdateFieldId, selectedUpdateFieldType, selectedUpdateFieldConstraint) => {
@@ -361,12 +361,12 @@ function Prototype(props) {
 
     const handleUpdateFieldToBatch = async (selectedUpdateFieldId, selectedUpdateFieldType, selectedUpdateFieldConstraint) => {
         setShowUpdateFieldModal(false);
-    
+
         let constraint = '';
         if (selectedUpdateFieldConstraint !== null) {
             constraint = selectedUpdateFieldConstraint.substring(selectedUpdateFieldConstraint.lastIndexOf('/') + 1);
         }
-    
+
         const actionObject = {
             action: 'UpdateField',
             prototypePath: prototypeInfo.id,
@@ -374,16 +374,16 @@ function Prototype(props) {
             type: selectedUpdateFieldType,
             constraint: constraint,
         };
-    
+
         const existingActions = JSON.parse(localStorage.getItem('batchActions')) || [];
-    
+
         const isActionExists = existingActions.some(
             (existingAction) =>
                 existingAction.action === actionObject.action &&
                 existingAction.prototypePath === actionObject.prototypePath &&
                 existingAction.id === actionObject.id
         );
-    
+
         if (isActionExists) {
             setActionExistsAlert(true);
             setTimeout(() => {
@@ -392,14 +392,14 @@ function Prototype(props) {
         } else {
             existingActions.push(actionObject);
             localStorage.setItem('batchActions', JSON.stringify(existingActions));
-    
+
             setAddedToBatchAlert(true);
             setTimeout(() => {
                 setAddedToBatchAlert(false);
             }, 3000);
         }
     };
-    
+
 
     const handleCancelInheritance = () => {
         setShowInheritanceModal(false);
@@ -451,31 +451,31 @@ function Prototype(props) {
             setDeleteAllActionsAlert(false);
         }, 6000);
 
-        closeBatchActionsModal();     
+        closeBatchActionsModal();
         localStorage.removeItem('batchActions');
-        
+
     };
 
     const handleRemoveAction = (indexToRemove) => {
 
         const existingActions = JSON.parse(localStorage.getItem('batchActions')) || [];
-      
-        if (indexToRemove >= 0 && indexToRemove < existingActions.length) {
-        setDeleteActionAlert(true);
-        setTimeout(() => {
-            setDeleteActionAlert(false);
-        }, 6000);
 
-          const updatedActions = existingActions.filter((_, index) => index !== indexToRemove);
-      
-          localStorage.setItem('batchActions', JSON.stringify(updatedActions));
-      
-          setBatchActions(prevBatchActions => {
-            return JSON.parse(localStorage.getItem('batchActions')) || [];
-          });
+        if (indexToRemove >= 0 && indexToRemove < existingActions.length) {
+            setDeleteActionAlert(true);
+            setTimeout(() => {
+                setDeleteActionAlert(false);
+            }, 6000);
+
+            const updatedActions = existingActions.filter((_, index) => index !== indexToRemove);
+
+            localStorage.setItem('batchActions', JSON.stringify(updatedActions));
+
+            setBatchActions(prevBatchActions => {
+                return JSON.parse(localStorage.getItem('batchActions')) || [];
+            });
         }
-      };
-      
+    };
+
 
     const [inheritanceDropdownOptions, setinheritanceDropdownOptions] = useState([]);
     // eslint-disable-next-line
@@ -659,14 +659,14 @@ function Prototype(props) {
                         return (
                             <>
                                 <GridActionsCellItem
-                                    icon={<EditIcon/>}
+                                    icon={<EditIcon />}
                                     label="Edit"
                                     className="textPrimary"
                                     onClick={() => handleClickUpdateField(params.id, params.row.valueType, params.row.constraint)}
                                     color="inherit"
                                 />
                                 <GridActionsCellItem
-                                    icon={<DeleteIcon/>}
+                                    icon={<DeleteIcon />}
                                     label="Delete"
                                     onClick={handleDeleteClick(params.id)}
                                     color="inherit"
@@ -736,22 +736,22 @@ function Prototype(props) {
 
     const handleDeleteInheritanceAddToBatch = () => {
         const removedValue = inheritedToRemove;
-    
+
         const actionObject = {
             action: "DeleteInheritance",
             prototypePath: prototypeInfo.id,
             inherited: removedValue,
         };
-    
+
         const existingActions = JSON.parse(localStorage.getItem('batchActions')) || [];
-    
+
         const isActionExists = existingActions.some(
             (action) =>
                 action.action === actionObject.action &&
                 action.prototypePath === actionObject.prototypePath &&
                 action.inherited === actionObject.inherited
         );
-    
+
         if (isActionExists) {
             setActionExistsAlert(true);
             setTimeout(() => {
@@ -760,16 +760,16 @@ function Prototype(props) {
         } else {
             existingActions.push(actionObject);
             localStorage.setItem('batchActions', JSON.stringify(existingActions));
-    
+
             setAddedToBatchAlert(true);
             setTimeout(() => {
                 setAddedToBatchAlert(false);
             }, 3000);
         }
-    
+
         setOpenInheritedModal(false);
     };
-    
+
 
     const handleDeleteConfirmField = () => {
 
@@ -789,22 +789,22 @@ function Prototype(props) {
 
     const handleDeleteFieldAddToBatch = () => {
         const removedValue = fieldToRemove;
-    
+
         const actionObject = {
             action: 'DeleteField',
             prototypePath: prototypeInfo.id,
             id: removedValue,
         };
-    
+
         const existingActions = JSON.parse(localStorage.getItem('batchActions')) || [];
-    
+
         const isActionExists = existingActions.some(
             (existingAction) =>
                 existingAction.action === actionObject.action &&
                 existingAction.prototypePath === actionObject.prototypePath &&
                 existingAction.id === actionObject.id
         );
-    
+
         if (isActionExists) {
             setActionExistsAlert(true);
             setTimeout(() => {
@@ -813,16 +813,16 @@ function Prototype(props) {
         } else {
             existingActions.push(actionObject);
             localStorage.setItem('batchActions', JSON.stringify(existingActions));
-    
+
             setAddedToBatchAlert(true);
             setTimeout(() => {
                 setAddedToBatchAlert(false);
             }, 3000);
         }
-    
+
         setOpenFieldDeleteModal(false);
     };
-    
+
 
     const handleDeleteConfirmFieldGroup = () => {
 
@@ -841,22 +841,22 @@ function Prototype(props) {
 
     const handleDeleteFieldGroupAddToBatch = () => {
         const removedValue = fieldGroupToRemove;
-    
+
         const actionObject = {
             action: 'DeleteFieldGroup',
             prototypePath: prototypeInfo.id,
             fieldGroup: removedValue,
         };
-    
+
         const existingActions = JSON.parse(localStorage.getItem('batchActions')) || [];
-    
+
         const isActionExists = existingActions.some(
             (existingAction) =>
                 existingAction.action === actionObject.action &&
                 existingAction.prototypePath === actionObject.prototypePath &&
                 existingAction.fieldGroup === actionObject.fieldGroup
         );
-    
+
         if (isActionExists) {
             setActionExistsAlert(true);
             setTimeout(() => {
@@ -865,16 +865,16 @@ function Prototype(props) {
         } else {
             existingActions.push(actionObject);
             localStorage.setItem('batchActions', JSON.stringify(existingActions));
-    
+
             setAddedToBatchAlert(true);
             setTimeout(() => {
                 setAddedToBatchAlert(false);
             }, 3000);
         }
-    
+
         setOpenFieldGroupDeleteModal(false);
     };
-    
+
     const handleDeleteConfirmPrototype = () => {
 
         deleteData(`${baseURL}/api/type/${prototypeName}`, {}).then((data) => {
@@ -947,10 +947,10 @@ function Prototype(props) {
         const selectedValue = e.target.value;
         setSelectedUpdateFieldConstraint(selectedValue);
     };
-       
 
-    const handleSaveAllActions = async () => {    
-    
+
+    const handleSaveAllActions = async () => {
+
         setBatchActions([]);
         setBatchActionsModal(false);
     };
@@ -979,7 +979,7 @@ function Prototype(props) {
     return (
 
         <div>
-            <SideMenu currentGroup={groupName} currentPrototype={prototypeName}/>
+            <SideMenu currentGroup={groupName} currentPrototype={prototypeName} />
 
             <div className="main-content">
 
@@ -989,25 +989,25 @@ function Prototype(props) {
                             <h2 className="prototype-header">{prototypeInfo.id}</h2>
 
                             <div className="info-section">
-                <span className="inherited-section">
-                  <span className='inherited-prototypes-title'>
-                    <span>Inherited Prototypes</span>
-                  </span>
-                    {prototypeInfo.inheritsTransitively.length > 0 && prototypeInfo.inheritsTransitively.length !== prototypeInfo.inherits.length && (
-                        <div className="switch-container">
-                            <Checkbox
-                                checked={showAllInheritedPrototypes}
-                                onChange={handleCheckboxChange}
-                                color="default"
-                                size="small"
-                                inputProps={{'aria-label': 'controlled'}}
-                            />
-                            <span className="switch-label">
-                        Show all prototypes
-                      </span>
-                        </div>
-                    )}
-                </span>
+                                <span className="inherited-section">
+                                    <span className='inherited-prototypes-title'>
+                                        <span>Inherited Prototypes</span>
+                                    </span>
+                                    {prototypeInfo.inheritsTransitively.length > 0 && prototypeInfo.inheritsTransitively.length !== prototypeInfo.inherits.length && (
+                                        <div className="switch-container">
+                                            <Checkbox
+                                                checked={showAllInheritedPrototypes}
+                                                onChange={handleCheckboxChange}
+                                                color="default"
+                                                size="small"
+                                                inputProps={{ 'aria-label': 'controlled' }}
+                                            />
+                                            <span className="switch-label">
+                                                Show all prototypes
+                                            </span>
+                                        </div>
+                                    )}
+                                </span>
 
                                 {!showAllInheritedPrototypes && prototypeInfo.inherits && (
                                     <p className="inherited-prototypes">
@@ -1016,16 +1016,16 @@ function Prototype(props) {
                                             return (<React.Fragment key={`${groupName}-${index}`}>
                                                 {index > 0 && " | "}
                                                 <span className="inherited-prototypes-list">
-                            <Link to={fullPath} onClick={() => handlePrototypeClick(fullPath)}
-                                  className={`inherited-prototypes-list${index === 0 ? ' with-right-padding' : ' with-padding'}`}>
-                              {prototype}
-                            </Link>
+                                                    <Link to={fullPath} onClick={() => handlePrototypeClick(fullPath)}
+                                                        className={`inherited-prototypes-list${index === 0 ? ' with-right-padding' : ' with-padding'}`}>
+                                                        {prototype}
+                                                    </Link>
                                                     {groupName === 'local' && (
                                                         <span onClick={() => handleDeleteClickInherited(prototype)}
-                                                              style={{cursor: 'pointer', color: 'red'}}>
-                                X
-                              </span>)}
-                          </span>
+                                                            style={{ cursor: 'pointer', color: 'red' }}>
+                                                            X
+                                                        </span>)}
+                                                </span>
                                             </React.Fragment>);
                                         })}
                                     </p>)}
@@ -1037,18 +1037,18 @@ function Prototype(props) {
                                             const isInBothArrays = prototypeInfo.inherits.includes(prototype);
 
                                             return (<span key={`${groupName}-${index}`}
-                                                          className='inherited-prototypes-list'>
-                            {index > 0 && " | "}
+                                                className='inherited-prototypes-list'>
+                                                {index > 0 && " | "}
                                                 <Link to={fullPath} onClick={() => handlePrototypeClick(fullPath)}
-                                                      className='inherited-prototypes-list'>
-                              {prototype}
-                            </Link>
+                                                    className='inherited-prototypes-list'>
+                                                    {prototype}
+                                                </Link>
                                                 {groupName === 'local' && isInBothArrays && (
                                                     <span onClick={() => handleDeleteClickInherited(prototype)}
-                                                          style={{cursor: 'pointer', color: 'red'}}>
-                                X
-                              </span>)}
-                          </span>);
+                                                        style={{ cursor: 'pointer', color: 'red' }}>
+                                                        X
+                                                    </span>)}
+                                            </span>);
                                         })}
                                     </p>)}
 
@@ -1070,40 +1070,51 @@ function Prototype(props) {
                                 {groupName === 'local' && (
 
                                     <span className="inline-buttons">
-                    <button
-                        className="add-inheritance-button"
-                        onClick={handleClickInheritance}
-                    >
-                      Add Inherited Prototype
-                    </button>
+                                        <button
+                                            className="add-inheritance-button"
+                                            onClick={handleClickInheritance}
+                                        >
+                                            Add Inherited Prototype
+                                        </button>
 
-                    <button className="delete-prototype-button"
-                            onClick={() => handleDeleteClickPrototype(prototypeName)}>
-                      Delete prototype
-                    </button>
+                                        <button className="delete-prototype-button"
+                                            onClick={() => handleDeleteClickPrototype(prototypeName)}>
+                                            Delete prototype
+                                        </button>
 
-                    <button className="batch-actions-button" onClick={showBatchActionsModal}>Show Batch Actions</button>
-                    {showBatchActionsModal && (
-                        <BatchActionsModal
-                            handleRemoveAllActions={handleRemoveAllActions}
-                            handleSaveAllActions={handleSaveAllActions}
-                            handleCloseModal={closeBatchActionsModal}
-                            handleShowModal={batchActionsModal}
-                            handleRemoveAction={handleRemoveAction}
-                        />
-                    )}
-                  </span>)}
+                                        <button className="batch-actions-button" onClick={showBatchActionsModal}>Show Batch Actions</button>
+                                        {showBatchActionsModal && (
+                                            <BatchActionsModal
+                                                handleRemoveAllActions={handleRemoveAllActions}
+                                                handleSaveAllActions={handleSaveAllActions}
+                                                handleCloseModal={closeBatchActionsModal}
+                                                handleShowModal={batchActionsModal}
+                                                handleRemoveAction={handleRemoveAction}
+                                            />
+                                        )}
+                                    </span>)}
 
                                 {groupName === 'core' && (
 
                                     <span className="inline-buttons">
-                    <span
-                        className="invisible-button"
-                    >
-                      Invisibe button
-                    </span>
+                                        <span
+                                            className="invisible-button"
+                                        >
+                                            Invisibe button
+                                        </span>
 
-                  </span>)}
+                                        <button className="batch-actions-core-button" onClick={showBatchActionsModal}>Show Batch Actions</button>
+                                        {showBatchActionsModal && (
+                                            <BatchActionsModal
+                                                handleRemoveAllActions={handleRemoveAllActions}
+                                                handleSaveAllActions={handleSaveAllActions}
+                                                handleCloseModal={closeBatchActionsModal}
+                                                handleShowModal={batchActionsModal}
+                                                handleRemoveAction={handleRemoveAction}
+                                            />
+                                        )}
+
+                                    </span>)}
 
 
 
@@ -1196,8 +1207,8 @@ function Prototype(props) {
                                                 <span onClick={() => handleDeleteClickFieldGroup(fgID)} style={{
                                                     cursor: 'pointer', color: 'red', marginLeft: '10px'
                                                 }}>
-                              X
-                            </span>))}
+                                                    X
+                                                </span>))}
 
                                         </div>
                                         <Box
@@ -1220,8 +1231,8 @@ function Prototype(props) {
                                                     hideFooter={true}
 
                                                 />) : (<p style={{
-                                                color: 'gray', fontStyle: 'italic', fontSize: '13px'
-                                            }}>This field group has no fields.</p>)}
+                                                    color: 'gray', fontStyle: 'italic', fontSize: '13px'
+                                                }}>This field group has no fields.</p>)}
 
                                         </Box>
                                     </div>))}
@@ -1368,74 +1379,74 @@ function Prototype(props) {
                             </DialogActions>
                         </Dialog>
 
-                        
 
-                
+
+
 
                     </div>
                 </div>
             </div>
 
             <Snackbar open={openInheritanceAlert}>
-                <Alert icon={false} severity="success" sx={{width: '100%'}}>
+                <Alert icon={false} severity="success" sx={{ width: '100%' }}>
                     The inheritance added successfully!
                 </Alert>
             </Snackbar>
 
             <Snackbar open={openFieldGroupAlert}>
-                <Alert icon={false} severity="success" sx={{width: '100%'}}>
+                <Alert icon={false} severity="success" sx={{ width: '100%' }}>
                     The field group added successfully!
                 </Alert>
             </Snackbar>
 
             <Snackbar open={openFieldAlert}>
-                <Alert icon={false} severity="success" sx={{width: '100%'}}>
+                <Alert icon={false} severity="success" sx={{ width: '100%' }}>
                     The field added successfully!
                 </Alert>
             </Snackbar>
 
             <Snackbar open={openFieldDeleteAlert}>
-                <Alert icon={false} severity="success" sx={{width: '100%'}}>
+                <Alert icon={false} severity="success" sx={{ width: '100%' }}>
                     The field deleted successfully!
                 </Alert>
             </Snackbar>
 
             <Snackbar open={openInheritanceDeleteAlert}>
-                <Alert icon={false} severity="success" sx={{width: '100%'}}>
+                <Alert icon={false} severity="success" sx={{ width: '100%' }}>
                     The inheritance deleted successfully!
                 </Alert>
             </Snackbar>
 
             <Snackbar open={openFieldUpdateAlert}>
-                <Alert icon={false} severity="success" sx={{width: '100%'}}>
+                <Alert icon={false} severity="success" sx={{ width: '100%' }}>
                     The field updated successfully!
                 </Alert>
             </Snackbar>
 
             <Snackbar open={openFieldGroupDeleteAlert}>
-                <Alert icon={false} severity="success" sx={{width: '100%'}}>
+                <Alert icon={false} severity="success" sx={{ width: '100%' }}>
                     The field group deleted successfully!
                 </Alert>
             </Snackbar>
 
             <Snackbar open={addedToBatchAlert}>
-                <Alert icon={false} severity="success" sx={{width: '100%'}}>
+                <Alert icon={false} severity="success" sx={{ width: '100%' }}>
                     The action added to batch successfully!
                 </Alert>
             </Snackbar>
 
             <Snackbar open={actionExistsAlert}>
-                <Alert icon={false} severity="warning" sx={{width: '100%'}}>
+                <Alert icon={false} severity="warning" sx={{ width: '100%' }}>
                     This action already exists in the batch.
                 </Alert>
             </Snackbar>
             <Snackbar open={deleteAllActionsAlert}>
-                <Alert icon={false} severity="success" sx={{width: '100%'}}>
+                <Alert icon={false} severity="success" sx={{ width: '100%' }}>
                     All the actions have been successfully deleted from the batch!
                 </Alert>
             </Snackbar>
             <Snackbar open={deleteActionAlert}>
-                <Alert icon={false} severity="success" sx={{width: '100%'}}>
+                <Alert icon={false} severity="success" sx={{ width: '100%' }}>
                     The action has been successfully deleted from the batch!
                 </Alert>
             </Snackbar>

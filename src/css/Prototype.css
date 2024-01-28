@@ -293,6 +293,22 @@ span {
   background-color: #c2c2c2;
 }
 
+.batch-actions-core-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  color: black;
+  border: 2px solid rgb(219, 219, 219);
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 30px;
+  font-size: 12px;
+  transition: background-color 0.3s;
+  position: absolute;
+  right: 20px;
+}
+
 
 .add-field-button {
   margin-left: 20px;

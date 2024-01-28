@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal } from '@mui/material';
 import '../css/BatchActionsModal.css';
 import '../css/Prototype.css';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 
 const BatchActionsModal = ({
@@ -22,7 +23,25 @@ const BatchActionsModal = ({
         return acc;
     }, {});
 
+    const organizeBatchActions = () => {
+        const batchActions = JSON.parse(localStorage.getItem('batchActions')) || [];
+        const timestamp = Date.now();
+        const organizedJson = {
+          timestamp,
+          actions: batchActions,
+        };
+      
+        return [organizedJson]; // Wrap in an array if you need an array of entries.
+      };
+      
+      // Example usage
+      const jsonToSave = organizeBatchActions();
+      console.log(jsonToSave);
+      
+
     const hasBatchActions = batchActions.length > 0;
+
+    console.log(batchActions);
 
     return (
         <Modal open={handleShowModal} onClose={handleCloseModal} aria-labelledby="modal-modal-title"
@@ -42,59 +61,60 @@ const BatchActionsModal = ({
                                     <h4>{actionType} action</h4>
                                     <ul>
                                         {actionList.map((action, index) => (
-                                            <li key={index}>
+                                            <li key={index} className="action-item">
+                                                <span
+                                                    className="delete-action-icon"
+                                                    onClick={() => handleRemoveAction(index)}
+                                                >
+                                                    &#10006;
+                                                </span>
                                                 {actionType === 'AddField' && (
-                                                    <>
-                                                        <span className="label"> Field ID: </span> {action.id} <br />
-                                                        <span className="label"> Field Type: </span> {action.type}<br />
-                                                        <span className="label"> Field Constraint: </span> {action.constraint} <br />
-                                                    </>
+                                                    <div style={{ display: 'box'}}>
+                                                        <span className="label"> Field ID: </span> {action.id || '-'}  <br /> 
+                                                         <span className="label"> Field Type: </span> {action.type || '-'}  <br />
+                                                        <span className="label"> Field Constraint: </span> {action.constraint || '-'}  <br />
+                                                    </div>
                                                 )}
 
                                                 {actionType === 'UpdateField' && (
-                                                    <>
-                                                        <span className="label">Field ID: </span> {action.id} <br />
-                                                        <span className="label">Updated Field Type: </span> {action.type} <br />
-                                                        <span className="label">Updated Constraint: </span> {action.constraint} <br />
-                                                    </>
+                                                    <div style={{ display: 'box'}}>
+
+                                                        <span className="label">Field ID: </span> {action.id || '-'} <br />
+                                                        <span className="label">Updated Field Type: </span> {action.type || '-'} <br />
+                                                        <span className="label">Updated Constraint: </span> {action.constraint || '-'} <br />
+                                                    </div>
                                                 )}
                                                 {actionType === 'DeleteField' && (
                                                     <>
-                                                        <span className="label"> Deleted Field ID: </span> {action.id} <br />
+                                                        <span className="label"> Deleted Field ID: </span> {action.id || '-'} <br />
                                                     </>
                                                 )}
                                                 {actionType === 'AddInheritance' && (
                                                     <>
-                                                        <span className="label"> Inherited: </span> {action.inheritedPrototypes} <br />
+                                                        <span className="label"> Inherited: </span> {action.inheritedPrototypes || '-'} <br />
                                                     </>
                                                 )}
                                                 {actionType === 'DeleteInheritance' && (
                                                     <>
-                                                        <span className="label"> Deleted Inherited: </span> {action.inherited} <br />
+                                                        <span className="label"> Deleted Inherited: </span> {action.inherited || '-'} <br />
                                                     </>
                                                 )}
                                                 {actionType === 'AddFieldGroup' && (
                                                     <>
-                                                        <span className="label"> Field Group: </span> {action.groupId} <br />
+                                                        <span className="label"> Field Group: </span> {action.groupId || '-'} <br />
                                                     </>
                                                 )}
                                                 {actionType === 'DeleteFieldGroup' && (
                                                     <>
-                                                        <span className="label"> Deleted Field Group: </span> {action.fieldGroup} <br />
+                                                        <span className="label"> Deleted Field Group: </span> {action.fieldGroup || '-'} <br />
                                                     </>
                                                 )}
                                                 {actionType === 'CreatePrototype' && (
                                                     <>
-                                                        <   span className="label"> Created Prototype: </span> {action.prototypeName} <br />
+                                                        <   span className="label"> Created Prototype: </span> {action.prototypeName || '-'} <br />
                                                     </>
                                                 )}
-                                                {/* Add an "X" icon to remove the action */}
-                                                <button
-                                                    className="delete-action-button"
-                                                    onClick={() => handleRemoveAction(index)}
-                                                    >
-                                                    Delete
-                                                </button>
+                                                
                                             </li>
                                         ))}
                                     </ul>
@@ -121,14 +141,14 @@ const BatchActionsModal = ({
                     X
                 </button>
 
-            
-            
-               
+
+
+
 
             </div>
         </Modal>
 
-        
+
     );
 };
 

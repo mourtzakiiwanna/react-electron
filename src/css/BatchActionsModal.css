@@ -6,12 +6,15 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 700px;
+  max-height: 800px; 
+  overflow-y: auto; 
   background-color: #f4f4f4;
   border: 2px solid #d0d0d0;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 26px;
 }
+
 
 h3 {
   font-size: 20px;
@@ -102,4 +105,23 @@ span:last-child {
   font-weight: bold;
   margin: 0 0 20px;
   color: #777;
+}
+
+.action-item {
+  display: flex;
+  align-items: center; 
+}
+
+
+.delete-action-icon {
+  margin-right: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 20px;
+  transition: color 0.3s ease;
+  color: rgb(177, 177, 177);  
+}
+
+.delete-action-icon:hover {
+  color: rgb(163, 0, 0); 
 }
